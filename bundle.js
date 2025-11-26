@@ -563,6 +563,12 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/**
   box-sizing: border-box;
 }
 
+html, body, sp-theme {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
 body {
   font-family: adobe-clean, 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -579,11 +585,15 @@ body {
   min-height: 100vh;
   max-height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
 }
 
 .content {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* ==========================================================================
@@ -627,6 +637,8 @@ body {
 
 sp-card {
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 sp-card [slot="footer"] {
@@ -637,10 +649,21 @@ sp-card [slot="footer"] {
   display: flex;
   align-items: center;
   font-weight: 700;
+  min-width: 0;
+  overflow: hidden;
+  word-wrap: break-word;
 }
 
 .card-heading sp-badge {
   margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.card-heading span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .card-subheading {
@@ -658,6 +681,8 @@ sp-card [slot="footer"] {
   list-style: none;
   margin: 0;
   padding: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .card-description::before {
@@ -669,6 +694,8 @@ sp-card [slot="footer"] {
   flex-wrap: wrap;
   align-items: center;
   margin-top: 4px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .card-meta > * {
@@ -703,6 +730,9 @@ sp-card [slot="description"]::before {
   width: 100%;
   padding: 0 16px 16px 16px;
   margin-top: -8px;
+  min-width: 0;
+  overflow: hidden;
+  flex-wrap: wrap;
 }
 
 .action-group-footer sp-action-button {
