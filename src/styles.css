@@ -73,7 +73,7 @@ sp-card [slot="footer"] {
   font-size: 13px;
   font-weight: 500;
   color: var(--spectrum-global-color-gray-400, #b3b3b3);
-  margin-top: -4px;
+  margin-top: -8px;
   margin-bottom: 8px;
 }
 

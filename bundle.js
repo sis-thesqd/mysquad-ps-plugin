@@ -595,7 +595,7 @@ sp-card [slot="footer"] {
   font-size: 13px;
   font-weight: 500;
   color: var(--spectrum-global-color-gray-400, #b3b3b3);
-  margin-top: -4px;
+  margin-top: -8px;
   margin-bottom: 8px;
 }
 
@@ -13790,7 +13790,7 @@ const openExternalUrl = async url => {
 };
 
 /**
- * Displays task details in a card format with action menu
+ * Displays folder/task info in a card format with action menu
  * @param {Object} props - Component props
  * @param {Object} props.taskDetails - Task details from Supabase
  * @param {boolean} props.loading - Loading state
@@ -13802,24 +13802,6 @@ const FolderDetailsCard = ({
   onRefresh
 }) => {
   const menuRef = (0,react.useRef)(null);
-  const formatEstimate = mins => {
-    if (!mins) return null;
-    const hours = Math.floor(mins / 60);
-    const minutes = mins % 60;
-    if (hours > 0) {
-      return `${hours}h ${minutes > 0 ? `${minutes}m` : ''}`;
-    }
-    return `${minutes}m`;
-  };
-  const formatDate = dateStr => {
-    if (!dateStr) return null;
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  };
   (0,react.useEffect)(() => {
     const menu = menuRef.current;
     if (menu) {
@@ -13838,7 +13820,6 @@ const FolderDetailsCard = ({
   }, [onRefresh, taskDetails?.task_id]);
   const churchAccount = taskDetails?.church_name && taskDetails?.account ? `${taskDetails.church_name} - ${taskDetails.account}` : loading ? 'Loading...' : '';
   const taskName = taskDetails?.name || (loading ? 'Loading...' : 'No task found');
-  const responsibleDept = taskDetails?.responsible_dept ? taskDetails.responsible_dept.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : null;
   return /*#__PURE__*/react.createElement("sp-card", null, /*#__PURE__*/react.createElement("div", {
     slot: "heading",
     class: "card-heading"
@@ -13850,16 +13831,7 @@ const FolderDetailsCard = ({
     class: "card-description"
   }, /*#__PURE__*/react.createElement("div", {
     class: "card-subheading"
-  }, churchAccount), /*#__PURE__*/react.createElement("div", {
-    class: "card-meta"
-  }, taskDetails?.estimate_mins_after > 0 && /*#__PURE__*/react.createElement("span", {
-    class: "description-text"
-  }, "Estimate: ", formatEstimate(taskDetails.estimate_mins_after)), taskDetails?.due_date_after && /*#__PURE__*/react.createElement("span", {
-    class: "description-text"
-  }, "Draft: ", formatDate(taskDetails.due_date_after)), responsibleDept && /*#__PURE__*/react.createElement("sp-badge", {
-    size: "s",
-    variant: "informative"
-  }, responsibleDept))), /*#__PURE__*/react.createElement("sp-action-menu", {
+  }, churchAccount)), /*#__PURE__*/react.createElement("sp-action-menu", {
     ref: menuRef,
     slot: "actions",
     placement: "bottom-start",
@@ -13870,6 +13842,78 @@ const FolderDetailsCard = ({
   }, "Refresh Data")));
 };
 /* harmony default export */ const components_FolderDetailsCard = (FolderDetailsCard);
+;// ./src/components/task-details/components/TaskDetailsCard.jsx
+
+
+/**
+ * Formats minutes into hours and minutes display
+ * @param {number} mins - Total minutes
+ * @returns {string|null} Formatted time string
+ */
+const formatEstimate = mins => {
+  if (!mins) return null;
+  const hours = Math.floor(mins / 60);
+  const minutes = mins % 60;
+  if (hours > 0) {
+    return `${hours}h ${minutes > 0 ? `${minutes}m` : ''}`;
+  }
+  return `${minutes}m`;
+};
+
+/**
+ * Formats a date string into readable format
+ * @param {string} dateStr - ISO date string
+ * @returns {string|null} Formatted date string
+ */
+const formatDate = dateStr => {
+  if (!dateStr) return null;
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+};
+
+/**
+ * Displays task metadata like estimate, due date, and department
+ * @param {Object} props - Component props
+ * @param {Object} props.taskDetails - Task details from Supabase
+ * @param {boolean} props.loading - Loading state
+ */
+const TaskDetailsCard = ({
+  taskDetails,
+  loading
+}) => {
+  const responsibleDept = taskDetails?.responsible_dept ? taskDetails.responsible_dept.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : null;
+  if (loading) {
+    return /*#__PURE__*/react.createElement("sp-card", {
+      heading: "Task Details"
+    }, /*#__PURE__*/react.createElement("div", {
+      slot: "description",
+      class: "card-description"
+    }, /*#__PURE__*/react.createElement("span", {
+      class: "description-text"
+    }, "Loading...")));
+  }
+  if (!taskDetails) {
+    return null;
+  }
+  return /*#__PURE__*/react.createElement("sp-card", {
+    heading: "Task Details"
+  }, /*#__PURE__*/react.createElement("div", {
+    slot: "description",
+    class: "card-meta"
+  }, taskDetails?.estimate_mins_after > 0 && /*#__PURE__*/react.createElement("span", {
+    class: "description-text"
+  }, "Estimate: ", formatEstimate(taskDetails.estimate_mins_after)), taskDetails?.due_date_after && /*#__PURE__*/react.createElement("span", {
+    class: "description-text"
+  }, "Draft: ", formatDate(taskDetails.due_date_after)), responsibleDept && /*#__PURE__*/react.createElement("sp-badge", {
+    size: "s",
+    variant: "informative"
+  }, responsibleDept)));
+};
+/* harmony default export */ const components_TaskDetailsCard = (TaskDetailsCard);
 ;// ./src/components/actions/components/ActionsCard.jsx
 
 
@@ -14156,6 +14200,7 @@ const useFolderDetails = () => {
 
 
 
+
 // Hooks
 
 
@@ -14183,6 +14228,13 @@ const App = () => {
     loading: loading,
     onRefresh: refetch
   }), /*#__PURE__*/react.createElement("div", {
+    style: {
+      marginTop: '16px'
+    }
+  }, /*#__PURE__*/react.createElement(components_TaskDetailsCard, {
+    taskDetails: taskDetails,
+    loading: loading
+  })), /*#__PURE__*/react.createElement("div", {
     style: {
       marginTop: '16px'
     }

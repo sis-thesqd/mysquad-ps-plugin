@@ -7,6 +7,7 @@ export { default as Header } from './Header';
 
 // Feature components
 export { default as FolderDetailsCard } from './folder-details/components/FolderDetailsCard';
+export { default as TaskDetailsCard } from './task-details/components/TaskDetailsCard';
 export { default as ActionsCard } from './actions/components/ActionsCard';
 
 // Hooks

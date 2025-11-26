@@ -25,7 +25,7 @@ const openExternalUrl = async (url) => {
 };
 
 /**
- * Displays task details in a card format with action menu
+ * Displays folder/task info in a card format with action menu
  * @param {Object} props - Component props
  * @param {Object} props.taskDetails - Task details from Supabase
  * @param {boolean} props.loading - Loading state
@@ -33,22 +33,6 @@ const openExternalUrl = async (url) => {
  */
 const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
   const menuRef = useRef(null);
-
-  const formatEstimate = (mins) => {
-    if (!mins) return null;
-    const hours = Math.floor(mins / 60);
-    const minutes = mins % 60;
-    if (hours > 0) {
-      return `${hours}h ${minutes > 0 ? `${minutes}m` : ''}`;
-    }
-    return `${minutes}m`;
-  };
-
-  const formatDate = (dateStr) => {
-    if (!dateStr) return null;
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
 
   useEffect(() => {
     const menu = menuRef.current;
@@ -73,13 +57,6 @@ const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
 
   const taskName = taskDetails?.name || (loading ? 'Loading...' : 'No task found');
 
-  const responsibleDept = taskDetails?.responsible_dept
-    ? taskDetails.responsible_dept
-        .split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-    : null;
-
   return (
     <sp-card>
       <div slot="heading" class="card-heading">
@@ -90,21 +67,6 @@ const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
       </div>
       <div slot="description" class="card-description">
         <div class="card-subheading">{churchAccount}</div>
-        <div class="card-meta">
-          {taskDetails?.estimate_mins_after > 0 && (
-            <span class="description-text">
-              Estimate: {formatEstimate(taskDetails.estimate_mins_after)}
-            </span>
-          )}
-          {taskDetails?.due_date_after && (
-            <span class="description-text">
-              Draft: {formatDate(taskDetails.due_date_after)}
-            </span>
-          )}
-          {responsibleDept && (
-            <sp-badge size="s" variant="informative">{responsibleDept}</sp-badge>
-          )}
-        </div>
       </div>
       <sp-action-menu
         ref={menuRef}
