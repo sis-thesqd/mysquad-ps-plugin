@@ -15986,8 +15986,45 @@ const createLayerGroup = async name => {
 };
 
 /**
+ * Get the layer index of a layer by its ID
+ * @param {number} layerId - Layer ID
+ * @returns {Promise<number>} Layer index
+ */
+const getLayerIndex = async layerId => {
+  const batchPlay = getBatchPlay();
+  const result = await batchPlay([{
+    _obj: 'get',
+    _target: [{
+      _ref: 'layer',
+      _id: layerId
+    }],
+    _options: {
+      dialogOptions: 'dontDisplay'
+    }
+  }], {
+    synchronousExecution: false
+  });
+  return result[0]?.itemIndex;
+};
+
+/**
+ * Collect all layer IDs recursively from a layer (including nested layers in groups)
+ * @param {Object} layer - Layer object
+ * @returns {Array<number>} Array of layer IDs
+ */
+const collectAllLayerIds = layer => {
+  const ids = [layer.id];
+  if (layer.layers && layer.layers.length > 0) {
+    for (const child of layer.layers) {
+      ids.push(...collectAllLayerIds(child));
+    }
+  }
+  return ids;
+};
+
+/**
  * Duplicate all layers from source artboard to target artboard
- * Preserves folder/group structure by duplicating each top-level item individually
+ * Uses move with duplicate:true for proper placement
  * @param {number} sourceArtboardId - Source artboard layer ID
  * @param {number} targetArtboardId - Target artboard layer ID
  * @returns {Promise<Array>} Array of duplicated layer IDs
@@ -16011,107 +16048,102 @@ const duplicateArtboardContents = async (sourceArtboardId, targetArtboardId) => 
   }
   console.log(`[duplicateArtboardContents] Source artboard "${sourceArtboard.name}" has ${sourceArtboard.layers.length} top-level items`);
   console.log(`[duplicateArtboardContents] Target artboard "${targetArtboard.name}" (id: ${targetArtboard.id})`);
-  const duplicatedIds = [];
 
-  // Get top-level children (these could be layers or groups/folders)
-  // We iterate in reverse to maintain stacking order when inserting
-  const topLevelItems = [...sourceArtboard.layers].reverse();
+  // Get the target artboard's layer index
+  const targetIndex = await getLayerIndex(targetArtboardId);
+  console.log(`[duplicateArtboardContents] Target artboard index: ${targetIndex}`);
+
+  // Get all top-level items from source artboard
+  const topLevelItems = [...sourceArtboard.layers];
   console.log(`[duplicateArtboardContents] Top-level items to duplicate:`, topLevelItems.map(l => `${l.name} (${l.kind || 'layer'})`));
   if (topLevelItems.length === 0) {
     console.warn('[duplicateArtboardContents] No child layers to duplicate');
     return [];
   }
 
-  // Duplicate each top-level item ONE AT A TIME to preserve group structure
+  // Collect ALL layer IDs (including nested) for selection
+  let allLayerIds = [];
   for (const item of topLevelItems) {
-    try {
-      console.log(`[duplicateArtboardContents] Processing "${item.name}" (id: ${item.id}, kind: ${item.kind || 'unknown'})`);
+    allLayerIds.push(...collectAllLayerIds(item));
+  }
+  console.log(`[duplicateArtboardContents] Total layers to duplicate (including nested): ${allLayerIds.length}`);
+  try {
+    // Step 1: Select all layers from source artboard
+    // First select the first layer
+    await batchPlay([{
+      _obj: 'select',
+      _target: [{
+        _ref: 'layer',
+        _id: topLevelItems[0].id
+      }],
+      makeVisible: false,
+      _options: {
+        dialogOptions: 'dontDisplay'
+      }
+    }], {
+      synchronousExecution: true
+    });
 
-      // Select this single item
+    // Then add remaining top-level items to selection (with continuous to include children)
+    if (topLevelItems.length > 1) {
+      const lastItem = topLevelItems[topLevelItems.length - 1];
       await batchPlay([{
         _obj: 'select',
         _target: [{
           _ref: 'layer',
-          _id: item.id
+          _id: lastItem.id
         }],
+        layerID: allLayerIds,
         makeVisible: false,
+        selectionModifier: {
+          _enum: 'selectionModifierType',
+          _value: 'addToSelectionContinuous'
+        },
         _options: {
           dialogOptions: 'dontDisplay'
         }
       }], {
         synchronousExecution: true
       });
-
-      // Duplicate this item (if it's a group, the whole group is duplicated)
-      await batchPlay([{
-        _obj: 'duplicate',
-        _target: [{
-          _ref: 'layer',
-          _enum: 'ordinal',
-          _value: 'targetEnum'
-        }],
-        _options: {
-          dialogOptions: 'dontDisplay'
-        }
-      }], {
-        synchronousExecution: true
-      });
-
-      // Get the duplicated item (should be the active layer now)
-      const duplicatedItem = doc.activeLayers[0];
-      if (duplicatedItem) {
-        console.log(`[duplicateArtboardContents] Duplicated: "${duplicatedItem.name}" (id: ${duplicatedItem.id})`);
-
-        // Move the duplicated item into the target artboard
-        try {
-          console.log(`[duplicateArtboardContents] Moving "${duplicatedItem.name}" into target artboard...`);
-
-          // Use DOM API to move into the artboard
-          await duplicatedItem.move(targetArtboard, (__webpack_require__(62).constants).ElementPlacement.PLACEINSIDE);
-          duplicatedIds.push(duplicatedItem.id);
-          console.log(`[duplicateArtboardContents] ✓ Successfully moved "${duplicatedItem.name}" into target artboard`);
-        } catch (moveError) {
-          console.warn(`[duplicateArtboardContents] DOM move failed for "${duplicatedItem.name}":`, moveError.message);
-
-          // Fallback: try batchPlay move command
-          try {
-            console.log(`[duplicateArtboardContents] Trying batchPlay move fallback...`);
-            await batchPlay([{
-              _obj: 'move',
-              _target: [{
-                _ref: 'layer',
-                _id: duplicatedItem.id
-              }],
-              to: {
-                _ref: 'layer',
-                _id: targetArtboardId
-              },
-              _options: {
-                dialogOptions: 'dontDisplay'
-              }
-            }], {
-              synchronousExecution: true
-            });
-            duplicatedIds.push(duplicatedItem.id);
-            console.log(`[duplicateArtboardContents] ✓ batchPlay move succeeded for "${duplicatedItem.name}"`);
-          } catch (batchPlayError) {
-            console.error(`[duplicateArtboardContents] ✗ Both move methods failed for "${duplicatedItem.name}":`, batchPlayError.message);
-          }
-        }
-      } else {
-        console.warn(`[duplicateArtboardContents] No active layer after duplicating "${item.name}"`);
-      }
-    } catch (e) {
-      console.error(`[duplicateArtboardContents] Error duplicating "${item.name}":`, e.message);
     }
+    console.log(`[duplicateArtboardContents] Selected ${doc.activeLayers.length} layers`);
+
+    // Step 2: Move with duplicate:true to copy layers into target artboard
+    console.log(`[duplicateArtboardContents] Moving (duplicate) to target artboard index ${targetIndex}...`);
+    await batchPlay([{
+      _obj: 'move',
+      _target: [{
+        _ref: 'layer',
+        _enum: 'ordinal',
+        _value: 'targetEnum'
+      }],
+      adjustment: false,
+      duplicate: true,
+      to: {
+        _ref: 'layer',
+        _index: targetIndex
+      },
+      version: 5,
+      _options: {
+        dialogOptions: 'dontDisplay'
+      }
+    }], {
+      synchronousExecution: true
+    });
+
+    // Get the duplicated layers (should be selected now)
+    const duplicatedLayers = [...doc.activeLayers];
+    const duplicatedIds = duplicatedLayers.map(l => l.id);
+    console.log(`[duplicateArtboardContents] ✓ Duplicated ${duplicatedIds.length} layers:`, duplicatedLayers.map(l => l.name));
+    return duplicatedIds;
+  } catch (e) {
+    console.error(`[duplicateArtboardContents] Error during duplication:`, e);
+    return [];
   }
-  console.log(`[duplicateArtboardContents] Completed. Duplicated and moved ${duplicatedIds.length}/${topLevelItems.length} items`);
-  return duplicatedIds;
 };
 
 /**
- * Move all duplicated layers to fit within the new artboard bounds
- * Scales and repositions content to center on target artboard
+ * Scale and center duplicated content on the target artboard
  * @param {Array} layerIds - IDs of layers to transform
  * @param {Object} sourceBounds - Source artboard bounds { x, y, width, height }
  * @param {Object} targetBounds - Target artboard bounds { x, y, width, height }
@@ -16140,18 +16172,10 @@ const transformDuplicatedContent = async (layerIds, sourceBounds, targetBounds) 
   const scalePercent = scale * 100;
   console.log(`[transformDuplicatedContent] Scale factor: ${scale} (${scalePercent}%)`);
 
-  // Artboard centers
-  const sourceArtboardCenterX = sourceBounds.x + sourceBounds.width / 2;
-  const sourceArtboardCenterY = sourceBounds.y + sourceBounds.height / 2;
-  const targetArtboardCenterX = targetBounds.x + targetBounds.width / 2;
-  const targetArtboardCenterY = targetBounds.y + targetBounds.height / 2;
-  console.log(`[transformDuplicatedContent] Source artboard center: ${sourceArtboardCenterX}, ${sourceArtboardCenterY}`);
-  console.log(`[transformDuplicatedContent] Target artboard center: ${targetArtboardCenterX}, ${targetArtboardCenterY}`);
-
-  // The simple offset from source artboard center to target artboard center
-  const artboardOffsetX = targetArtboardCenterX - sourceArtboardCenterX;
-  const artboardOffsetY = targetArtboardCenterY - sourceArtboardCenterY;
-  console.log(`[transformDuplicatedContent] Artboard center offset: ${artboardOffsetX}, ${artboardOffsetY}`);
+  // Target artboard center
+  const targetCenterX = targetBounds.x + targetBounds.width / 2;
+  const targetCenterY = targetBounds.y + targetBounds.height / 2;
+  console.log(`[transformDuplicatedContent] Target artboard center: ${targetCenterX}, ${targetCenterY}`);
 
   // Select all duplicated layers
   const selectTargets = layerIds.map(id => ({
@@ -16177,53 +16201,31 @@ const transformDuplicatedContent = async (layerIds, sourceBounds, targetBounds) 
       return;
     }
 
-    // Step 1: Move content by the artboard offset first (from source position to target position)
-    console.log(`[transformDuplicatedContent] Step 1: Moving content to target artboard position...`);
-    await batchPlay([{
-      _obj: 'move',
-      _target: [{
-        _ref: 'layer',
-        _enum: 'ordinal',
-        _value: 'targetEnum'
-      }],
-      to: {
-        _obj: 'offset',
-        horizontal: {
-          _unit: 'pixelsUnit',
-          _value: artboardOffsetX
-        },
-        vertical: {
-          _unit: 'pixelsUnit',
-          _value: artboardOffsetY
-        }
-      },
-      _options: {
-        dialogOptions: 'dontDisplay'
+    // Get current content bounds
+    let minLeft = Infinity,
+      minTop = Infinity;
+    let maxRight = -Infinity,
+      maxBottom = -Infinity;
+    for (const layer of selectedLayers) {
+      if (layer.bounds) {
+        minLeft = Math.min(minLeft, layer.bounds.left);
+        minTop = Math.min(minTop, layer.bounds.top);
+        maxRight = Math.max(maxRight, layer.bounds.right);
+        maxBottom = Math.max(maxBottom, layer.bounds.bottom);
       }
-    }], {
-      synchronousExecution: true
-    });
+    }
+    const contentCenterX = minLeft + (maxRight - minLeft) / 2;
+    const contentCenterY = minTop + (maxBottom - minTop) / 2;
+    console.log(`[transformDuplicatedContent] Current content bounds: ${minLeft},${minTop} to ${maxRight},${maxBottom}`);
+    console.log(`[transformDuplicatedContent] Current content center: ${contentCenterX}, ${contentCenterY}`);
 
-    // Step 2: Scale around the target artboard center
-    console.log(`[transformDuplicatedContent] Step 2: Scaling content (${scalePercent}%) around target center...`);
-
-    // To scale around a specific point, we need to use transform with anchor
+    // Step 1: Scale the content around its current center
+    console.log(`[transformDuplicatedContent] Step 1: Scaling content by ${scalePercent}%...`);
     await batchPlay([{
       _obj: 'transform',
       freeTransformCenterState: {
         _enum: 'quadCenterState',
         _value: 'QCSAverage'
-      },
-      offset: {
-        _obj: 'offset',
-        horizontal: {
-          _unit: 'pixelsUnit',
-          _value: 0
-        },
-        vertical: {
-          _unit: 'pixelsUnit',
-          _value: 0
-        }
       },
       width: {
         _unit: 'percentUnit',
@@ -16245,28 +16247,27 @@ const transformDuplicatedContent = async (layerIds, sourceBounds, targetBounds) 
       synchronousExecution: true
     });
 
-    // Step 3: Re-center the scaled content on the target artboard
-    // Get the new bounds after scaling
-    let minLeft = Infinity,
-      minTop = Infinity;
-    let maxRight = -Infinity,
-      maxBottom = -Infinity;
+    // Step 2: Get new bounds after scaling and center on target artboard
+    let newMinLeft = Infinity,
+      newMinTop = Infinity;
+    let newMaxRight = -Infinity,
+      newMaxBottom = -Infinity;
     for (const layer of doc.activeLayers) {
       if (layer.bounds) {
-        minLeft = Math.min(minLeft, layer.bounds.left);
-        minTop = Math.min(minTop, layer.bounds.top);
-        maxRight = Math.max(maxRight, layer.bounds.right);
-        maxBottom = Math.max(maxBottom, layer.bounds.bottom);
+        newMinLeft = Math.min(newMinLeft, layer.bounds.left);
+        newMinTop = Math.min(newMinTop, layer.bounds.top);
+        newMaxRight = Math.max(newMaxRight, layer.bounds.right);
+        newMaxBottom = Math.max(newMaxBottom, layer.bounds.bottom);
       }
     }
-    const newCenterX = minLeft + (maxRight - minLeft) / 2;
-    const newCenterY = minTop + (maxBottom - minTop) / 2;
+    const newCenterX = newMinLeft + (newMaxRight - newMinLeft) / 2;
+    const newCenterY = newMinTop + (newMaxBottom - newMinTop) / 2;
     console.log(`[transformDuplicatedContent] After scale - content center: ${newCenterX}, ${newCenterY}`);
 
-    // Calculate final adjustment to center on target artboard
-    const finalAdjustX = targetArtboardCenterX - newCenterX;
-    const finalAdjustY = targetArtboardCenterY - newCenterY;
-    console.log(`[transformDuplicatedContent] Step 3: Final centering adjustment: ${finalAdjustX}, ${finalAdjustY}`);
+    // Calculate offset to center on target artboard
+    const moveX = targetCenterX - newCenterX;
+    const moveY = targetCenterY - newCenterY;
+    console.log(`[transformDuplicatedContent] Step 2: Moving to center - offset: ${moveX}, ${moveY}`);
     await batchPlay([{
       _obj: 'move',
       _target: [{
@@ -16278,11 +16279,11 @@ const transformDuplicatedContent = async (layerIds, sourceBounds, targetBounds) 
         _obj: 'offset',
         horizontal: {
           _unit: 'pixelsUnit',
-          _value: finalAdjustX
+          _value: moveX
         },
         vertical: {
           _unit: 'pixelsUnit',
-          _value: finalAdjustY
+          _value: moveY
         }
       },
       _options: {
