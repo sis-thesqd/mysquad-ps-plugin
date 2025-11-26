@@ -93886,6 +93886,8 @@ const TABS = [{
   id: 'generator',
   label: 'Generator'
 }];
+const MIN_LOADING_DISPLAY_TIME = 2000; // 2 seconds minimum
+
 const App = () => {
   const [activeTab, setActiveTab] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('task');
   const {
@@ -93893,6 +93895,47 @@ const App = () => {
     loading,
     refetch
   } = (0,_components__WEBPACK_IMPORTED_MODULE_1__.useFolderDetails)();
+  const [progress, setProgress] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [showLoading, setShowLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const loadingStartTime = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    let progressInterval;
+    let minTimeTimeout;
+    if (loading) {
+      // Start loading display
+      setShowLoading(true);
+      setProgress(0);
+      loadingStartTime.current = Date.now();
+
+      // Animate progress from 0 to 90 over ~2 seconds
+      progressInterval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 90) return 90; // Cap at 90% until actually done
+          // Ease out - slower as we approach 90
+          const increment = Math.max(1, (90 - prev) / 10);
+          return Math.min(90, prev + increment);
+        });
+      }, 100);
+    } else if (loadingStartTime.current) {
+      // Loading finished - ensure minimum display time
+      const elapsed = Date.now() - loadingStartTime.current;
+      const remainingTime = Math.max(0, MIN_LOADING_DISPLAY_TIME - elapsed);
+
+      // Jump to 100%
+      setProgress(100);
+
+      // Hide after minimum time
+      minTimeTimeout = setTimeout(() => {
+        setShowLoading(false);
+        setProgress(0);
+        loadingStartTime.current = null;
+      }, remainingTime + 300); // +300ms to show 100% briefly
+    }
+    return () => {
+      if (progressInterval) clearInterval(progressInterval);
+      if (minTimeTimeout) clearTimeout(minTimeTimeout);
+    };
+  }, [loading]);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-theme", {
     theme: "spectrum",
     scale: "medium",
@@ -93907,11 +93950,11 @@ const App = () => {
     onTabChange: setActiveTab
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "content"
-  }, activeTab === 'task' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, activeTab === 'task' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, showLoading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "loading-container"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-progressbar", {
     max: "100",
-    value: "0"
+    value: progress
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-label", {
     slot: "label"
   }, "Loading task details..."))) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.FolderDetailsCard, {
@@ -97666,7 +97709,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const MIN_LOADING_TIME = 3000; // 3 seconds minimum loading time
 
 /**
  * Custom hook to manage folder/task details from Photoshop document path
@@ -97684,16 +97726,10 @@ const useFolderDetails = () => {
     try {
       setLoading(true);
       setError(null);
-      const startTime = Date.now();
 
       // Get current document path from Photoshop
       const currentPath = await (0,_api_folderApi__WEBPACK_IMPORTED_MODULE_1__.getCurrentDocumentPath)();
       if (!currentPath) {
-        // Wait for minimum loading time
-        const elapsed = Date.now() - startTime;
-        if (elapsed < MIN_LOADING_TIME) {
-          await new Promise(resolve => setTimeout(resolve, MIN_LOADING_TIME - elapsed));
-        }
         setTaskDetails(null);
         return;
       }
@@ -97701,22 +97737,12 @@ const useFolderDetails = () => {
       // Extract task ID from the path
       const taskId = (0,_api_folderApi__WEBPACK_IMPORTED_MODULE_1__.extractTaskIdFromPath)(currentPath);
       if (!taskId) {
-        const elapsed = Date.now() - startTime;
-        if (elapsed < MIN_LOADING_TIME) {
-          await new Promise(resolve => setTimeout(resolve, MIN_LOADING_TIME - elapsed));
-        }
         setTaskDetails(null);
         return;
       }
 
       // Get task details from webhook API
       const details = await (0,_api_folderApi__WEBPACK_IMPORTED_MODULE_1__.getTaskDetails)(taskId);
-
-      // Ensure minimum loading time for smooth UX
-      const elapsed = Date.now() - startTime;
-      if (elapsed < MIN_LOADING_TIME) {
-        await new Promise(resolve => setTimeout(resolve, MIN_LOADING_TIME - elapsed));
-      }
       setTaskDetails(details);
     } catch (err) {
       setError(err.message || 'Failed to fetch task details');
