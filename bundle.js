@@ -520,7 +520,14 @@ if (true) {
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `/* Spectrum-style CSS for UXP */
+___CSS_LOADER_EXPORT___.push([module.id, `/**
+ * MySquad Photoshop Plugin Styles
+ * Built on Adobe Spectrum design system
+ */
+
+/* ==========================================================================
+   Reset & Base
+   ========================================================================== */
 
 * {
   margin: 0;
@@ -531,9 +538,13 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Spectrum-style CSS for UXP */
 body {
   font-family: adobe-clean, 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
-  background: var(--uxp-host-background-color, #f5f5f5);
-  color: var(--uxp-host-text-color, #323232);
+  background: var(--uxp-host-background-color, #1e1e1e);
+  color: var(--uxp-host-text-color, #e1e1e1);
 }
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
 
 .app {
   padding: 16px;
@@ -542,7 +553,15 @@ body {
   overflow-y: auto;
 }
 
-/* Header */
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
 .header {
   display: flex;
   justify-content: center;
@@ -550,167 +569,16 @@ body {
   margin-bottom: 16px;
 }
 
-/* Spectrum Card */
-.spectrum-card {
-  background: var(--uxp-host-widget-background-color, #ffffff);
-  border: 1px solid var(--uxp-host-border-color, #e1e1e1);
-  border-radius: 4px;
-  overflow: visible;
-  position: relative;
-}
+/* ==========================================================================
+   Cards
+   ========================================================================== */
 
-.spectrum-card-header {
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.spectrum-card-title-area {
-  flex: 1;
-  min-width: 0;
-}
-
-.spectrum-card-title-area sp-heading {
-  margin-bottom: 4px;
-}
-
-.spectrum-card-actions {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.spectrum-card-body {
-  padding: 0 16px 16px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Menu */
-.menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-}
-
-.menu-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 4px;
-  background: var(--uxp-host-widget-background-color, #ffffff);
-  border: 1px solid var(--uxp-host-border-color, #e1e1e1);
-  border-radius: 4px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  min-width: 150px;
-  z-index: 20;
-  padding: 4px;
-  display: flex;
-  flex-direction: column;
-}
-
-.menu-dropdown sp-action-button {
-  width: 100%;
-  justify-content: flex-start;
-}
-
-/* Badge */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  border-radius: 4px;
-  background: var(--uxp-host-text-color, #323232);
-  color: var(--uxp-host-widget-background-color, #ffffff);
-}
-
-.badge-secondary {
-  background: var(--uxp-host-border-color, #e1e1e1);
-  color: var(--uxp-host-text-color, #323232);
-}
-
-/* Task Meta */
-.task-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.task-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-}
-
-/* Button Group */
-.button-group {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  border-top: none;
-}
-
-.button-group sp-action-button {
-  width: 100%;
-}
-
-/* Remove card footer border */
-sp-card [slot="footer"] {
-  border-top: none;
-}
-
-/* Action group in footer */
-.action-group-footer {
-  width: 100%;
-  padding: 0 16px 16px 16px;
-  margin-top: -8px;
-}
-
-.action-group-footer sp-action-button {
-  margin-right: 12px;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-.action-group-footer sp-action-button:last-child {
-  margin-right: 0;
-}
-
-
-/* Content Container */
-.content {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Make sp-card full width */
 sp-card {
   width: 100%;
 }
 
-/* Card Description */
-.card-description {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.card-description::before {
-  display: none;
+sp-card [slot="footer"] {
+  border-top: none;
 }
 
 .card-heading {
@@ -727,7 +595,21 @@ sp-card {
   font-size: 13px;
   font-weight: 500;
   color: var(--spectrum-global-color-gray-400, #b3b3b3);
-  margin-top: 0;
+  margin-top: -4px;
+  margin-bottom: 8px;
+}
+
+.card-description {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card-description::before {
+  display: none;
 }
 
 .card-meta {
@@ -750,7 +632,7 @@ sp-card {
   color: var(--spectrum-global-color-gray-500, #999);
 }
 
-/* Remove any list styling from card slots */
+/* Remove default list styling from card slots */
 sp-card [slot="description"] {
   list-style: none;
 }
@@ -761,7 +643,30 @@ sp-card [slot="description"]::before {
   content: none;
 }
 
-/* Action menu styling */
+/* ==========================================================================
+   Action Group Footer
+   ========================================================================== */
+
+.action-group-footer {
+  width: 100%;
+  padding: 0 16px 16px 16px;
+  margin-top: -8px;
+}
+
+.action-group-footer sp-action-button {
+  margin-right: 12px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.action-group-footer sp-action-button:last-child {
+  margin-right: 0;
+}
+
+/* ==========================================================================
+   Action Menu
+   ========================================================================== */
+
 sp-action-menu sp-popover,
 sp-action-menu sp-menu {
   transform: translateX(-20px);
@@ -13839,9 +13744,13 @@ var Badge_d=Object.defineProperty;var Badge_p=Object.getOwnPropertyDescriptor;va
 
 ;// ./src/components/Header.jsx
 
+
+/**
+ * Application header with logo
+ */
 const Header = () => {
   return /*#__PURE__*/react.createElement("div", {
-    class: "header"
+    className: "header"
   }, /*#__PURE__*/react.createElement("img", {
     src: "icons/logo.svg",
     alt: "MySquad",
@@ -13851,8 +13760,13 @@ const Header = () => {
   }));
 };
 /* harmony default export */ const components_Header = (Header);
-;// ./src/features/folder-details/components/FolderDetailsCard.jsx
+;// ./src/components/folder-details/components/FolderDetailsCard.jsx
 
+
+/**
+ * Opens a URL in the system's default browser via UXP shell API
+ * @param {string} url - The URL to open
+ */
 const openExternalUrl = async url => {
   try {
     const uxp = __webpack_require__(550);
@@ -13874,6 +13788,14 @@ const openExternalUrl = async url => {
     console.error('Failed to open URL:', e);
   }
 };
+
+/**
+ * Displays task details in a card format with action menu
+ * @param {Object} props - Component props
+ * @param {Object} props.taskDetails - Task details from Supabase
+ * @param {boolean} props.loading - Loading state
+ * @param {Function} props.onRefresh - Callback to refresh task data
+ */
 const FolderDetailsCard = ({
   taskDetails,
   loading,
@@ -13948,8 +13870,12 @@ const FolderDetailsCard = ({
   }, "Refresh Data")));
 };
 /* harmony default export */ const components_FolderDetailsCard = (FolderDetailsCard);
-;// ./src/features/actions/components/ActionsCard.jsx
+;// ./src/components/actions/components/ActionsCard.jsx
 
+
+/**
+ * Actions card with quick action buttons
+ */
 const ActionsCard = () => {
   return /*#__PURE__*/react.createElement("sp-card", {
     heading: "Actions"
@@ -13959,18 +13885,56 @@ const ActionsCard = () => {
   }, /*#__PURE__*/react.createElement("sp-action-button", null, "Button 1"), /*#__PURE__*/react.createElement("sp-action-button", null, "Longer Button 2"), /*#__PURE__*/react.createElement("sp-action-button", null, "Short 3")));
 };
 /* harmony default export */ const components_ActionsCard = (ActionsCard);
+;// ./src/config/index.js
+/**
+ * Application Configuration
+ * Centralizes all app configuration and environment variables
+ */
+
+const config = {
+  // App metadata
+  app: {
+    name: 'mySquad.ps',
+    version: '1.0.0'
+  },
+  // API configuration
+  api: {
+    supabase: {
+      url: "https://wttgwoxlezqoyzmesekt-all.supabase.co",
+      anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0dGd3b3hsZXpxb3l6bWVzZWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM3NjE4NjQsImV4cCI6MjAzOTMzNzg2NH0.2gZNG2xI81F1fSNlFJT8jy9i3DYxz716QcoPsuLyG7Q",
+      isConfigured: !!( true && "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0dGd3b3hsZXpxb3l6bWVzZWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM3NjE4NjQsImV4cCI6MjAzOTMzNzg2NH0.2gZNG2xI81F1fSNlFJT8jy9i3DYxz716QcoPsuLyG7Q")
+    }
+  },
+  // Feature flags
+  features: {
+    folderDetails: true,
+    actions: true
+  }
+};
+/* harmony default export */ const src_config = ((/* unused pure expression or super */ null && (config)));
 ;// ./src/lib/supabase-api.js
 /**
  * Supabase REST API client for UXP
  * Note: UXP's fetch doesn't support full browser APIs, so we use direct REST calls
  */
 
-const supabaseUrl = "https://wttgwoxlezqoyzmesekt-all.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0dGd3b3hsZXpxb3l6bWVzZWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM3NjE4NjQsImV4cCI6MjAzOTMzNzg2NH0.2gZNG2xI81F1fSNlFJT8jy9i3DYxz716QcoPsuLyG7Q";
-const isSupabaseConfigured = !!(supabaseUrl && supabaseKey);
+const {
+  url: supabaseUrl,
+  anonKey: supabaseKey,
+  isConfigured
+} = config.api.supabase;
+
+/**
+ * Check if Supabase is properly configured
+ */
+const isSupabaseConfigured = isConfigured;
 
 /**
  * Call a Supabase RPC function using REST API
+ * @param {string} functionName - The RPC function name to call
+ * @param {Object} params - Parameters to pass to the RPC function
+ * @returns {Promise<any>} The response data from the RPC call
+ * @throws {Error} If Supabase is not configured or the RPC call fails
  */
 const callRpc = async (functionName, params = {}) => {
   if (!isSupabaseConfigured) {
@@ -13992,7 +13956,12 @@ const callRpc = async (functionName, params = {}) => {
   }
   return response.json();
 };
-;// ./src/features/folder-details/api/folderApi.js
+;// ./src/lib/index.js
+/**
+ * Library exports
+ */
+
+;// ./src/components/folder-details/api/folderApi.js
 
 
 /**
@@ -14117,26 +14086,21 @@ const getCurrentDocumentPath = async () => {
     return null;
   }
 };
-;// ./src/config/global.js
-const globalConfig = {
-  features: {
-    folderDetails: true
-  }
-};
-;// ./src/features/folder-details/hooks/useFolderDetails.js
+;// ./src/components/folder-details/hooks/useFolderDetails.js
 
 
 
 
 /**
- * Custom hook to manage task details
+ * Custom hook to manage folder/task details from Photoshop document path
+ * Extracts task ID from file path and fetches details from Supabase
  */
 const useFolderDetails = () => {
   const [taskDetails, setTaskDetails] = (0,react.useState)(null);
   const [loading, setLoading] = (0,react.useState)(true);
   const [error, setError] = (0,react.useState)(null);
-  const fetchTaskDetails = async () => {
-    if (!globalConfig.features.folderDetails) {
+  const fetchTaskDetails = (0,react.useCallback)(async () => {
+    if (!config.features.folderDetails) {
       setLoading(false);
       return;
     }
@@ -14166,13 +14130,13 @@ const useFolderDetails = () => {
     } finally {
       setLoading(false);
     }
-  };
-  const refetch = () => {
+  }, []);
+  const refetch = (0,react.useCallback)(() => {
     fetchTaskDetails();
-  };
+  }, [fetchTaskDetails]);
   (0,react.useEffect)(() => {
     fetchTaskDetails();
-  }, []);
+  }, [fetchTaskDetails]);
   return {
     taskDetails,
     loading,
@@ -14180,10 +14144,24 @@ const useFolderDetails = () => {
     refetch
   };
 };
+;// ./src/components/index.js
+/**
+ * Component exports
+ */
+
+// Shared components
+
+
+// Feature components
+
+
+
+// Hooks
+
+
+// API utilities
+
 ;// ./src/App.js
-
-
-
 
 
 const App = () => {

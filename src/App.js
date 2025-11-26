@@ -1,8 +1,5 @@
 import React from 'react';
-import Header from './components/Header';
-import FolderDetailsCard from './features/folder-details/components/FolderDetailsCard';
-import ActionsCard from './features/actions/components/ActionsCard';
-import { useFolderDetails } from './features/folder-details/hooks/useFolderDetails';
+import { Header, FolderDetailsCard, ActionsCard, useFolderDetails } from './components';
 
 const App = () => {
   const { taskDetails, loading, refetch } = useFolderDetails();

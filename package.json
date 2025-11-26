@@ -1,12 +1,29 @@
 {
   "name": "mysquad-ps-spectrum",
   "version": "1.0.0",
-  "description": "A UXP plugin built with React and Adobe Spectrum",
-  "main": "index.js",
+  "description": "MySquad Photoshop UXP plugin built with React and Adobe Spectrum Web Components",
+  "private": true,
+  "main": "index.html",
   "scripts": {
     "build": "webpack --mode=production",
+    "build:dev": "webpack --mode=development",
     "dev": "webpack --mode=development --watch",
-    "clean": "rimraf dist"
+    "clean": "rimraf bundle.js index.html"
+  },
+  "dependencies": {
+    "@spectrum-web-components/action-menu": "^0.37.0",
+    "@spectrum-web-components/badge": "^0.37.0",
+    "@spectrum-web-components/theme": "^0.37.0",
+    "@swc-uxp-wrappers/action-button": "^2.0.0",
+    "@swc-uxp-wrappers/action-group": "^2.0.0",
+    "@swc-uxp-wrappers/button": "^2.0.0",
+    "@swc-uxp-wrappers/card": "^2.0.0",
+    "@swc-uxp-wrappers/menu": "^2.0.0",
+    "@swc-uxp-wrappers/overlay": "^2.0.0",
+    "@swc-uxp-wrappers/popover": "^2.0.0",
+    "@swc-uxp-wrappers/utils": "^2.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.0",
@@ -15,35 +32,12 @@
     "css-loader": "^6.8.0",
     "dotenv-webpack": "^8.1.1",
     "html-webpack-plugin": "^5.5.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "rimraf": "^5.0.0",
     "style-loader": "^3.3.0",
     "webpack": "^5.88.0",
     "webpack-cli": "^5.1.0"
   },
-  "uxp": {
-    "host": {
-      "app": "PS",
-      "minVersion": "24.0.0"
-    },
-    "type": "panel",
-    "requiredPermissions": {
-      "allowCodeGenerationFromStrings": true
-    }
-  },
-  "dependencies": {
-    "@spectrum-web-components/action-menu": "^0.37.0",
-    "@spectrum-web-components/badge": "^0.37.0",
-    "@spectrum-web-components/theme": "^0.37.0",
-    "@supabase/supabase-js": "^2.50.3",
-    "@swc-uxp-wrappers/action-button": "^2.0.0",
-    "@swc-uxp-wrappers/action-group": "^2.0.0",
-    "@swc-uxp-wrappers/button": "^2.0.0",
-    "@swc-uxp-wrappers/card": "^2.0.0",
-    "@swc-uxp-wrappers/menu": "^2.0.0",
-    "@swc-uxp-wrappers/overlay": "^2.0.0",
-    "@swc-uxp-wrappers/popover": "^2.0.0",
-    "@swc-uxp-wrappers/utils": "^2.0.1"
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
