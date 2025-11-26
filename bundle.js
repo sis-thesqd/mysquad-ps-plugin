@@ -673,9 +673,8 @@ sp-card [slot="footer"] {
 /* Action group in footer */
 .action-group-footer {
   width: 100%;
-  padding-left: 16px;
-  padding-right: 16px;
-  padding-bottom: 8px;
+  padding: 0 16px 16px 16px;
+  margin-top: -8px;
 }
 
 .action-group-footer sp-action-button {
@@ -805,7 +804,6 @@ if (typeof window !== 'undefined' && !window.matchMedia) {
     };
   };
 }
-console.log('UXP polyfills loaded');
 
 /***/ }),
 
@@ -13963,48 +13961,37 @@ const ActionsCard = () => {
 /* harmony default export */ const components_ActionsCard = (ActionsCard);
 ;// ./src/lib/supabase-api.js
 /**
- * Generic Supabase REST API client
+ * Supabase REST API client for UXP
+ * Note: UXP's fetch doesn't support full browser APIs, so we use direct REST calls
  */
 
 const supabaseUrl = "https://wttgwoxlezqoyzmesekt-all.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0dGd3b3hsZXpxb3l6bWVzZWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM3NjE4NjQsImV4cCI6MjAzOTMzNzg2NH0.2gZNG2xI81F1fSNlFJT8jy9i3DYxz716QcoPsuLyG7Q";
+const isSupabaseConfigured = !!(supabaseUrl && supabaseKey);
 
 /**
- * Make a direct HTTP request to Supabase REST API
+ * Call a Supabase RPC function using REST API
  */
-const makeSupabaseRequest = async (endpoint, options = {}) => {
-  if (!supabaseUrl || !supabaseKey) {
+const callRpc = async (functionName, params = {}) => {
+  if (!isSupabaseConfigured) {
     throw new Error('Supabase credentials not configured');
   }
-  const url = `${supabaseUrl}/rest/v1/${endpoint}`;
-  const requestOptions = {
-    method: options.method || 'GET',
+  const url = `${supabaseUrl}/rest/v1/rpc/${functionName}`;
+  const response = await fetch(url, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'apikey': supabaseKey,
-      'Authorization': `Bearer ${supabaseKey}`,
-      ...options.headers
+      'Authorization': `Bearer ${supabaseKey}`
     },
-    ...options
-  };
-  const response = await fetch(url, requestOptions);
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`HTTP ${response.status}: ${errorText}`);
-  }
-  return await response.json();
-};
-
-/**
- * Call a Supabase RPC function
- */
-const callRpc = async (functionName, params = {}) => {
-  return await makeSupabaseRequest(`rpc/${functionName}`, {
-    method: 'POST',
     body: JSON.stringify(params)
   });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`RPC error: ${response.status} - ${errorText}`);
+  }
+  return response.json();
 };
-const isSupabaseConfigured = !!(supabaseUrl && supabaseKey);
 ;// ./src/features/folder-details/api/folderApi.js
 
 

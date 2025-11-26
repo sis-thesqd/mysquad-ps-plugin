@@ -15,5 +15,3 @@ if (typeof window !== 'undefined' && !window.matchMedia) {
     };
   };
 }
-
-console.log('UXP polyfills loaded');

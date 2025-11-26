@@ -1,49 +1,37 @@
 /**
- * Generic Supabase REST API client
+ * Supabase REST API client for UXP
+ * Note: UXP's fetch doesn't support full browser APIs, so we use direct REST calls
  */
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
+export const isSupabaseConfigured = !!(supabaseUrl && supabaseKey);
+
 /**
- * Make a direct HTTP request to Supabase REST API
+ * Call a Supabase RPC function using REST API
  */
-export const makeSupabaseRequest = async (endpoint, options = {}) => {
-  if (!supabaseUrl || !supabaseKey) {
+export const callRpc = async (functionName, params = {}) => {
+  if (!isSupabaseConfigured) {
     throw new Error('Supabase credentials not configured');
   }
 
-  const url = `${supabaseUrl}/rest/v1/${endpoint}`;
+  const url = `${supabaseUrl}/rest/v1/rpc/${functionName}`;
 
-  const requestOptions = {
-    method: options.method || 'GET',
+  const response = await fetch(url, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'apikey': supabaseKey,
-      'Authorization': `Bearer ${supabaseKey}`,
-      ...options.headers
+      'Authorization': `Bearer ${supabaseKey}`
     },
-    ...options
-  };
-
-  const response = await fetch(url, requestOptions);
+    body: JSON.stringify(params)
+  });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`HTTP ${response.status}: ${errorText}`);
+    throw new Error(`RPC error: ${response.status} - ${errorText}`);
   }
 
-  return await response.json();
+  return response.json();
 };
-
-/**
- * Call a Supabase RPC function
- */
-export const callRpc = async (functionName, params = {}) => {
-  return await makeSupabaseRequest(`rpc/${functionName}`, {
-    method: 'POST',
-    body: JSON.stringify(params)
-  });
-};
-
-export const isSupabaseConfigured = !!(supabaseUrl && supabaseKey);
