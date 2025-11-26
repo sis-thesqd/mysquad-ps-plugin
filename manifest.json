@@ -1,0 +1,77 @@
+{
+  "id": "com.thesqd.mysquadps.spectrum",
+  "name": "mySquad.ps (Spectrum)",
+  "version": "1.0.0",
+  "main": "index.html",
+  "host": {
+    "app": "PS",
+    "minVersion": "24.4.0"
+  },
+  "manifestVersion": 5,
+  "featureFlags": {
+    "enableSWCSupport": true
+  },
+  "entrypoints": [
+    {
+      "type": "panel",
+      "id": "vanilla",
+      "label": {
+        "default": "mySquad.ps (Spectrum)"
+      },
+      "minimumSize": {
+        "width": 600,
+        "height": 800
+      },
+      "maximumSize": {
+        "width": 600,
+        "height": 800
+      },
+      "preferredDockedSize": {
+        "width": 600,
+        "height": 800
+      },
+      "preferredFloatingSize": {
+        "width": 600,
+        "height": 800
+      }
+    }
+  ],
+  "requiredPermissions": {
+    "allowCodeGenerationFromStrings": true,
+    "webview": {
+      "allow": "yes",
+      "domains": [
+        "https://*.supabase.co",
+        "https://*.supabase.io",
+        "https://supabase.co",
+        "https://supabase.io"
+      ]
+    },
+    "network": {
+      "domains": [
+        "https://*.supabase.co",
+        "https://*.supabase.io",
+        "https://supabase.co",
+        "https://supabase.io"
+      ]
+    }
+  },
+  "icons": [
+    {
+      "width": 23,
+      "height": 23,
+      "path": "icons/logo.svg",
+      "scale": [
+        1,
+        2
+      ],
+      "theme": [
+        "dark",
+        "lightest"
+      ],
+      "species": [
+        "generic"
+      ]
+    }
+  ]
+}
