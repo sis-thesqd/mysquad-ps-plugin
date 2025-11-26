@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 /**
  * Formats minutes into hours and minutes display
@@ -33,12 +33,26 @@ const formatDate = (dateStr) => {
  * @param {boolean} props.loading - Loading state
  */
 const TaskDetailsCard = ({ taskDetails, loading }) => {
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const toggleButtonRef = useRef(null);
+
   const responsibleDept = taskDetails?.responsible_dept
     ? taskDetails.responsible_dept
         .split(' ')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ')
     : null;
+
+  useEffect(() => {
+    const button = toggleButtonRef.current;
+    if (button) {
+      const handleClick = () => {
+        setDescriptionExpanded(prev => !prev);
+      };
+      button.addEventListener('click', handleClick);
+      return () => button.removeEventListener('click', handleClick);
+    }
+  }, []);
 
   if (loading) {
     return (
@@ -54,21 +68,41 @@ const TaskDetailsCard = ({ taskDetails, loading }) => {
     return null;
   }
 
+  const hasDescription = taskDetails?.markdown_description?.trim();
+
   return (
     <sp-card heading="Task Details">
-      <div slot="description" class="card-meta">
-        {taskDetails?.estimate_mins_after > 0 && (
-          <span class="description-text">
-            Estimate: {formatEstimate(taskDetails.estimate_mins_after)}
-          </span>
-        )}
-        {taskDetails?.due_date_after && (
-          <span class="description-text">
-            Draft: {formatDate(taskDetails.due_date_after)}
-          </span>
-        )}
-        {responsibleDept && (
-          <sp-badge size="s" variant="informative">{responsibleDept}</sp-badge>
+      <div slot="description" class="card-description">
+        <div class="card-meta">
+          {taskDetails?.estimate_mins_after > 0 && (
+            <span class="description-text">
+              Estimate: {formatEstimate(taskDetails.estimate_mins_after)}
+            </span>
+          )}
+          {taskDetails?.due_date_after && (
+            <span class="description-text">
+              Draft: {formatDate(taskDetails.due_date_after)}
+            </span>
+          )}
+          {responsibleDept && (
+            <sp-badge size="s" variant="informative">{responsibleDept}</sp-badge>
+          )}
+        </div>
+        {hasDescription && (
+          <div class="description-section">
+            <sp-action-button
+              ref={toggleButtonRef}
+              size="s"
+              quiet
+            >
+              {descriptionExpanded ? '▼ Hide Description' : '▶ Show Description'}
+            </sp-action-button>
+            {descriptionExpanded && (
+              <div class="description-content">
+                <pre class="markdown-text">{taskDetails.markdown_description}</pre>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </sp-card>

@@ -166,6 +166,31 @@ sp-card [slot="footer"] {
   color: var(--spectrum-global-color-gray-500, #999);
 }
 
+.description-section {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.description-content {
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.markdown-text {
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+}
+
 /* Remove default list styling from card slots */
 sp-card [slot="description"] {
   list-style: none;

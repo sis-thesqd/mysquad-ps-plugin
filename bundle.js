@@ -24321,6 +24321,31 @@ sp-card [slot="footer"] {
   color: var(--spectrum-global-color-gray-500, #999);
 }
 
+.description-section {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.description-content {
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border-radius: 4px;
+  padding: 12px;
+}
+
+.markdown-text {
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+}
+
 /* Remove default list styling from card slots */
 sp-card [slot="description"] {
   list-style: none;
@@ -67276,9 +67301,8 @@ const App = () => {
     className: "content"
   }, activeTab === 'task' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "loading-container"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "loading-label"
-  }, "Loading task details..."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-progress-bar", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-progress-bar", {
+    label: "Loading task details...",
     indeterminate: true
   })) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.FolderDetailsCard, {
     taskDetails: taskDetails,
@@ -70851,7 +70875,8 @@ const getTaskDetails = async taskId => {
     assignees: cu_data.assignees,
     tags: cu_data.tags,
     url: cu_data.url,
-    project_files: cu_data.custom_fields?.find(f => f.name === ' 📁 Project Files')?.value
+    project_files: cu_data.custom_fields?.find(f => f.name === ' 📁 Project Files')?.value,
+    markdown_description: cu_data.markdown_description
   };
 };
 
@@ -71212,7 +71237,19 @@ const TaskDetailsCard = ({
   taskDetails,
   loading
 }) => {
+  const [descriptionExpanded, setDescriptionExpanded] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const toggleButtonRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   const responsibleDept = taskDetails?.responsible_dept ? taskDetails.responsible_dept.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : null;
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const button = toggleButtonRef.current;
+    if (button) {
+      const handleClick = () => {
+        setDescriptionExpanded(prev => !prev);
+      };
+      button.addEventListener('click', handleClick);
+      return () => button.removeEventListener('click', handleClick);
+    }
+  }, []);
   if (loading) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-card", {
       heading: "Task Details"
@@ -71226,10 +71263,13 @@ const TaskDetailsCard = ({
   if (!taskDetails) {
     return null;
   }
+  const hasDescription = taskDetails?.markdown_description?.trim();
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-card", {
     heading: "Task Details"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     slot: "description",
+    class: "card-description"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     class: "card-meta"
   }, taskDetails?.estimate_mins_after > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     class: "description-text"
@@ -71238,7 +71278,17 @@ const TaskDetailsCard = ({
   }, "Draft: ", formatDate(taskDetails.due_date_after)), responsibleDept && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
     size: "s",
     variant: "informative"
-  }, responsibleDept)));
+  }, responsibleDept)), hasDescription && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "description-section"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-button", {
+    ref: toggleButtonRef,
+    size: "s",
+    quiet: true
+  }, descriptionExpanded ? '▼ Hide Description' : '▶ Show Description'), descriptionExpanded && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "description-content"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("pre", {
+    class: "markdown-text"
+  }, taskDetails.markdown_description)))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TaskDetailsCard);
 

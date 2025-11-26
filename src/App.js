@@ -30,8 +30,10 @@ const App = () => {
             <>
               {loading ? (
                 <div className="loading-container">
-                  <div className="loading-label">Loading task details...</div>
-                  <sp-progress-bar indeterminate></sp-progress-bar>
+                  <sp-progress-bar
+                    label="Loading task details..."
+                    indeterminate
+                  ></sp-progress-bar>
                 </div>
               ) : (
                 <>

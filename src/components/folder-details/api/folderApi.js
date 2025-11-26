@@ -122,6 +122,7 @@ export const getTaskDetails = async (taskId) => {
     tags: cu_data.tags,
     url: cu_data.url,
     project_files: cu_data.custom_fields?.find(f => f.name === ' 📁 Project Files')?.value,
+    markdown_description: cu_data.markdown_description,
   };
 };
 
