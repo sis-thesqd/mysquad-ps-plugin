@@ -1,6 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
 import { fetchSizes, DEFAULT_SIZES } from '../api/sizesApi';
 import { generateArtboards, DEFAULT_PRINT_SETTINGS, DEFAULT_LAYOUT_OPTIONS } from '../services/artboardGenerator';
+import { 
+  createArtboardByDuplication, 
+  generateArtboardsBatch,
+  LAYER_NAMES 
+} from '../services/batchArtboardService';
 
 /**
  * Default source configuration template
@@ -50,7 +55,19 @@ const DEFAULT_SOURCE_CONFIG = {
 const DEFAULT_OPTIONS = {
   apiEndpoint: '',
   ...DEFAULT_LAYOUT_OPTIONS,
+  useBatchMethod: true, // Use the new batch duplication method by default
 };
+
+/**
+ * Get layer names from options or use defaults
+ * @param {Object} options - Generation options
+ * @returns {Array<string>} Layer names to transform
+ */
+const getLayerNamesFromOptions = (options) => [
+  options.overlayLayerName || LAYER_NAMES.OVERLAY,
+  options.textLayerName || LAYER_NAMES.TEXT,
+  options.backgroundLayerName || LAYER_NAMES.BACKGROUND,
+];
 
 /**
  * Hook for managing artboard generator state and operations
@@ -171,17 +188,35 @@ export const useArtboardGenerator = () => {
     setProgress({ current: 0, total: generatableSizes.length, name: '' });
 
     try {
-      const results = await generateArtboards(
-        generatableSizes,
-        sourceConfig,
-        {
-          ...options,
-          printSettings,
-        },
-        (current, total, name) => {
-          setProgress({ current, total, name });
-        }
-      );
+      let results;
+      
+      if (options.useBatchMethod) {
+        // Use the new batch duplication method
+        results = await generateArtboardsBatch(
+          generatableSizes,
+          sourceConfig,
+          {
+            ...options,
+            printSettings,
+          },
+          (current, total, name) => {
+            setProgress({ current, total, name });
+          }
+        );
+      } else {
+        // Use the original method
+        results = await generateArtboards(
+          generatableSizes,
+          sourceConfig,
+          {
+            ...options,
+            printSettings,
+          },
+          (current, total, name) => {
+            setProgress({ current, total, name });
+          }
+        );
+      }
 
       setGeneratedArtboards(results);
     } catch (error) {
@@ -205,17 +240,43 @@ export const useArtboardGenerator = () => {
     setProgress({ current: 0, total: 1, name: size.name });
 
     try {
-      const results = await generateArtboards(
-        [size],
-        sourceConfig,
-        {
-          ...options,
-          printSettings,
-        },
-        (current, total, name) => {
-          setProgress({ current, total, name });
+      let results;
+      
+      if (options.useBatchMethod) {
+        // Use the new batch duplication method for single artboard
+        const aspectRatio = size.width / size.height;
+        let sourceType;
+        if (aspectRatio < 0.85) {
+          sourceType = 'portrait';
+        } else if (aspectRatio > 1.15) {
+          sourceType = 'landscape';
+        } else {
+          sourceType = 'square';
         }
-      );
+        
+        const source = sourceConfig[sourceType];
+        
+        const result = await createArtboardByDuplication({
+          sourceArtboardName: source.artboard,
+          targetSize: size,
+          layerNames: getLayerNamesFromOptions(options),
+        });
+        
+        results = [result];
+      } else {
+        // Use the original method
+        results = await generateArtboards(
+          [size],
+          sourceConfig,
+          {
+            ...options,
+            printSettings,
+          },
+          (current, total, name) => {
+            setProgress({ current, total, name });
+          }
+        );
+      }
 
       setGeneratedArtboards((prev) => [...prev, ...results]);
     } catch (error) {
