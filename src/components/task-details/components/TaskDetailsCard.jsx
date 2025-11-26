@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 /**
  * Formats minutes into hours and minutes display
@@ -90,16 +91,20 @@ const TaskDetailsCard = ({ taskDetails, loading }) => {
         </div>
         {hasDescription && (
           <div class="description-section">
-            <sp-action-button
-              ref={toggleButtonRef}
-              size="s"
-              quiet
-            >
-              {descriptionExpanded ? '▼ Hide Description' : '▶ Show Description'}
-            </sp-action-button>
+            <div class={`description-toggle ${descriptionExpanded ? 'expanded' : ''}`}>
+              <sp-action-button
+                ref={toggleButtonRef}
+                size="s"
+                quiet
+              >
+                {descriptionExpanded ? '▼ Hide Description' : '▶ Show Description'}
+              </sp-action-button>
+            </div>
             {descriptionExpanded && (
               <div class="description-content">
-                <pre class="markdown-text">{taskDetails.markdown_description}</pre>
+                <div class="markdown-content">
+                  <ReactMarkdown>{taskDetails.markdown_description}</ReactMarkdown>
+                </div>
               </div>
             )}
           </div>

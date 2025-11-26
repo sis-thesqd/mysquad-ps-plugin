@@ -173,6 +173,16 @@ sp-card [slot="footer"] {
   gap: 8px;
 }
 
+.description-toggle {
+  display: flex;
+  width: 100%;
+}
+
+.description-toggle sp-action-button {
+  width: 100%;
+  justify-content: flex-start;
+}
+
 .description-content {
   max-height: 200px;
   overflow-y: auto;
@@ -181,14 +191,63 @@ sp-card [slot="footer"] {
   padding: 12px;
 }
 
-.markdown-text {
-  font-family: inherit;
+.markdown-content {
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--spectrum-global-color-gray-600, #b3b3b3);
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  margin: 0;
+}
+
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4 {
+  color: var(--spectrum-global-color-gray-700, #d1d1d1);
+  margin: 12px 0 8px 0;
+  font-weight: 600;
+}
+
+.markdown-content h2 { font-size: 16px; }
+.markdown-content h3 { font-size: 14px; }
+.markdown-content h4 { font-size: 13px; }
+
+.markdown-content p {
+  margin: 0 0 8px 0;
+}
+
+.markdown-content ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.markdown-content li {
+  margin-bottom: 4px;
+}
+
+.markdown-content strong {
+  color: var(--spectrum-global-color-gray-700, #d1d1d1);
+  font-weight: 600;
+}
+
+.markdown-content code {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.markdown-content a {
+  color: var(--spectrum-global-color-blue-500, #2680eb);
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid var(--spectrum-global-color-gray-300, #4a4a4a);
+  margin: 12px 0;
 }
 
 /* Remove default list styling from card slots */
