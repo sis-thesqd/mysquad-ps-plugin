@@ -1,5 +1,7 @@
 import { callRpc, isSupabaseConfigured } from '../../../lib';
 
+const WEBHOOK_BASE_URL = 'https://sisx.thesqd.com/webhook';
+
 /**
  * Gets the Photoshop app instance
  */
@@ -72,9 +74,62 @@ export const extractTaskIdFromPath = (currentPath) => {
 };
 
 /**
- * Gets task details from Supabase using get_task_details_v3 RPC
+ * Gets task details from webhook endpoint
+ * Uses cu_data for most fields, sb_data for responsible_dept
+ * @param {string} taskId - The ClickUp task ID
+ * @returns {Promise<Object|null>} Normalized task details
  */
 export const getTaskDetails = async (taskId) => {
+  if (!taskId) {
+    return null;
+  }
+
+  const url = `${WEBHOOK_BASE_URL}/ps-plugin-get-task-details-RtxGes0HnrYEDIk8?taskid=${encodeURIComponent(taskId)}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to fetch task details: ${response.status} - ${errorText}`);
+  }
+
+  const data = await response.json();
+
+  if (!data || !data.cu_data) {
+    return null;
+  }
+
+  const { cu_data, sb_data } = data;
+
+  // Normalize response to match expected format
+  // Use cu_data where possible, sb_data for responsible_dept
+  return {
+    task_id: cu_data.id,
+    name: cu_data.name,
+    account: sb_data?.account || cu_data.folder?.name?.split(' - ')[0],
+    church_name: sb_data?.church_name || cu_data.folder?.name?.split(' - ').slice(1).join(' - '),
+    status_after: cu_data.status?.status,
+    estimate_mins_after: cu_data.time_estimate,
+    due_date_after: cu_data.due_date,
+    responsible_dept: sb_data?.responsible_dept,
+    // Additional fields from cu_data
+    assignees: cu_data.assignees,
+    tags: cu_data.tags,
+    url: cu_data.url,
+    project_files: cu_data.custom_fields?.find(f => f.name === ' 📁 Project Files')?.value,
+  };
+};
+
+/**
+ * Gets task details from Supabase using get_task_details_v3 RPC (legacy)
+ * @deprecated Use getTaskDetails instead
+ */
+export const getTaskDetailsFromSupabase = async (taskId) => {
   if (!isSupabaseConfigured) {
     throw new Error('Supabase credentials not configured');
   }

@@ -9,13 +9,22 @@ const App = () => {
       <div className="app">
         <Header />
         <div className="content">
-          <FolderDetailsCard taskDetails={taskDetails} loading={loading} onRefresh={refetch} />
-          <div style={{ marginTop: '16px' }}>
-            <TaskDetailsCard taskDetails={taskDetails} loading={loading} />
-          </div>
-          <div style={{ marginTop: '16px' }}>
-            <ActionsCard />
-          </div>
+          {loading ? (
+            <div className="loading-container">
+              <div className="loading-label">Loading task details...</div>
+              <sp-progress-bar indeterminate></sp-progress-bar>
+            </div>
+          ) : (
+            <>
+              <FolderDetailsCard taskDetails={taskDetails} loading={loading} onRefresh={refetch} />
+              <div style={{ marginTop: '16px' }}>
+                <TaskDetailsCard taskDetails={taskDetails} loading={loading} />
+              </div>
+              <div style={{ marginTop: '16px' }}>
+                <ActionsCard />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </sp-theme>

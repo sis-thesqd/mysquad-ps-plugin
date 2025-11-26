@@ -20,6 +20,7 @@ import '@swc-uxp-wrappers/popover/sp-popover.js';
 import '@swc-uxp-wrappers/overlay/sp-overlay.js';
 import '@spectrum-web-components/action-menu/sp-action-menu.js';
 import '@spectrum-web-components/badge/sp-badge.js';
+import '@spectrum-web-components/progress-bar/sp-progress-bar.js';
 
 import App from './App';
 import './styles.css';

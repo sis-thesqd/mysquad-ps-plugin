@@ -37,6 +37,30 @@ body {
 }
 
 /* ==========================================================================
+   Loading State
+   ========================================================================== */
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  gap: 16px;
+}
+
+.loading-label {
+  font-size: 14px;
+  color: var(--spectrum-global-color-gray-400, #b3b3b3);
+}
+
+.loading-container sp-progress-bar {
+  width: 100%;
+  max-width: 300px;
+  --spectrum-progressbar-fill-color: var(--spectrum-global-color-blue-500, #2680eb);
+}
+
+/* ==========================================================================
    Header
    ========================================================================== */
 

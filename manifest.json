@@ -19,20 +19,20 @@
         "default": "mySquad.ps (Spectrum)"
       },
       "minimumSize": {
-        "width": 600,
-        "height": 800
+        "width": 280,
+        "height": 400
       },
       "maximumSize": {
-        "width": 600,
-        "height": 800
+        "width": 1200,
+        "height": 2000
       },
       "preferredDockedSize": {
-        "width": 600,
-        "height": 800
+        "width": 350,
+        "height": 600
       },
       "preferredFloatingSize": {
-        "width": 600,
-        "height": 800
+        "width": 400,
+        "height": 700
       }
     }
   ],
@@ -52,7 +52,8 @@
         "https://*.supabase.co",
         "https://*.supabase.io",
         "https://supabase.co",
-        "https://supabase.io"
+        "https://supabase.io",
+        "https://sisx.thesqd.com"
       ]
     }
   },

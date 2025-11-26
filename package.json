@@ -13,11 +13,13 @@
   "dependencies": {
     "@spectrum-web-components/action-menu": "^0.37.0",
     "@spectrum-web-components/badge": "^0.37.0",
+    "@spectrum-web-components/progress-bar": "^0.37.0",
     "@spectrum-web-components/theme": "^0.37.0",
     "@swc-uxp-wrappers/action-button": "^2.0.0",
     "@swc-uxp-wrappers/action-group": "^2.0.0",
     "@swc-uxp-wrappers/button": "^2.0.0",
     "@swc-uxp-wrappers/card": "^2.0.0",
+    "@swc-uxp-wrappers/field-label": "^2.0.0",
     "@swc-uxp-wrappers/menu": "^2.0.0",
     "@swc-uxp-wrappers/overlay": "^2.0.0",
     "@swc-uxp-wrappers/popover": "^2.0.0",
