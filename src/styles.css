@@ -39,6 +39,13 @@ body {
   min-width: 0;
 }
 
+.app-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -76,9 +83,7 @@ body {
 
 .header {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-bottom: 16px;
 }
 
 /* ==========================================================================
@@ -120,7 +125,7 @@ sp-card [slot="footer"] {
   font-size: 13px;
   font-weight: 500;
   color: var(--spectrum-global-color-gray-400, #b3b3b3);
-  margin-top: -8px;
+  margin-top: 0;
   margin-bottom: 8px;
 }
 
@@ -219,18 +224,16 @@ sp-menu-item {
 
 .tab-navigation {
   display: flex;
-  justify-content: center;
-  margin-bottom: 12px;
 }
 
 .tab-navigation sp-action-group {
-  gap: 8px;
+  gap: 12px;
 }
 
 .tab-navigation sp-action-button {
-  --spectrum-actionbutton-height: 28px;
-  --mod-actionbutton-height: 28px;
-  padding: 0 16px;
+  --spectrum-actionbutton-height: 24px;
+  --mod-actionbutton-height: 24px;
+  padding: 0 12px;
 }
 
 .tab-button {

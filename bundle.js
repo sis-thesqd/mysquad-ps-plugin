@@ -24194,6 +24194,13 @@ body {
   min-width: 0;
 }
 
+.app-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -24231,9 +24238,7 @@ body {
 
 .header {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-bottom: 16px;
 }
 
 /* ==========================================================================
@@ -24275,7 +24280,7 @@ sp-card [slot="footer"] {
   font-size: 13px;
   font-weight: 500;
   color: var(--spectrum-global-color-gray-400, #b3b3b3);
-  margin-top: -8px;
+  margin-top: 0;
   margin-bottom: 8px;
 }
 
@@ -24374,18 +24379,16 @@ sp-menu-item {
 
 .tab-navigation {
   display: flex;
-  justify-content: center;
-  margin-bottom: 12px;
 }
 
 .tab-navigation sp-action-group {
-  gap: 8px;
+  gap: 12px;
 }
 
 .tab-navigation sp-action-button {
-  --spectrum-actionbutton-height: 28px;
-  --mod-actionbutton-height: 28px;
-  padding: 0 16px;
+  --spectrum-actionbutton-height: 24px;
+  --mod-actionbutton-height: 24px;
+  padding: 0 12px;
 }
 
 .tab-button {
@@ -67263,11 +67266,13 @@ const App = () => {
     color: "dark"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "app"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "app-header-row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.Header, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.TabNavigation, {
     tabs: TABS,
     activeTab: activeTab,
     onTabChange: setActiveTab
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "content"
   }, activeTab === 'task' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, loading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "loading-container"
@@ -70981,7 +70986,7 @@ const FolderDetailsCard = ({
       return () => menu.removeEventListener('change', handleChange);
     }
   }, [onRefresh, taskDetails?.task_id]);
-  const churchAccount = taskDetails?.church_name && taskDetails?.account ? `${taskDetails.church_name} - ${taskDetails.account}` : loading ? 'Loading...' : '';
+  const churchAccount = taskDetails?.church_name && taskDetails?.account ? `${taskDetails.account} - ${taskDetails.church_name}` : loading ? 'Loading...' : '';
   const taskName = taskDetails?.name || (loading ? 'Loading...' : 'No task found');
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-card", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     slot: "heading",

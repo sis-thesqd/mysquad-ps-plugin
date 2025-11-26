@@ -21,8 +21,10 @@ const App = () => {
   return (
     <sp-theme theme="spectrum" scale="medium" color="dark">
       <div className="app">
-        <Header />
-        <TabNavigation tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+        <div className="app-header-row">
+          <Header />
+          <TabNavigation tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+        </div>
         <div className="content">
           {activeTab === 'task' && (
             <>

@@ -52,7 +52,7 @@ const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
   }, [onRefresh, taskDetails?.task_id]);
 
   const churchAccount = taskDetails?.church_name && taskDetails?.account
-    ? `${taskDetails.church_name} - ${taskDetails.account}`
+    ? `${taskDetails.account} - ${taskDetails.church_name}`
     : (loading ? 'Loading...' : '');
 
   const taskName = taskDetails?.name || (loading ? 'Loading...' : 'No task found');
