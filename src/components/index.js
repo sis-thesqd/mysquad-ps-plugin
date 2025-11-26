@@ -4,11 +4,15 @@
 
 // Shared components
 export { default as Header } from './Header';
+export { default as TabNavigation } from './TabNavigation';
 
 // Feature components
 export { default as FolderDetailsCard } from './folder-details/components/FolderDetailsCard';
 export { default as TaskDetailsCard } from './task-details/components/TaskDetailsCard';
 export { default as ActionsCard } from './actions/components/ActionsCard';
+
+// Artboard Generator
+export { ArtboardGeneratorTab } from './artboard-generator';
 
 // Hooks
 export { useFolderDetails } from './folder-details/hooks/useFolderDetails';

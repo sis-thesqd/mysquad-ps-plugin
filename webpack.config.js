@@ -51,9 +51,9 @@ module.exports = {
     alias: aliases
   },
   externals: {
-    'photoshop': 'photoshop',
-    'uxp': 'uxp',
-    'os': 'os'
+    'photoshop': 'commonjs2 photoshop',
+    'uxp': 'commonjs2 uxp',
+    'os': 'commonjs2 os'
   },
   devtool: false,
   optimization: {
