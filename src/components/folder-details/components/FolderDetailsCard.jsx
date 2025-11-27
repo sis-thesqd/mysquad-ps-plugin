@@ -1,18 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-
-const { shell } = require('uxp');
-
-/**
- * Opens a URL in the system's default browser via UXP shell API
- * @param {string} url - The URL to open
- */
-const openExternalUrl = async (url) => {
-  try {
-    await shell.openExternal(url);
-  } catch (e) {
-    console.error('Failed to open URL:', e);
-  }
-};
+import { copyWithToast, openClickUpTask } from '../../../lib';
 
 /**
  * Displays folder/task info in a card format with action menu
@@ -32,8 +19,7 @@ const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
         if (selected === 'refresh') {
           if (onRefresh) onRefresh();
         } else if (selected === 'open-task' && taskDetails?.task_id) {
-          const url = `https://app.clickup.com/t/${taskDetails.task_id}`;
-          openExternalUrl(url);
+          openClickUpTask(taskDetails.task_id);
         }
       };
 
@@ -42,12 +28,10 @@ const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
       const handleOpened = () => {
         if (!hasOpened) {
           hasOpened = true;
-          // Force popover to recalculate size by triggering a reflow
           const popover = menu.shadowRoot?.querySelector('sp-popover') ||
                           menu.querySelector('sp-popover');
           if (popover) {
             popover.style.width = 'auto';
-            // Force reflow
             void popover.offsetWidth;
           }
         }
@@ -72,11 +56,24 @@ const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
     <sp-card>
       <div slot="heading" class="card-heading">
         {taskDetails?.task_id && (
-          <sp-badge size="s" variant="neutral">{taskDetails.task_id}</sp-badge>
+          <sp-badge
+            size="s"
+            variant="neutral"
+            class="clickable-badge"
+            onClick={() => copyWithToast(taskDetails.task_id, 'Task ID')}
+          >
+            {taskDetails.task_id}
+          </sp-badge>
         )}
         {taskDetails?.name ? (
           <overlay-trigger type="hint" placement="bottom">
-            <span class="task-name" slot="trigger">{taskName}</span>
+            <span
+              class="task-name clickable"
+              slot="trigger"
+              onClick={() => copyWithToast(taskDetails.name, 'Task name')}
+            >
+              {taskName}
+            </span>
             <sp-tooltip slot="hover-content">{taskDetails.name}</sp-tooltip>
           </overlay-trigger>
         ) : (

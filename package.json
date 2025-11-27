@@ -16,6 +16,7 @@
     "@spectrum-web-components/progress-bar": "^0.37.0",
     "@spectrum-web-components/tabs": "^0.37.0",
     "@spectrum-web-components/theme": "^0.37.0",
+    "@spectrum-web-components/toast": "^1.10.0",
     "@swc-uxp-wrappers/action-button": "^2.0.0",
     "@swc-uxp-wrappers/action-group": "^2.0.0",
     "@swc-uxp-wrappers/button": "^2.0.0",

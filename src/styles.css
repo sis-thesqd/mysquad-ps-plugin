@@ -114,6 +114,16 @@ sp-card [slot="footer"] {
   flex-shrink: 0;
 }
 
+.clickable-badge,
+.clickable {
+  cursor: pointer;
+}
+
+.clickable-badge:hover,
+.clickable:hover {
+  opacity: 0.8;
+}
+
 .task-name {
   display: block;
   overflow: hidden;
@@ -766,4 +776,43 @@ sp-menu-item {
 /* Number Field Sizing */
 .generator-content sp-number-field {
   min-width: 80px;
+}
+
+/* ==========================================================================
+   Clipboard Toast
+   ========================================================================== */
+
+.clipboard-toast {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 10000;
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.clipboard-toast--visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.clipboard-toast--positive {
+  background: var(--spectrum-semantic-positive-color-background, #2d6e2d);
+  color: #fff;
+}
+
+.clipboard-toast--negative {
+  background: var(--spectrum-semantic-negative-color-background, #c9252d);
+  color: #fff;
+}
+
+.clipboard-toast--info {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  color: #fff;
 }

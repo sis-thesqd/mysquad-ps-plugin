@@ -38,6 +38,7 @@
   ],
   "requiredPermissions": {
     "allowCodeGenerationFromStrings": true,
+    "clipboard": "readAndWrite",
     "launchProcess": {
       "schemes": ["https", "http"],
       "extensions": []

@@ -24822,6 +24822,16 @@ sp-card [slot="footer"] {
   flex-shrink: 0;
 }
 
+.clickable-badge,
+.clickable {
+  cursor: pointer;
+}
+
+.clickable-badge:hover,
+.clickable:hover {
+  opacity: 0.8;
+}
+
 .task-name {
   display: block;
   overflow: hidden;
@@ -25474,6 +25484,45 @@ sp-menu-item {
 /* Number Field Sizing */
 .generator-content sp-number-field {
   min-width: 80px;
+}
+
+/* ==========================================================================
+   Clipboard Toast
+   ========================================================================== */
+
+.clipboard-toast {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 10000;
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.clipboard-toast--visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.clipboard-toast--positive {
+  background: var(--spectrum-semantic-positive-color-background, #2d6e2d);
+  color: #fff;
+}
+
+.clipboard-toast--negative {
+  background: var(--spectrum-semantic-negative-color-background, #c9252d);
+  color: #fff;
+}
+
+.clipboard-toast--info {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  color: #fff;
 }
 `, ""]);
 // Exports
@@ -99494,22 +99543,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../lib */ "./src/lib/index.js");
 
-const {
-  shell
-} = __webpack_require__(/*! uxp */ "uxp");
 
-/**
- * Opens a URL in the system's default browser via UXP shell API
- * @param {string} url - The URL to open
- */
-const openExternalUrl = async url => {
-  try {
-    await shell.openExternal(url);
-  } catch (e) {
-    console.error('Failed to open URL:', e);
-  }
-};
 
 /**
  * Displays folder/task info in a card format with action menu
@@ -99532,8 +99568,7 @@ const FolderDetailsCard = ({
         if (selected === 'refresh') {
           if (onRefresh) onRefresh();
         } else if (selected === 'open-task' && taskDetails?.task_id) {
-          const url = `https://app.clickup.com/t/${taskDetails.task_id}`;
-          openExternalUrl(url);
+          (0,_lib__WEBPACK_IMPORTED_MODULE_1__.openClickUpTask)(taskDetails.task_id);
         }
       };
 
@@ -99542,11 +99577,9 @@ const FolderDetailsCard = ({
       const handleOpened = () => {
         if (!hasOpened) {
           hasOpened = true;
-          // Force popover to recalculate size by triggering a reflow
           const popover = menu.shadowRoot?.querySelector('sp-popover') || menu.querySelector('sp-popover');
           if (popover) {
             popover.style.width = 'auto';
-            // Force reflow
             void popover.offsetWidth;
           }
         }
@@ -99566,13 +99599,16 @@ const FolderDetailsCard = ({
     class: "card-heading"
   }, taskDetails?.task_id && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
     size: "s",
-    variant: "neutral"
+    variant: "neutral",
+    class: "clickable-badge",
+    onClick: () => (0,_lib__WEBPACK_IMPORTED_MODULE_1__.copyWithToast)(taskDetails.task_id, 'Task ID')
   }, taskDetails.task_id), taskDetails?.name ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("overlay-trigger", {
     type: "hint",
     placement: "bottom"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-    class: "task-name",
-    slot: "trigger"
+    class: "task-name clickable",
+    slot: "trigger",
+    onClick: () => (0,_lib__WEBPACK_IMPORTED_MODULE_1__.copyWithToast)(taskDetails.name, 'Task name')
   }, taskName), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-tooltip", {
     slot: "hover-content"
   }, taskDetails.name)) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
@@ -100218,132 +100254,6 @@ const ACTIVITY_TYPES = {
 
 /***/ }),
 
-/***/ "./src/lib/badge-utils.js":
-/*!********************************!*\
-  !*** ./src/lib/badge-utils.js ***!
-  \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getBadgeStyle: () => (/* binding */ getBadgeStyle),
-/* harmony export */   getContrastTextColor: () => (/* binding */ getContrastTextColor),
-/* harmony export */   getStatusBadgeStyle: () => (/* binding */ getStatusBadgeStyle)
-/* harmony export */ });
-/**
- * Badge utility functions for styling and color management
- */
-
-/**
- * Generates inline style object for a badge with custom background color
- * @param {string} hexColor - Hex color code (e.g., "#ff0000")
- * @param {string} fallbackColor - Fallback color if hexColor is not provided
- * @returns {Object} Style object with backgroundColor
- */
-const getBadgeStyle = (hexColor, fallbackColor = '#666') => {
-  return {
-    backgroundColor: hexColor || fallbackColor
-  };
-};
-
-/**
- * Determines if text should be light or dark based on background color
- * Uses relative luminance calculation for accessibility
- * @param {string} hexColor - Hex color code (e.g., "#ff0000")
- * @returns {string} Either 'light' or 'dark' for text color
- */
-const getContrastTextColor = hexColor => {
-  if (!hexColor) return 'light';
-
-  // Remove # if present
-  const hex = hexColor.replace('#', '');
-
-  // Convert to RGB
-  const r = parseInt(hex.substr(0, 2), 16);
-  const g = parseInt(hex.substr(2, 2), 16);
-  const b = parseInt(hex.substr(4, 2), 16);
-
-  // Calculate relative luminance
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5 ? 'dark' : 'light';
-};
-
-/**
- * Generates complete badge style with background and appropriate text color
- * @param {string} hexColor - Hex color code for background
- * @param {string} fallbackColor - Fallback background color
- * @returns {Object} Style object with backgroundColor and color
- */
-const getStatusBadgeStyle = (hexColor, fallbackColor = '#666') => {
-  const bgColor = hexColor || fallbackColor;
-  const textColorType = getContrastTextColor(bgColor);
-  return {
-    backgroundColor: bgColor,
-    color: textColorType === 'dark' ? '#000' : '#fff'
-  };
-};
-
-/***/ }),
-
-/***/ "./src/lib/date-utils.js":
-/*!*******************************!*\
-  !*** ./src/lib/date-utils.js ***!
-  \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   formatDate: () => (/* binding */ formatDate),
-/* harmony export */   getRelativeDate: () => (/* binding */ getRelativeDate)
-/* harmony export */ });
-/**
- * Date utility functions for formatting and relative date calculations
- */
-
-/**
- * Formats a date string into readable format
- * @param {string|number} dateStr - ISO date string or Unix timestamp (milliseconds)
- * @returns {string|null} Formatted date string (e.g., "Jan 15, 2024")
- */
-const formatDate = dateStr => {
-  if (!dateStr) return null;
-  // Handle Unix timestamp (milliseconds) from ClickUp
-  const date = typeof dateStr === 'number' || /^\d+$/.test(dateStr) ? new Date(parseInt(dateStr, 10)) : new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  });
-};
-
-/**
- * Gets relative date label (e.g., "today", "yesterday", "2 days ago", "in 3 days")
- * @param {string|number} dateStr - ISO date string or Unix timestamp (milliseconds)
- * @returns {string|null} Relative date string
- */
-const getRelativeDate = dateStr => {
-  if (!dateStr) return null;
-
-  // Handle Unix timestamp (milliseconds) from ClickUp
-  const date = typeof dateStr === 'number' || /^\d+$/.test(dateStr) ? new Date(parseInt(dateStr, 10)) : new Date(dateStr);
-  const now = new Date();
-  // Reset time to compare dates only
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const diffTime = compareDate.getTime() - today.getTime();
-  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-  if (diffDays === 0) return 'today';
-  if (diffDays === 1) return 'tomorrow';
-  if (diffDays === -1) return 'yesterday';
-  if (diffDays > 1) return `in ${diffDays} days`;
-  if (diffDays < -1) return `${Math.abs(diffDays)} days ago`;
-  return null;
-};
-
-/***/ }),
-
 /***/ "./src/lib/index.js":
 /*!**************************!*\
   !*** ./src/lib/index.js ***!
@@ -100355,25 +100265,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   ACTIVITY_TYPES: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.ACTIVITY_TYPES),
 /* harmony export */   callRpc: () => (/* reexport safe */ _supabase_api__WEBPACK_IMPORTED_MODULE_0__.callRpc),
+/* harmony export */   copyToClipboard: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.copyToClipboard),
+/* harmony export */   copyWithToast: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.copyWithToast),
 /* harmony export */   extractUsername: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.extractUsername),
-/* harmony export */   formatDate: () => (/* reexport safe */ _date_utils__WEBPACK_IMPORTED_MODULE_2__.formatDate),
-/* harmony export */   getBadgeStyle: () => (/* reexport safe */ _badge_utils__WEBPACK_IMPORTED_MODULE_3__.getBadgeStyle),
-/* harmony export */   getContrastTextColor: () => (/* reexport safe */ _badge_utils__WEBPACK_IMPORTED_MODULE_3__.getContrastTextColor),
-/* harmony export */   getRelativeDate: () => (/* reexport safe */ _date_utils__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate),
-/* harmony export */   getStatusBadgeStyle: () => (/* reexport safe */ _badge_utils__WEBPACK_IMPORTED_MODULE_3__.getStatusBadgeStyle),
+/* harmony export */   formatDate: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.formatDate),
+/* harmony export */   getBadgeStyle: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.getBadgeStyle),
+/* harmony export */   getContrastTextColor: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.getContrastTextColor),
+/* harmony export */   getRelativeDate: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate),
+/* harmony export */   getStatusBadgeStyle: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.getStatusBadgeStyle),
 /* harmony export */   isSupabaseConfigured: () => (/* reexport safe */ _supabase_api__WEBPACK_IMPORTED_MODULE_0__.isSupabaseConfigured),
-/* harmony export */   logActivity: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.logActivity)
+/* harmony export */   logActivity: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.logActivity),
+/* harmony export */   openClickUpTask: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.openClickUpTask),
+/* harmony export */   openExternalUrl: () => (/* reexport safe */ _utils__WEBPACK_IMPORTED_MODULE_2__.openExternalUrl)
 /* harmony export */ });
 /* harmony import */ var _supabase_api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./supabase-api */ "./src/lib/supabase-api.js");
 /* harmony import */ var _activity_logger__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./activity-logger */ "./src/lib/activity-logger.js");
-/* harmony import */ var _date_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./date-utils */ "./src/lib/date-utils.js");
-/* harmony import */ var _badge_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./badge-utils */ "./src/lib/badge-utils.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils */ "./src/utils/index.js");
 /**
  * Library exports
  */
 
 
 
+// Re-export utils for backwards compatibility
 
 
 /***/ }),
@@ -100517,6 +100431,310 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_styles_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
+
+/***/ }),
+
+/***/ "./src/utils/badge-utils.js":
+/*!**********************************!*\
+  !*** ./src/utils/badge-utils.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getBadgeStyle: () => (/* binding */ getBadgeStyle),
+/* harmony export */   getContrastTextColor: () => (/* binding */ getContrastTextColor),
+/* harmony export */   getStatusBadgeStyle: () => (/* binding */ getStatusBadgeStyle)
+/* harmony export */ });
+/**
+ * Badge utility functions for styling and color management
+ */
+
+/**
+ * Generates inline style object for a badge with custom background color
+ * @param {string} hexColor - Hex color code (e.g., "#ff0000")
+ * @param {string} fallbackColor - Fallback color if hexColor is not provided
+ * @returns {Object} Style object with backgroundColor
+ */
+const getBadgeStyle = (hexColor, fallbackColor = '#666') => {
+  return {
+    backgroundColor: hexColor || fallbackColor
+  };
+};
+
+/**
+ * Determines if text should be light or dark based on background color
+ * Uses relative luminance calculation for accessibility
+ * @param {string} hexColor - Hex color code (e.g., "#ff0000")
+ * @returns {string} Either 'light' or 'dark' for text color
+ */
+const getContrastTextColor = hexColor => {
+  if (!hexColor) return 'light';
+
+  // Remove # if present
+  const hex = hexColor.replace('#', '');
+
+  // Convert to RGB
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? 'dark' : 'light';
+};
+
+/**
+ * Generates complete badge style with background and appropriate text color
+ * @param {string} hexColor - Hex color code for background
+ * @param {string} fallbackColor - Fallback background color
+ * @returns {Object} Style object with backgroundColor and color
+ */
+const getStatusBadgeStyle = (hexColor, fallbackColor = '#666') => {
+  const bgColor = hexColor || fallbackColor;
+  const textColorType = getContrastTextColor(bgColor);
+  return {
+    backgroundColor: bgColor,
+    color: textColorType === 'dark' ? '#000' : '#fff'
+  };
+};
+
+/***/ }),
+
+/***/ "./src/utils/clipboard-utils.js":
+/*!**************************************!*\
+  !*** ./src/utils/clipboard-utils.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   copyToClipboard: () => (/* binding */ copyToClipboard),
+/* harmony export */   copyWithToast: () => (/* binding */ copyWithToast)
+/* harmony export */ });
+/**
+ * Clipboard utility functions for UXP with toast notifications
+ */
+
+const uxp = __webpack_require__(/*! uxp */ "uxp");
+const clipboard = uxp.host?.clipboard || uxp.clipboard;
+let toastElement = null;
+let toastTimeout = null;
+
+/**
+ * Shows a toast notification
+ * @param {string} message - The message to display
+ * @param {string} variant - Toast variant (positive, negative, info)
+ * @param {number} duration - How long to show the toast in ms
+ */
+const showToast = (message, variant = 'positive', duration = 2000) => {
+  // Clear any existing timeout
+  if (toastTimeout) {
+    clearTimeout(toastTimeout);
+  }
+
+  // Create toast if it doesn't exist
+  if (!toastElement) {
+    toastElement = document.createElement('div');
+    toastElement.className = 'clipboard-toast';
+    document.body.appendChild(toastElement);
+  }
+
+  // Set variant class
+  toastElement.className = `clipboard-toast clipboard-toast--${variant}`;
+
+  // Update toast content and show it
+  toastElement.textContent = message;
+  toastElement.classList.add('clipboard-toast--visible');
+
+  // Auto-hide after duration
+  toastTimeout = setTimeout(() => {
+    toastElement.classList.remove('clipboard-toast--visible');
+  }, duration);
+};
+
+/**
+ * Copies text to the system clipboard
+ * @param {string} text - The text to copy
+ * @returns {Promise<boolean>} True if successful, false otherwise
+ */
+const copyToClipboard = async text => {
+  try {
+    // Try different clipboard access methods
+    if (clipboard && clipboard.copyText) {
+      await clipboard.copyText(text);
+    } else if (uxp.host && uxp.host.clipboard && uxp.host.clipboard.copyText) {
+      await uxp.host.clipboard.copyText(text);
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      console.error('No clipboard API available');
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error('Failed to copy to clipboard:', e);
+    return false;
+  }
+};
+
+/**
+ * Copies text to clipboard and shows a toast notification
+ * @param {string} text - The text to copy
+ * @param {string} label - Label for the toast message (e.g., "Task ID")
+ * @returns {Promise<boolean>} True if successful, false otherwise
+ */
+const copyWithToast = async (text, label = 'Text') => {
+  const success = await copyToClipboard(text);
+  if (success) {
+    showToast(`${label} copied to clipboard`);
+  } else {
+    showToast('Failed to copy to clipboard', 'negative');
+  }
+  return success;
+};
+
+/***/ }),
+
+/***/ "./src/utils/date-utils.js":
+/*!*********************************!*\
+  !*** ./src/utils/date-utils.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   formatDate: () => (/* binding */ formatDate),
+/* harmony export */   getRelativeDate: () => (/* binding */ getRelativeDate)
+/* harmony export */ });
+/**
+ * Date utility functions for formatting and relative date calculations
+ */
+
+/**
+ * Formats a date string into readable format
+ * @param {string|number} dateStr - ISO date string or Unix timestamp (milliseconds)
+ * @returns {string|null} Formatted date string (e.g., "Jan 15, 2024")
+ */
+const formatDate = dateStr => {
+  if (!dateStr) return null;
+  // Handle Unix timestamp (milliseconds) from ClickUp
+  const date = typeof dateStr === 'number' || /^\d+$/.test(dateStr) ? new Date(parseInt(dateStr, 10)) : new Date(dateStr);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+};
+
+/**
+ * Gets relative date label (e.g., "today", "yesterday", "2 days ago", "in 3 days")
+ * @param {string|number} dateStr - ISO date string or Unix timestamp (milliseconds)
+ * @returns {string|null} Relative date string
+ */
+const getRelativeDate = dateStr => {
+  if (!dateStr) return null;
+
+  // Handle Unix timestamp (milliseconds) from ClickUp
+  const date = typeof dateStr === 'number' || /^\d+$/.test(dateStr) ? new Date(parseInt(dateStr, 10)) : new Date(dateStr);
+  const now = new Date();
+  // Reset time to compare dates only
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffTime = compareDate.getTime() - today.getTime();
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return 'today';
+  if (diffDays === 1) return 'tomorrow';
+  if (diffDays === -1) return 'yesterday';
+  if (diffDays > 1) return `in ${diffDays} days`;
+  if (diffDays < -1) return `${Math.abs(diffDays)} days ago`;
+  return null;
+};
+
+/***/ }),
+
+/***/ "./src/utils/index.js":
+/*!****************************!*\
+  !*** ./src/utils/index.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   copyToClipboard: () => (/* reexport safe */ _clipboard_utils__WEBPACK_IMPORTED_MODULE_2__.copyToClipboard),
+/* harmony export */   copyWithToast: () => (/* reexport safe */ _clipboard_utils__WEBPACK_IMPORTED_MODULE_2__.copyWithToast),
+/* harmony export */   formatDate: () => (/* reexport safe */ _date_utils__WEBPACK_IMPORTED_MODULE_0__.formatDate),
+/* harmony export */   getBadgeStyle: () => (/* reexport safe */ _badge_utils__WEBPACK_IMPORTED_MODULE_1__.getBadgeStyle),
+/* harmony export */   getContrastTextColor: () => (/* reexport safe */ _badge_utils__WEBPACK_IMPORTED_MODULE_1__.getContrastTextColor),
+/* harmony export */   getRelativeDate: () => (/* reexport safe */ _date_utils__WEBPACK_IMPORTED_MODULE_0__.getRelativeDate),
+/* harmony export */   getStatusBadgeStyle: () => (/* reexport safe */ _badge_utils__WEBPACK_IMPORTED_MODULE_1__.getStatusBadgeStyle),
+/* harmony export */   openClickUpTask: () => (/* reexport safe */ _shell_utils__WEBPACK_IMPORTED_MODULE_3__.openClickUpTask),
+/* harmony export */   openExternalUrl: () => (/* reexport safe */ _shell_utils__WEBPACK_IMPORTED_MODULE_3__.openExternalUrl)
+/* harmony export */ });
+/* harmony import */ var _date_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./date-utils */ "./src/utils/date-utils.js");
+/* harmony import */ var _badge_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./badge-utils */ "./src/utils/badge-utils.js");
+/* harmony import */ var _clipboard_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./clipboard-utils */ "./src/utils/clipboard-utils.js");
+/* harmony import */ var _shell_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./shell-utils */ "./src/utils/shell-utils.js");
+/**
+ * Utils exports
+ */
+
+
+
+
+
+/***/ }),
+
+/***/ "./src/utils/shell-utils.js":
+/*!**********************************!*\
+  !*** ./src/utils/shell-utils.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   openClickUpTask: () => (/* binding */ openClickUpTask),
+/* harmony export */   openExternalUrl: () => (/* binding */ openExternalUrl)
+/* harmony export */ });
+/**
+ * Shell utility functions for UXP
+ * Handles opening external URLs and other shell operations
+ */
+
+const {
+  shell
+} = __webpack_require__(/*! uxp */ "uxp");
+
+/**
+ * Opens a URL in the system's default browser
+ * @param {string} url - The URL to open
+ * @returns {Promise<boolean>} True if successful, false otherwise
+ */
+const openExternalUrl = async url => {
+  try {
+    await shell.openExternal(url);
+    return true;
+  } catch (e) {
+    console.error('Failed to open URL:', e);
+    return false;
+  }
+};
+
+/**
+ * Opens a ClickUp task in the browser
+ * @param {string} taskId - The ClickUp task ID
+ * @returns {Promise<boolean>} True if successful, false otherwise
+ */
+const openClickUpTask = async taskId => {
+  if (!taskId) return false;
+  const url = `https://app.clickup.com/t/${taskId}`;
+  return openExternalUrl(url);
+};
 
 /***/ }),
 
