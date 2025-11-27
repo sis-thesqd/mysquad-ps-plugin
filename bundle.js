@@ -93888,7 +93888,8 @@ const App = () => {
   const {
     taskDetails,
     loading,
-    refetch
+    refetch,
+    currentFilePath
   } = (0,_components__WEBPACK_IMPORTED_MODULE_1__.useFolderDetails)();
   const [progress, setProgress] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [showLoading, setShowLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
@@ -93899,6 +93900,8 @@ const App = () => {
     const tab = _config__WEBPACK_IMPORTED_MODULE_3__.config.tabs.find(t => t.id === tabId);
     setActiveTab(tabId);
     (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.TAB_SWITCH, {
+      taskId: taskDetails?.task_id,
+      filePath: currentFilePath,
       narrative: `Switched to ${tab?.label || tabId} tab`
     });
   };
@@ -98633,6 +98636,7 @@ const useFolderDetails = () => {
   const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [error, setError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [isFirstFetch, setIsFirstFetch] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
+  const [currentFilePath, setCurrentFilePath] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const fetchTaskDetails = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
     if (!_config__WEBPACK_IMPORTED_MODULE_3__.config.features.folderDetails) {
       setLoading(false);
@@ -98648,6 +98652,7 @@ const useFolderDetails = () => {
 
       // Get current document path from Photoshop
       const currentPath = await (0,_api_folderApi__WEBPACK_IMPORTED_MODULE_1__.getCurrentDocumentPath)();
+      setCurrentFilePath(currentPath);
       if (!currentPath) {
         setTaskDetails(null);
         return;
@@ -98694,7 +98699,8 @@ const useFolderDetails = () => {
     taskDetails,
     loading,
     error,
-    refetch
+    refetch,
+    currentFilePath
   };
 };
 

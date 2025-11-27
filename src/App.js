@@ -13,7 +13,7 @@ import { config } from './config';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('task');
-  const { taskDetails, loading, refetch } = useFolderDetails();
+  const { taskDetails, loading, refetch, currentFilePath } = useFolderDetails();
   const [progress, setProgress] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const loadingStartTime = useRef(null);
@@ -23,6 +23,8 @@ const App = () => {
     const tab = config.tabs.find(t => t.id === tabId);
     setActiveTab(tabId);
     logActivity(ACTIVITY_TYPES.TAB_SWITCH, {
+      taskId: taskDetails?.task_id,
+      filePath: currentFilePath,
       narrative: `Switched to ${tab?.label || tabId} tab`,
     });
   };

@@ -12,6 +12,7 @@ export const useFolderDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFirstFetch, setIsFirstFetch] = useState(true);
+  const [currentFilePath, setCurrentFilePath] = useState(null);
 
   const fetchTaskDetails = useCallback(async () => {
     if (!config.features.folderDetails) {
@@ -30,6 +31,7 @@ export const useFolderDetails = () => {
 
       // Get current document path from Photoshop
       const currentPath = await getCurrentDocumentPath();
+      setCurrentFilePath(currentPath);
 
       if (!currentPath) {
         setTaskDetails(null);
@@ -82,6 +84,7 @@ export const useFolderDetails = () => {
     taskDetails,
     loading,
     error,
-    refetch
+    refetch,
+    currentFilePath,
   };
 };
