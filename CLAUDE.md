@@ -82,7 +82,8 @@ import { logActivity, ACTIVITY_TYPES } from '../lib/activity-logger';
 // Log an activity event
 await logActivity('your_activity_type', {
   taskId: optionalTaskId,    // Optional: task ID if known
-  filePath: optionalFilePath // Optional: auto-detected if not provided
+  filePath: optionalFilePath, // Optional: auto-detected if not provided
+  narrative: 'User did something specific', // Required: 1-liner description
 });
 ```
 
@@ -91,9 +92,10 @@ await logActivity('your_activity_type', {
 | Column | Type | Description |
 |--------|------|-------------|
 | `user` | text | System username (auto-extracted from file path) |
-| `activity_type` | text | Event type identifier |
+| `activity_type` | enum | Event type (plugin_load, tab_switch, task_fetch, generator_use) |
 | `task_id` | text | ClickUp task ID if available |
 | `file_path` | text | Full document path |
+| `narrative` | text | 1-liner description of what the user did |
 | `created_at` | timestamptz | Auto-generated timestamp |
 
 ### Activity Type Naming Convention

@@ -1187,7 +1187,9 @@ export const createArtboardWithRoles = async ({
  */
 export const generateArtboards = async (sizes, sourceConfig, options = {}, onProgress = null) => {
   // Log generator usage
-  logActivity(ACTIVITY_TYPES.GENERATOR_USE);
+  logActivity(ACTIVITY_TYPES.GENERATOR_USE, {
+    narrative: `Generated ${sizes.length} artboard${sizes.length !== 1 ? 's' : ''}`,
+  });
 
   console.log('*'.repeat(60));
   console.log('[generateArtboards] Starting artboard generation');

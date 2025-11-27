@@ -50,9 +50,17 @@ export const useFolderDetails = () => {
 
       // Log activity - plugin_load on first fetch, task_fetch on subsequent
       if (isInitialLoad) {
-        logActivity(ACTIVITY_TYPES.PLUGIN_LOAD, { taskId, filePath: currentPath });
+        logActivity(ACTIVITY_TYPES.PLUGIN_LOAD, {
+          taskId,
+          filePath: currentPath,
+          narrative: 'Plugin loaded and task details fetched',
+        });
       } else {
-        logActivity(ACTIVITY_TYPES.TASK_FETCH, { taskId, filePath: currentPath });
+        logActivity(ACTIVITY_TYPES.TASK_FETCH, {
+          taskId,
+          filePath: currentPath,
+          narrative: 'Refreshed task details',
+        });
       }
 
     } catch (err) {

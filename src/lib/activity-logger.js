@@ -84,6 +84,7 @@ const extractTaskIdFromPath = (filePath) => {
  * @param {Object} options - Additional options
  * @param {string} [options.taskId] - Task ID if known
  * @param {string} [options.filePath] - File path if known
+ * @param {string} [options.narrative] - 1-liner description of what the user did
  * @returns {Promise<void>}
  */
 export const logActivity = async (activityType, options = {}) => {
@@ -128,6 +129,7 @@ export const logActivity = async (activityType, options = {}) => {
         activity_type: activityType,
         task_id: taskId,
         file_path: filePath,
+        narrative: options.narrative || null,
       }),
     });
 

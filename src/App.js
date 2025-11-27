@@ -20,8 +20,11 @@ const App = () => {
 
   // Handle tab change with logging
   const handleTabChange = (tabId) => {
+    const tab = config.tabs.find(t => t.id === tabId);
     setActiveTab(tabId);
-    logActivity(ACTIVITY_TYPES.TAB_SWITCH);
+    logActivity(ACTIVITY_TYPES.TAB_SWITCH, {
+      narrative: `Switched to ${tab?.label || tabId} tab`,
+    });
   };
 
   useEffect(() => {

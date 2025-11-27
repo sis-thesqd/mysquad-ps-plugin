@@ -93896,8 +93896,11 @@ const App = () => {
 
   // Handle tab change with logging
   const handleTabChange = tabId => {
+    const tab = _config__WEBPACK_IMPORTED_MODULE_3__.config.tabs.find(t => t.id === tabId);
     setActiveTab(tabId);
-    (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.TAB_SWITCH);
+    (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.TAB_SWITCH, {
+      narrative: `Switched to ${tab?.label || tabId} tab`
+    });
   };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     let progressInterval;
@@ -97110,7 +97113,9 @@ const createArtboardWithRoles = async ({
  */
 const generateArtboards = async (sizes, sourceConfig, options = {}, onProgress = null) => {
   // Log generator usage
-  (0,_lib__WEBPACK_IMPORTED_MODULE_0__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_0__.ACTIVITY_TYPES.GENERATOR_USE);
+  (0,_lib__WEBPACK_IMPORTED_MODULE_0__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_0__.ACTIVITY_TYPES.GENERATOR_USE, {
+    narrative: `Generated ${sizes.length} artboard${sizes.length !== 1 ? 's' : ''}`
+  });
   console.log('*'.repeat(60));
   console.log('[generateArtboards] Starting artboard generation');
   console.log(`[generateArtboards] Sizes to generate: ${sizes.length}`, sizes.map(s => s.name));
@@ -98663,12 +98668,14 @@ const useFolderDetails = () => {
       if (isInitialLoad) {
         (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.PLUGIN_LOAD, {
           taskId,
-          filePath: currentPath
+          filePath: currentPath,
+          narrative: 'Plugin loaded and task details fetched'
         });
       } else {
         (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.TASK_FETCH, {
           taskId,
-          filePath: currentPath
+          filePath: currentPath,
+          narrative: 'Refreshed task details'
         });
       }
     } catch (err) {
@@ -99116,6 +99123,7 @@ const extractTaskIdFromPath = filePath => {
  * @param {Object} options - Additional options
  * @param {string} [options.taskId] - Task ID if known
  * @param {string} [options.filePath] - File path if known
+ * @param {string} [options.narrative] - 1-liner description of what the user did
  * @returns {Promise<void>}
  */
 const logActivity = async (activityType, options = {}) => {
@@ -99157,7 +99165,8 @@ const logActivity = async (activityType, options = {}) => {
         user,
         activity_type: activityType,
         task_id: taskId,
-        file_path: filePath
+        file_path: filePath,
+        narrative: options.narrative || null
       })
     });
     if (!response.ok) {
