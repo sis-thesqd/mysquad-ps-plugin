@@ -24,6 +24,9 @@ export const config = {
     folderDetails: true,
     actionsCard: false,
     activityLogging: true,
+    // Activity types to log (empty array = log nothing)
+    // Valid types: 'plugin_load', 'tab_switch', 'task_fetch', 'generator_use'
+    activityTypesToLog: ['plugin_load', 'tab_switch', 'task_fetch', 'generator_use'],
   },
 
   // Navigation tabs

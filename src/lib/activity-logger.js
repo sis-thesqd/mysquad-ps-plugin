@@ -92,6 +92,12 @@ export const logActivity = async (activityType, options = {}) => {
     return;
   }
 
+  // Check if this activity type should be logged
+  const typesToLog = config.features?.activityTypesToLog || [];
+  if (typesToLog.length === 0 || !typesToLog.includes(activityType)) {
+    return;
+  }
+
   // Check Supabase config
   if (!isConfigured) {
     console.warn('Activity logging skipped: Supabase not configured');
