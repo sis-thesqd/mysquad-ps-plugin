@@ -114,11 +114,25 @@ sp-card [slot="footer"] {
   flex-shrink: 0;
 }
 
-.card-heading span {
+.task-name {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
+  flex: 1;
+}
+
+overlay-trigger {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+sp-tooltip {
+  max-width: 350px;
+  word-wrap: break-word;
 }
 
 .card-subheading {
@@ -147,7 +161,6 @@ sp-card [slot="footer"] {
 .card-meta {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   margin-top: 4px;
   min-width: 0;
   overflow: hidden;
@@ -157,14 +170,26 @@ sp-card [slot="footer"] {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.meta-row:last-child {
+  margin-bottom: 0;
 }
 
 .meta-field {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  margin-right: 32px;
+}
+
+.meta-field .meta-label {
+  margin-bottom: 4px;
+}
+
+.meta-field:last-child {
+  margin-right: 0;
 }
 
 .meta-label {

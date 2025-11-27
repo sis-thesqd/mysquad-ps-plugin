@@ -1,24 +1,14 @@
 import React, { useRef, useEffect } from 'react';
 
+const { shell } = require('uxp');
+
 /**
  * Opens a URL in the system's default browser via UXP shell API
  * @param {string} url - The URL to open
  */
 const openExternalUrl = async (url) => {
   try {
-    const uxp = require('uxp');
-    if (uxp.shell && uxp.shell.openExternal) {
-      await uxp.shell.openExternal(url);
-    } else if (uxp.host && uxp.host.shell && uxp.host.shell.openExternal) {
-      await uxp.host.shell.openExternal(url);
-    } else {
-      const { shell } = uxp;
-      if (shell && shell.openExternal) {
-        await shell.openExternal(url);
-      } else {
-        console.log('Shell API not available, URL:', url);
-      }
-    }
+    await shell.openExternal(url);
   } catch (e) {
     console.error('Failed to open URL:', e);
   }
@@ -84,7 +74,14 @@ const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
         {taskDetails?.task_id && (
           <sp-badge size="s" variant="neutral">{taskDetails.task_id}</sp-badge>
         )}
-        <span>{taskName}</span>
+        {taskDetails?.name ? (
+          <overlay-trigger type="hint" placement="bottom">
+            <span class="task-name" slot="trigger">{taskName}</span>
+            <sp-tooltip slot="hover-content">{taskDetails.name}</sp-tooltip>
+          </overlay-trigger>
+        ) : (
+          <span class="task-name">{taskName}</span>
+        )}
       </div>
       <div slot="description" class="card-description">
         <div class="card-subheading">{churchAccount}</div>
@@ -97,6 +94,9 @@ const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
         label="More Actions"
       >
         <sp-menu-item value="refresh">Refresh Data</sp-menu-item>
+        {taskDetails?.task_id && (
+          <sp-menu-item value="open-task">Open in ClickUp</sp-menu-item>
+        )}
       </sp-action-menu>
     </sp-card>
   );

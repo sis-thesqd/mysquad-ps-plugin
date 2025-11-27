@@ -115,6 +115,7 @@ export const getTaskDetails = async (taskId) => {
     church_name: sb_data?.church_name || cu_data.folder?.name?.split(' - ').slice(1).join(' - '),
     status_after: cu_data.status?.status,
     status: cu_data.status, // Full status object with status and color
+    status_last_changed_at: sb_data?.status_last_changed_at,
     estimate_mins_after: cu_data.time_estimate,
     due_date_after: cu_data.due_date,
     date_created: cu_data.date_created,

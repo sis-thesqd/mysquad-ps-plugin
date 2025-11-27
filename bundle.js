@@ -20707,6 +20707,254 @@ const overlayStack = new OverlayStack();
 
 /***/ }),
 
+/***/ "./node_modules/@swc-uxp-internal/overlay/src/OverlayTrigger.dev.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@swc-uxp-internal/overlay/src/OverlayTrigger.dev.js ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   OverlayTrigger: () => (/* binding */ OverlayTrigger)
+/* harmony export */ });
+/* harmony import */ var _spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @spectrum-web-components/base */ "./node_modules/@spectrum-web-components/base/src/index.dev.js");
+/* harmony import */ var _spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @spectrum-web-components/base/src/decorators.js */ "./node_modules/@spectrum-web-components/base/src/decorators.dev.js");
+/* harmony import */ var _overlay_trigger_css_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./overlay-trigger.css.js */ "./node_modules/@swc-uxp-internal/overlay/src/overlay-trigger.css.js");
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result)
+    __defProp(target, key, result);
+  return result;
+};
+
+
+
+class OverlayTrigger extends _spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.SpectrumElement {
+  constructor() {
+    super(...arguments);
+    this.content = "click hover longpress";
+    this.offset = 6;
+    this.disabled = false;
+    this.clickContent = [];
+    this.longpressContent = [];
+    this.hoverContent = [];
+    this.targetContent = [];
+  }
+  static get styles() {
+    return [_overlay_trigger_css_js__WEBPACK_IMPORTED_MODULE_2__["default"]];
+  }
+  getAssignedElementsFromSlot(slot) {
+    return slot.assignedElements({ flatten: true });
+  }
+  handleTriggerContent(event) {
+    this.targetContent = this.getAssignedElementsFromSlot(event.target);
+  }
+  handleSlotContent(event) {
+    switch (event.target.name) {
+      case "click-content":
+        this.clickContent = this.getAssignedElementsFromSlot(
+          event.target
+        );
+        break;
+      case "longpress-content":
+        this.longpressContent = this.getAssignedElementsFromSlot(
+          event.target
+        );
+        break;
+      case "hover-content":
+        this.hoverContent = this.getAssignedElementsFromSlot(
+          event.target
+        );
+        break;
+    }
+  }
+  handleBeforetoggle(event) {
+    const { target } = event;
+    let type;
+    if (target === this.clickOverlayElement) {
+      type = "click";
+    } else if (target === this.longpressOverlayElement) {
+      type = "longpress";
+    } else if (target === this.hoverOverlayElement) {
+      type = "hover";
+    } else {
+      return;
+    }
+    if (event.newState === "open") {
+      this.open = type;
+    } else if (this.open === type) {
+      this.open = void 0;
+    }
+  }
+  update(changes) {
+    var _a, _b, _c, _d, _e, _f;
+    if (changes.has("clickContent")) {
+      this.clickPlacement = ((_a = this.clickContent[0]) == null ? void 0 : _a.getAttribute("placement")) || ((_b = this.clickContent[0]) == null ? void 0 : _b.getAttribute(
+        "direction"
+      )) || void 0;
+    }
+    if (changes.has("hoverContent")) {
+      this.hoverPlacement = ((_c = this.hoverContent[0]) == null ? void 0 : _c.getAttribute("placement")) || ((_d = this.hoverContent[0]) == null ? void 0 : _d.getAttribute(
+        "direction"
+      )) || void 0;
+    }
+    if (changes.has("longpressContent")) {
+      this.longpressPlacement = ((_e = this.longpressContent[0]) == null ? void 0 : _e.getAttribute("placement")) || ((_f = this.longpressContent[0]) == null ? void 0 : _f.getAttribute(
+        "direction"
+      )) || void 0;
+    }
+    super.update(changes);
+  }
+  renderSlot(name) {
+    return (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)`
+            <slot name=${name} @slotchange=${this.handleSlotContent}></slot>
+        `;
+  }
+  renderClickOverlay() {
+    Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/overlay/sp-overlay.js */ "./node_modules/@swc-uxp-wrappers/overlay/sp-overlay.js"));
+    const slot = this.renderSlot("click-content");
+    if (!this.clickContent.length) {
+      return slot;
+    }
+    return (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)`
+            <sp-overlay
+                id="click-overlay"
+                ?disabled=${this.disabled || !this.clickContent.length}
+                ?open=${this.open === "click" && !!this.clickContent.length}
+                .offset=${this.offset}
+                .placement=${this.clickPlacement || this.placement}
+                .triggerElement=${this.targetContent[0]}
+                .triggerInteraction=${"click"}
+                .type=${this.type !== "modal" ? "auto" : "modal"}
+                @beforetoggle=${this.handleBeforetoggle}
+            >
+                ${slot}
+            </sp-overlay>
+        `;
+  }
+  renderHoverOverlay() {
+    Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/overlay/sp-overlay.js */ "./node_modules/@swc-uxp-wrappers/overlay/sp-overlay.js"));
+    const slot = this.renderSlot("hover-content");
+    if (!this.hoverContent.length) {
+      return slot;
+    }
+    return (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)`
+            <sp-overlay
+                id="hover-overlay"
+                ?disabled=${this.disabled || !this.hoverContent.length || !!this.open && this.open !== "hover"}
+                ?open=${this.open === "hover" && !!this.hoverContent.length}
+                .offset=${this.offset}
+                .placement=${this.hoverPlacement || this.placement}
+                .triggerElement=${this.targetContent[0]}
+                .triggerInteraction=${"hover"}
+                .type=${"hint"}
+                @beforetoggle=${this.handleBeforetoggle}
+            >
+                ${slot}
+            </sp-overlay>
+        `;
+  }
+  renderLongpressOverlay() {
+    Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/overlay/sp-overlay.js */ "./node_modules/@swc-uxp-wrappers/overlay/sp-overlay.js"));
+    const slot = this.renderSlot("longpress-content");
+    if (!this.longpressContent.length) {
+      return slot;
+    }
+    return (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)`
+            <sp-overlay
+                id="longpress-overlay"
+                ?disabled=${this.disabled || !this.longpressContent.length}
+                ?open=${this.open === "longpress" && !!this.longpressContent.length}
+                .offset=${this.offset}
+                .placement=${this.longpressPlacement || this.placement}
+                .triggerElement=${this.targetContent[0]}
+                .triggerInteraction=${"longpress"}
+                .type=${"auto"}
+                @beforetoggle=${this.handleBeforetoggle}
+            >
+                ${slot}
+            </sp-overlay>
+            <slot name="longpress-describedby-descriptor"></slot>
+        `;
+  }
+  render() {
+    const content = this.content.split(" ");
+    return (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)`
+            <slot
+                id="trigger"
+                name="trigger"
+                @slotchange=${this.handleTriggerContent}
+            ></slot>
+            ${[
+      content.includes("click") ? this.renderClickOverlay() : (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)``,
+      content.includes("hover") ? this.renderHoverOverlay() : (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)``,
+      content.includes("longpress") ? this.renderLongpressOverlay() : (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)``
+    ]}
+        `;
+  }
+  updated(changes) {
+    super.updated(changes);
+    if (this.disabled && changes.has("disabled")) {
+      this.open = void 0;
+      return;
+    }
+  }
+  async getUpdateComplete() {
+    const complete = await super.getUpdateComplete();
+    return complete;
+  }
+}
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)()
+], OverlayTrigger.prototype, "content", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ reflect: true })
+], OverlayTrigger.prototype, "placement", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)()
+], OverlayTrigger.prototype, "type", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: Number })
+], OverlayTrigger.prototype, "offset", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ reflect: true })
+], OverlayTrigger.prototype, "open", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: Boolean, reflect: true })
+], OverlayTrigger.prototype, "disabled", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.state)()
+], OverlayTrigger.prototype, "clickContent", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.state)()
+], OverlayTrigger.prototype, "longpressContent", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.state)()
+], OverlayTrigger.prototype, "hoverContent", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.state)()
+], OverlayTrigger.prototype, "targetContent", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.query)("#click-overlay", true)
+], OverlayTrigger.prototype, "clickOverlayElement", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.query)("#longpress-overlay", true)
+], OverlayTrigger.prototype, "longpressOverlayElement", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.query)("#hover-overlay", true)
+], OverlayTrigger.prototype, "hoverOverlayElement", 2);
+//# sourceMappingURL=OverlayTrigger.dev.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/@swc-uxp-internal/overlay/src/PlacementController.dev.js":
 /*!*******************************************************************************!*\
   !*** ./node_modules/@swc-uxp-internal/overlay/src/PlacementController.dev.js ***!
@@ -21047,6 +21295,26 @@ class OverlayTimer {
   }
 }
 //# sourceMappingURL=overlay-timer.dev.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@swc-uxp-internal/overlay/src/overlay-trigger.css.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@swc-uxp-internal/overlay/src/overlay-trigger.css.js ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @spectrum-web-components/base */ "./node_modules/@spectrum-web-components/base/src/index.dev.js");
+const s=(0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.css)`
+:host([disabled]) ::slotted([slot=trigger]){pointer-events:none}slot[name=longpress-describedby-descriptor]{display:none}
+`;/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (s);
+//# sourceMappingURL=overlay-trigger.css.js.map
 
 
 /***/ }),
@@ -21454,6 +21722,469 @@ const i=(0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.css)`
 )}
 `;/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (i);
 //# sourceMappingURL=quick-actions.css.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@swc-uxp-internal/tooltip/src/Tooltip.dev.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@swc-uxp-internal/tooltip/src/Tooltip.dev.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Tooltip: () => (/* binding */ Tooltip)
+/* harmony export */ });
+/* harmony import */ var _spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @spectrum-web-components/base */ "./node_modules/@spectrum-web-components/base/src/index.dev.js");
+/* harmony import */ var _spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @spectrum-web-components/base/src/decorators.js */ "./node_modules/@spectrum-web-components/base/src/decorators.dev.js");
+/* harmony import */ var _tooltip_css_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./tooltip.css.js */ "./node_modules/@swc-uxp-internal/tooltip/src/tooltip.css.js");
+/* harmony import */ var lit_directives_if_defined_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lit/directives/if-defined.js */ "./node_modules/lit/directives/if-defined.js");
+/* harmony import */ var _spectrum_web_components_shared_src_focusable_selectors_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @spectrum-web-components/shared/src/focusable-selectors.js */ "./node_modules/@spectrum-web-components/shared/src/focusable-selectors.dev.js");
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result)
+    __defProp(target, key, result);
+  return result;
+};
+
+
+
+
+
+class TooltipOpenable extends HTMLElement {
+  constructor() {
+    super();
+    this._open = false;
+    this._placement = "top";
+    this.addEventListener("sp-opened", this.redispatchEvent);
+    this.addEventListener("sp-closed", this.redispatchEvent);
+  }
+  redispatchEvent(event) {
+    event.stopPropagation();
+    this.tooltip.dispatchEvent(
+      new CustomEvent(event.type, {
+        bubbles: event.bubbles,
+        composed: event.composed,
+        detail: event.detail
+      })
+    );
+  }
+  get tooltip() {
+    return this.getRootNode().host;
+  }
+  static get observedAttributes() {
+    return ["open", "placement"];
+  }
+  attributeChangedCallback(name, _oldValue, newValue) {
+    switch (name) {
+      case "open":
+        this.open = newValue !== null;
+        break;
+      case "placement":
+        this.placement = newValue;
+        break;
+    }
+  }
+  set open(open) {
+    this._open = open;
+    const { tooltip } = this;
+    if (!tooltip) {
+      return;
+    }
+    tooltip.open = open;
+  }
+  get open() {
+    return this._open;
+  }
+  /**
+   * @type {"top" | "top-start" | "top-end" | "right" | "right-start" | "right-end" | "bottom" | "bottom-start" | "bottom-end" | "left" | "left-start" | "left-end"}
+   * @attr
+   */
+  set placement(placement) {
+    this._placement = placement;
+    const { tooltip } = this;
+    if (!tooltip) {
+      return;
+    }
+    tooltip.placement = placement;
+  }
+  /* c8 ignore next 3 */
+  get placement() {
+    return this._placement;
+  }
+  get tipElement() {
+    return this.tooltip.tipElement;
+  }
+}
+if (!customElements.get("sp-tooltip-openable")) {
+  customElements.define("sp-tooltip-openable", TooltipOpenable);
+}
+class Tooltip extends _spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.SpectrumElement {
+  constructor() {
+    super(...arguments);
+    this.selfManaged = false;
+    this.offset = 0;
+    this.open = false;
+    /* Ensure that a '' value for `variant` removes the attribute instead of a blank value */
+    this._variant = "";
+    this.handleOpenOverlay = () => {
+      this.open = true;
+    };
+    this.handleCloseOverlay = () => {
+      this.open = false;
+    };
+  }
+  static get styles() {
+    return [_tooltip_css_js__WEBPACK_IMPORTED_MODULE_2__["default"]];
+  }
+  get variant() {
+    return this._variant;
+  }
+  set variant(variant) {
+    if (variant === this.variant) {
+      return;
+    }
+    if (["info", "positive", "negative"].includes(variant)) {
+      this.setAttribute("variant", variant);
+      this._variant = variant;
+      return;
+    }
+    this.removeAttribute("variant");
+    this._variant = "";
+  }
+  forwardTransitionEvent(event) {
+    this.dispatchEvent(
+      new TransitionEvent(event.type, {
+        bubbles: true,
+        composed: true,
+        propertyName: event.propertyName
+      })
+    );
+  }
+  get triggerElement() {
+    var _a;
+    let start = this.assignedSlot || this;
+    let root = start.getRootNode();
+    if (true) {
+      if (root === document) {
+        window.__swc.warn(
+          this,
+          `Self managed <${this.localName}> elements walk up the composed tree to acquire a trigger element. No trigger element was found before the document.`,
+          "https://opensource.adobe.com/spectrum-web-components/components/tooltip#self-managed-overlays",
+          {
+            level: "high"
+          }
+        );
+        return root;
+      }
+    }
+    let triggerElement = start.parentElement || root.host || root;
+    while (!((_a = triggerElement == null ? void 0 : triggerElement.matches) == null ? void 0 : _a.call(triggerElement, _spectrum_web_components_shared_src_focusable_selectors_js__WEBPACK_IMPORTED_MODULE_4__.focusableSelector))) {
+      start = triggerElement.assignedSlot || triggerElement;
+      root = start.getRootNode();
+      if (true) {
+        if (root === document) {
+          window.__swc.warn(
+            this,
+            `Self managed <${this.localName}> elements walk up the composed tree to acquire a trigger element. No trigger element was found before the document.`,
+            "https://opensource.adobe.com/spectrum-web-components/components/tooltip#self-managed-overlays",
+            {
+              level: "high"
+            }
+          );
+          return root;
+        }
+      }
+      triggerElement = start.parentElement || root.host || root;
+    }
+    return triggerElement;
+  }
+  render() {
+    const tooltip = (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)`
+            <sp-tooltip-openable
+                id="tooltip"
+                placement=${(0,lit_directives_if_defined_js__WEBPACK_IMPORTED_MODULE_3__.ifDefined)(this.placement)}
+                @transitionrun=${this.forwardTransitionEvent}
+                @transitionend=${this.forwardTransitionEvent}
+                @transitioncancel=${this.forwardTransitionEvent}
+            >
+                <slot name="icon"></slot>
+                <span id="label"><slot></slot></span>
+                <span id="tip" aria-hidden="true"></span>
+            </sp-tooltip-openable>
+        `;
+    if (this.selfManaged) {
+      Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/overlay/sp-overlay.js */ "./node_modules/@swc-uxp-wrappers/overlay/sp-overlay.js"));
+      return (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.html)`
+                <sp-overlay
+                    ?open=${this.open}
+                    offset=${this.offset}
+                    .placement=${this.placement}
+                    type="hint"
+                    .tipPadding=${this.tipPadding}
+                    .triggerInteraction=${"hover"}
+                    @sp-opened=${this.handleOpenOverlay}
+                    @sp-closed=${this.handleCloseOverlay}
+                >
+                    ${tooltip}
+                </sp-overlay>
+            `;
+    } else {
+      return tooltip;
+    }
+  }
+  connectedCallback() {
+    super.connectedCallback();
+    this.updateComplete.then(() => {
+      if (!this.selfManaged) {
+        return;
+      }
+      const overlayElement = this.overlayElement;
+      if (overlayElement) {
+        const triggerElement = this.triggerElement;
+        overlayElement.triggerElement = triggerElement;
+      }
+    });
+  }
+}
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: Boolean, attribute: "self-managed" })
+], Tooltip.prototype, "selfManaged", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: Number })
+], Tooltip.prototype, "offset", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: Boolean, reflect: true })
+], Tooltip.prototype, "open", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.query)("sp-overlay")
+], Tooltip.prototype, "overlayElement", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ reflect: true })
+], Tooltip.prototype, "placement", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.query)("#tip")
+], Tooltip.prototype, "tipElement", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: Number })
+], Tooltip.prototype, "tipPadding", 2);
+__decorateClass([
+  (0,_spectrum_web_components_base_src_decorators_js__WEBPACK_IMPORTED_MODULE_1__.property)({ type: String })
+], Tooltip.prototype, "variant", 1);
+//# sourceMappingURL=Tooltip.dev.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/@swc-uxp-internal/tooltip/src/tooltip.css.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@swc-uxp-internal/tooltip/src/tooltip.css.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @spectrum-web-components/base */ "./node_modules/@spectrum-web-components/base/src/index.dev.js");
+const o=(0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.css)`
+#tooltip{--spectrum-overlay-animation-distance:6px;--spectrum-overlay-animation-duration:var(
+--spectrum-animation-duration-100
+);opacity:0;pointer-events:none;transition:transform var(--spectrum-overlay-animation-duration) ease-in-out,opacity var(--spectrum-overlay-animation-duration) ease-in-out,visibility 0s linear var(--spectrum-overlay-animation-duration);visibility:hidden}:host([open]) #tooltip{opacity:1;pointer-events:auto;transition-delay:0s;visibility:visible}:host([open]) .spectrum-Tooltip--bottom-end,:host([open]) .spectrum-Tooltip--bottom-left,:host([open]) .spectrum-Tooltip--bottom-right,:host([open]) .spectrum-Tooltip--bottom-start,:host([placement*=bottom][open]) #tooltip{--spectrum-overlay-animation-distance:6px;transform:translateY(var(--spectrum-overlay-animation-distance))}:host([open]) #tooltip,:host([open]) .spectrum-Tooltip--top-end,:host([open]) .spectrum-Tooltip--top-left,:host([open]) .spectrum-Tooltip--top-right,:host([open]) .spectrum-Tooltip--top-start,:host([placement*=top][open]) #tooltip{--spectrum-overlay-animation-distance:6px;transform:translateY(calc(var(--spectrum-overlay-animation-distance)*-1))}:host([dir=rtl][open]) .spectrum-Tooltip--start,:host([dir=rtl][open]) .spectrum-Tooltip--start-bottom,:host([dir=rtl][open]) .spectrum-Tooltip--start-top,:host([open]) .spectrum-Tooltip--end,:host([open]) .spectrum-Tooltip--end-bottom,:host([open]) .spectrum-Tooltip--end-top,:host([open]) .spectrum-Tooltip--right-bottom,:host([open]) .spectrum-Tooltip--right-top,:host([placement*=right][open]) #tooltip{--spectrum-overlay-animation-distance:6px;transform:translateX(var(--spectrum-overlay-animation-distance))}:host([dir=rtl][open]) .spectrum-Tooltip--end,:host([dir=rtl][open]) .spectrum-Tooltip--end-bottom,:host([dir=rtl][open]) .spectrum-Tooltip--end-top,:host([open]) .spectrum-Tooltip--left-bottom,:host([open]) .spectrum-Tooltip--left-top,:host([open]) .spectrum-Tooltip--start,:host([open]) .spectrum-Tooltip--start-bottom,:host([open]) .spectrum-Tooltip--start-top,:host([placement*=left][open]) #tooltip{--spectrum-overlay-animation-distance:6px;transform:translateX(calc(var(--spectrum-overlay-animation-distance)*-1))}#tooltip{--spectrum-tooltip-animation-duration:var(
+--spectrum-animation-duration-100
+);--spectrum-tooltip-animation-distance:var(--spectrum-spacing-75);--spectrum-tooltip-margin:0px;--spectrum-tooltip-height:var(--spectrum-component-height-75);--spectrum-tooltip-max-inline-size:var(--spectrum-tooltip-maximum-width);--spectrum-tooltip-border-radius:var(--spectrum-corner-radius-100);--spectrum-tooltip-icon-width:var(--spectrum-workflow-icon-size-50);--spectrum-tooltip-icon-height:var(--spectrum-workflow-icon-size-50);--spectrum-tooltip-font-size:var(--spectrum-font-size-75);--spectrum-tooltip-line-height:var(--spectrum-line-height-100);--spectrum-tooltip-cjk-line-height:var(--spectrum-cjk-line-height-100);--spectrum-tooltip-font-weight:var(--spectrum-regular-font-weight);--spectrum-tooltip-spacing-inline:var(
+--spectrum-component-edge-to-text-75
+);--spectrum-tooltip-spacing-block-start:var(
+--spectrum-component-top-to-text-75
+);--spectrum-tooltip-spacing-block-end:var(
+--spectrum-component-bottom-to-text-75
+);--spectrum-tooltip-icon-spacing-inline-start:var(
+--spectrum-text-to-visual-75
+);--spectrum-tooltip-icon-spacing-inline-end:var(
+--spectrum-text-to-visual-75
+);--spectrum-tooltip-icon-spacing-block-start:var(
+--spectrum-component-top-to-workflow-icon-75
+);--spectrum-tooltip-background-color-informative:var(
+--spectrum-informative-background-color-default
+);--spectrum-tooltip-background-color-positive:var(
+--spectrum-positive-background-color-default
+);--spectrum-tooltip-background-color-negative:var(
+--spectrum-negative-background-color-default
+);--spectrum-tooltip-content-color:var(--spectrum-white);--spectrum-tooltip-tip-inline-size:var(--spectrum-tooltip-tip-width);--spectrum-tooltip-tip-block-size:var(--spectrum-tooltip-tip-height);--spectrum-tooltip-tip-square-size:var(--spectrum-tooltip-tip-inline-size);--spectrum-tooltip-tip-height-percentage:50%;--spectrum-tooltip-tip-antialiasing-inset:0.5px;--spectrum-tooltip-pointer-corner-spacing:var(
+--spectrum-corner-radius-100
+);--spectrum-tooltip-background-color-default:var(
+--spectrum-tooltip-backgound-color-default-neutral
+)}@media (forced-colors:active){#tooltip{border:1px solid #0000}#tip{--highcontrast-tooltip-background-color-default:CanvasText;--highcontrast-tooltip-background-color-informative:CanvasText;--highcontrast-tooltip-background-color-positive:CanvasText;--highcontrast-tooltip-background-color-negative:CanvasText;forced-color-adjust:none}}#tooltip{-webkit-font-smoothing:antialiased;align-items:center;background-color:var(
+--highcontrast-tooltip-background-color-default,var(
+--mod-tooltip-background-color-default,var(--spectrum-tooltip-background-color-default)
+)
+);block-size:auto;border-radius:var(
+--mod-tooltip-border-radius,var(--spectrum-tooltip-border-radius)
+);box-sizing:border-box;color:var(
+--mod-tooltip-content-color,var(--spectrum-tooltip-content-color)
+);display:inline-flex;flex-direction:row;font-size:var(--mod-tooltip-font-size,var(--spectrum-tooltip-font-size));font-weight:var(
+--mod-tooltip-font-weight,var(--spectrum-tooltip-font-weight)
+);inline-size:auto;line-height:var(
+--mod-tooltip-line-height,var(--spectrum-tooltip-line-height)
+);max-inline-size:var(
+--mod-tooltip-max-inline-size,var(--spectrum-tooltip-max-inline-size)
+);min-block-size:var(--mod-tooltip-height,var(--spectrum-tooltip-height));padding-inline:var(
+--mod-tooltip-spacing-inline,var(--spectrum-tooltip-spacing-inline)
+);position:relative;vertical-align:top;word-break:break-word}:host(:lang(ja)) #tooltip,:host(:lang(ko)) #tooltip,:host(:lang(zh)) #tooltip{line-height:var(
+--mod-tooltip-cjk-line-height,var(--spectrum-tooltip-cjk-line-height)
+)}#tooltip{cursor:default;-webkit-user-select:none;user-select:none}#tooltip p{margin:0}:host([variant=info]) #tooltip{background-color:var(
+--highcontrast-tooltip-background-color-informative,var(
+--mod-tooltip-background-color-informative,var(--spectrum-tooltip-background-color-informative)
+)
+)}:host([variant=positive]) #tooltip{background-color:var(
+--highcontrast-tooltip-background-color-positive,var(
+--mod-tooltip-background-color-positive,var(--spectrum-tooltip-background-color-positive)
+)
+)}:host([variant=negative]) #tooltip{background-color:var(
+--highcontrast-tooltip-background-color-negative,var(
+--mod-tooltip-background-color-negative,var(--spectrum-tooltip-background-color-negative)
+)
+)}#tip{background-color:var(
+--highcontrast-tooltip-background-color-default,var(
+--mod-tooltip-background-color-default,var(--spectrum-tooltip-background-color-default)
+)
+);block-size:var(
+--mod-tooltip-tip-square-size,var(--spectrum-tooltip-tip-square-size)
+);clip-path:polygon(0 calc(0% - var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)),50% var(
+--mod-tooltip-tip-height-percentage,var(--spectrum-tooltip-tip-height-percentage)
+),100% calc(0% - var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)));inline-size:var(
+--mod-tooltip-tip-square-size,var(--spectrum-tooltip-tip-square-size)
+);left:50%;position:absolute;top:100%;transform:translateX(-50%)}:host([variant=info]) #tooltip #tip{background-color:var(
+--highcontrast-tooltip-background-color-informative,var(
+--mod-tooltip-background-color-informative,var(--spectrum-tooltip-background-color-informative)
+)
+)}:host([variant=positive]) #tooltip #tip{background-color:var(
+--highcontrast-tooltip-background-color-positive,var(
+--mod-tooltip-background-color-positive,var(--spectrum-tooltip-background-color-positive)
+)
+)}:host([variant=negative]) #tooltip #tip{background-color:var(
+--highcontrast-tooltip-background-color-negative,var(
+--mod-tooltip-background-color-negative,var(--spectrum-tooltip-background-color-negative)
+)
+)}.spectrum-Tooltip--top-end #tip,.spectrum-Tooltip--top-left #tip,.spectrum-Tooltip--top-right #tip,.spectrum-Tooltip--top-start #tip,:host([placement*=top]) #tooltip #tip{top:100%}.spectrum-Tooltip--bottom-end #tip,.spectrum-Tooltip--bottom-left #tip,.spectrum-Tooltip--bottom-right #tip,.spectrum-Tooltip--bottom-start #tip,:host([placement*=bottom]) #tooltip #tip{bottom:100%;clip-path:polygon(50% calc(100% - var(
+--mod-tooltip-tip-height-percentage,
+var(--spectrum-tooltip-tip-height-percentage)
+)),0 calc(100% + var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)),100% calc(100% + var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)));top:auto}.spectrum-Tooltip--bottom-end #tip,.spectrum-Tooltip--bottom-left #tip,.spectrum-Tooltip--bottom-right #tip,.spectrum-Tooltip--bottom-start #tip,.spectrum-Tooltip--top-end #tip,.spectrum-Tooltip--top-left #tip,.spectrum-Tooltip--top-right #tip,.spectrum-Tooltip--top-start #tip{transform:none}.spectrum-Tooltip--bottom-left #tip,.spectrum-Tooltip--top-left #tip{left:var(
+--mod-tooltip-pointer-corner-spacing,var(--spectrum-tooltip-pointer-corner-spacing)
+)}.spectrum-Tooltip--bottom-right #tip,.spectrum-Tooltip--top-right #tip{left:auto;right:var(
+--mod-tooltip-pointer-corner-spacing,var(--spectrum-tooltip-pointer-corner-spacing)
+)}.spectrum-Tooltip--bottom-start #tip,.spectrum-Tooltip--top-start #tip{left:var(
+--mod-tooltip-pointer-corner-spacing,var(--spectrum-tooltip-pointer-corner-spacing)
+);right:auto}:host([dir=rtl]) .spectrum-Tooltip--bottom-start #tip,:host([dir=rtl]) .spectrum-Tooltip--top-start #tip{left:auto;right:var(
+--mod-tooltip-pointer-corner-spacing,var(--spectrum-tooltip-pointer-corner-spacing)
+)}.spectrum-Tooltip--bottom-end #tip,.spectrum-Tooltip--top-end #tip{left:auto;right:var(
+--mod-tooltip-pointer-corner-spacing,var(--spectrum-tooltip-pointer-corner-spacing)
+)}:host([dir=rtl]) .spectrum-Tooltip--bottom-end #tip,:host([dir=rtl]) .spectrum-Tooltip--top-end #tip{left:var(
+--mod-tooltip-pointer-corner-spacing,var(--spectrum-tooltip-pointer-corner-spacing)
+);right:auto}.spectrum-Tooltip--end #tip,.spectrum-Tooltip--end-bottom #tip,.spectrum-Tooltip--end-top #tip,.spectrum-Tooltip--left-bottom #tip,.spectrum-Tooltip--left-top #tip,.spectrum-Tooltip--right-bottom #tip,.spectrum-Tooltip--right-top #tip,.spectrum-Tooltip--start #tip,.spectrum-Tooltip--start-bottom #tip,.spectrum-Tooltip--start-top #tip,:host([placement*=left]) #tooltip #tip,:host([placement*=right]) #tooltip #tip{top:50%;transform:translateY(-50%)}.spectrum-Tooltip--end-bottom #tip,.spectrum-Tooltip--end-top #tip,.spectrum-Tooltip--left-bottom #tip,.spectrum-Tooltip--left-top #tip,.spectrum-Tooltip--right-bottom #tip,.spectrum-Tooltip--right-top #tip,.spectrum-Tooltip--start-bottom #tip,.spectrum-Tooltip--start-top #tip{top:auto;transform:none}.spectrum-Tooltip--end #tip,.spectrum-Tooltip--end-bottom #tip,.spectrum-Tooltip--end-top #tip,.spectrum-Tooltip--right-bottom #tip,.spectrum-Tooltip--right-top #tip,:host([placement*=right]) #tooltip #tip{clip-path:polygon(calc(100% - var(
+--mod-tooltip-tip-height-percentage,
+var(--spectrum-tooltip-tip-height-percentage)
+)) 50%,calc(100% + var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)) 100%,calc(100% + var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)) 0);left:auto;right:100%}.spectrum-Tooltip--left-bottom #tip,.spectrum-Tooltip--left-top #tip,.spectrum-Tooltip--start #tip,.spectrum-Tooltip--start-bottom #tip,.spectrum-Tooltip--start-top #tip,:host([placement*=left]) #tooltip #tip{clip-path:polygon(calc(0% - var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)) 0,calc(0% - var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)) 100%,var(
+--mod-tooltip-tip-height-percentage,var(--spectrum-tooltip-tip-height-percentage)
+) 50%);left:100%}.spectrum-Tooltip--end-top #tip,.spectrum-Tooltip--left-top #tip,.spectrum-Tooltip--right-top #tip,.spectrum-Tooltip--start-top #tip{top:var(
+--mod-tooltip-pointer-corner-spacing,var(--spectrum-tooltip-pointer-corner-spacing)
+)}.spectrum-Tooltip--end-bottom #tip,.spectrum-Tooltip--left-bottom #tip,.spectrum-Tooltip--right-bottom #tip,.spectrum-Tooltip--start-bottom #tip{bottom:var(
+--mod-tooltip-pointer-corner-spacing,var(--spectrum-tooltip-pointer-corner-spacing)
+)}:host([dir=rtl]) .spectrum-Tooltip--end #tip,:host([dir=rtl]) .spectrum-Tooltip--end-bottom #tip,:host([dir=rtl]) .spectrum-Tooltip--end-top #tip{clip-path:polygon(calc(0% - var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)) 0,calc(0% - var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)) 100%,var(
+--mod-tooltip-tip-height-percentage,var(--spectrum-tooltip-tip-height-percentage)
+) 50%);left:100%;right:auto}:host([dir=rtl]) .spectrum-Tooltip--start #tip,:host([dir=rtl]) .spectrum-Tooltip--start-bottom #tip,:host([dir=rtl]) .spectrum-Tooltip--start-top #tip{clip-path:polygon(var(
+--mod-tooltip-tip-height-percentage,var(--spectrum-tooltip-tip-height-percentage)
+) 50%,calc(100% + var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)) 100%,calc(100% + var(
+--mod-tooltip-tip-antialiasing-inset,
+var(--spectrum-tooltip-tip-antialiasing-inset)
+)) 0);left:auto;right:100%}::slotted([slot=icon]){align-self:flex-start;block-size:var(
+--mod-tooltip-icon-height,var(--spectrum-tooltip-icon-height)
+);flex-shrink:0;inline-size:var(
+--mod-tooltip-icon-width,var(--spectrum-tooltip-icon-width)
+);margin-block-start:var(
+--mod-tooltip-icon-spacing-block-start,var(--spectrum-tooltip-icon-spacing-block-start)
+);margin-inline-end:var(
+--mod-tooltip-icon-spacing-inline-end,var(--spectrum-tooltip-icon-spacing-inline-end)
+);margin-inline-start:calc(var(
+--mod-tooltip-icon-spacing-inline-start,
+var(--spectrum-tooltip-icon-spacing-inline-start)
+) - var(
+--mod-tooltip-spacing-inline,
+var(--spectrum-tooltip-spacing-inline)
+))}#label{line-height:var(
+--mod-tooltip-line-height,var(--spectrum-tooltip-line-height)
+);margin-block-end:var(
+--mod-tooltip-spacing-block-end,var(--spectrum-tooltip-spacing-block-end)
+);margin-block-start:var(
+--mod-tooltip-spacing-block-start,var(--spectrum-tooltip-spacing-block-start)
+)}#tooltip,.spectrum-Tooltip--top-end,.spectrum-Tooltip--top-left,.spectrum-Tooltip--top-right,.spectrum-Tooltip--top-start,:host([placement*=top]) #tooltip{margin-bottom:calc(var(
+--mod-tooltip-tip-block-size,
+var(--spectrum-tooltip-tip-block-size)
+) + var(--mod-tooltip-margin, var(--spectrum-tooltip-margin)))}.spectrum-Tooltip--bottom-end,.spectrum-Tooltip--bottom-left,.spectrum-Tooltip--bottom-right,.spectrum-Tooltip--bottom-start,:host([placement*=bottom]) #tooltip{margin-top:calc(var(
+--mod-tooltip-tip-block-size,
+var(--spectrum-tooltip-tip-block-size)
+) + var(--mod-tooltip-margin, var(--spectrum-tooltip-margin)))}.spectrum-Tooltip--right-bottom,.spectrum-Tooltip--right-top,:host([placement*=right]) #tooltip{margin-left:calc(var(
+--mod-tooltip-tip-block-size,
+var(--spectrum-tooltip-tip-block-size)
+) + var(--mod-tooltip-margin, var(--spectrum-tooltip-margin)))}.spectrum-Tooltip--left-bottom,.spectrum-Tooltip--left-top,:host([placement*=left]) #tooltip{margin-right:calc(var(
+--mod-tooltip-tip-block-size,
+var(--spectrum-tooltip-tip-block-size)
+) + var(--mod-tooltip-margin, var(--spectrum-tooltip-margin)))}.spectrum-Tooltip--start,.spectrum-Tooltip--start-bottom,.spectrum-Tooltip--start-top{margin-inline-end:calc(var(
+--mod-tooltip-tip-block-size,
+var(--spectrum-tooltip-tip-block-size)
+) + var(--mod-tooltip-margin, var(--spectrum-tooltip-margin)))}.spectrum-Tooltip--end,.spectrum-Tooltip--end-bottom,.spectrum-Tooltip--end-top{margin-inline-start:calc(var(
+--mod-tooltip-tip-block-size,
+var(--spectrum-tooltip-tip-block-size)
+) + var(--mod-tooltip-margin, var(--spectrum-tooltip-margin)))}#tooltip{--spectrum-tooltip-backgound-color-default-neutral:var(
+--system-spectrum-tooltip-backgound-color-default-neutral
+)}:host{display:contents;white-space:normal}#tooltip{inline-size:max-content}:host([placement]) #tooltip{margin:var(--swc-tooltip-margin)}#tip{clip-path:polygon(0 -5%,50% 50%,100% -5%);height:var(--spectrum-tooltip-tip-inline-size)!important;width:var(--spectrum-tooltip-tip-inline-size)!important}#tip[style]{transform:none!important}:host(:not([placement*=top])) #tooltip{margin-bottom:0}:host([placement*=top]) #tooltip #tip{top:100%}:host([placement*=bottom]) #tooltip #tip{bottom:100%;clip-path:polygon(50% 50%,0 105%,100% 105%);top:auto}:host([placement*=left]) #tooltip #tip,:host([placement*=right]) #tooltip #tip{top:50%;transform:translateY(-50%)}:host([placement*=right]) #tooltip #tip{clip-path:polygon(50% 50%,105% 100%,105% 0);left:calc(var(
+--mod-tooltip-tip-block-size,
+var(--spectrum-tooltip-tip-block-size)
+)*-2);right:100%}:host([placement*=left]) #tooltip #tip{clip-path:polygon(-5% 0,-5% 100%,50% 50%);left:100%}
+`;/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (o);
+//# sourceMappingURL=tooltip.css.js.map
 
 
 /***/ }),
@@ -22995,6 +23726,34 @@ const styles = (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.css
 
 /***/ }),
 
+/***/ "./node_modules/@swc-uxp-wrappers/overlay/overlay-trigger.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@swc-uxp-wrappers/overlay/overlay-trigger.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_OverlayTrigger_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/OverlayTrigger.js */ "./node_modules/@swc-uxp-wrappers/overlay/src/OverlayTrigger.js");
+/*
+Copyright 2024 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
+
+
+customElements.define('overlay-trigger', _src_OverlayTrigger_js__WEBPACK_IMPORTED_MODULE_0__.OverlayTrigger);
+
+
+/***/ }),
+
 /***/ "./node_modules/@swc-uxp-wrappers/overlay/sp-overlay.js":
 /*!**************************************************************!*\
   !*** ./node_modules/@swc-uxp-wrappers/overlay/sp-overlay.js ***!
@@ -23059,6 +23818,34 @@ class UxpOverlay extends _swc_uxp_internal_overlay_src_Overlay_js__WEBPACK_IMPOR
     }
 }
 
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@swc-uxp-wrappers/overlay/src/OverlayTrigger.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@swc-uxp-wrappers/overlay/src/OverlayTrigger.js ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   OverlayTrigger: () => (/* reexport safe */ _swc_uxp_internal_overlay_src_OverlayTrigger_js__WEBPACK_IMPORTED_MODULE_0__.OverlayTrigger)
+/* harmony export */ });
+/* harmony import */ var _swc_uxp_internal_overlay_src_OverlayTrigger_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @swc-uxp-internal/overlay/src/OverlayTrigger.js */ "./node_modules/@swc-uxp-internal/overlay/src/OverlayTrigger.dev.js");
+/*
+Copyright 2024 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
 
 
 
@@ -23292,6 +24079,134 @@ governing permissions and limitations under the License.
 
 const styles = (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.css)`
 
+`;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (styles);
+
+/***/ }),
+
+/***/ "./node_modules/@swc-uxp-wrappers/tooltip/sp-tooltip.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/@swc-uxp-wrappers/tooltip/sp-tooltip.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_Tooltip_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/Tooltip.js */ "./node_modules/@swc-uxp-wrappers/tooltip/src/Tooltip.js");
+/*
+Copyright 2023 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
+
+
+customElements.define('sp-tooltip', _src_Tooltip_js__WEBPACK_IMPORTED_MODULE_0__.Tooltip);
+
+
+/***/ }),
+
+/***/ "./node_modules/@swc-uxp-wrappers/tooltip/src/Tooltip.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/@swc-uxp-wrappers/tooltip/src/Tooltip.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Tooltip: () => (/* binding */ UxpTooltip)
+/* harmony export */ });
+/* harmony import */ var _swc_uxp_internal_tooltip_src_Tooltip_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @swc-uxp-internal/tooltip/src/Tooltip.js */ "./node_modules/@swc-uxp-internal/tooltip/src/Tooltip.dev.js");
+/* harmony import */ var _uxp_tooltip_css_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./uxp-tooltip.css.js */ "./node_modules/@swc-uxp-wrappers/tooltip/src/uxp-tooltip.css.js");
+/*
+Copyright 2023 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
+
+
+
+
+class UxpTooltip extends _swc_uxp_internal_tooltip_src_Tooltip_js__WEBPACK_IMPORTED_MODULE_0__.Tooltip {
+    static get styles() {
+        // We are combining our styles to make all super class styles available along with the transitive dependent classes styles.
+        return [super.styles, _uxp_tooltip_css_js__WEBPACK_IMPORTED_MODULE_1__["default"]];
+    }
+}
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@swc-uxp-wrappers/tooltip/src/uxp-tooltip.css.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@swc-uxp-wrappers/tooltip/src/uxp-tooltip.css.js ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @spectrum-web-components/base */ "./node_modules/@spectrum-web-components/base/src/index.dev.js");
+/*
+Copyright 2024 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
+const styles = (0,_spectrum_web_components_base__WEBPACK_IMPORTED_MODULE_0__.css)`
+:host{--uxp-swc-tooltip-factor:-0.7}:host([placement*=top]) #tooltip #tip{margin-top:calc(var(--uxp-swc-tooltip-factor)*var(--spectrum-tooltip-tip-height))}:host([placement*=left]) #tooltip #tip{margin-left:calc(var(--uxp-swc-tooltip-factor)*var(--spectrum-tooltip-tip-height))}:host([placement*=right]) #tooltip #tip{left:calc(var(--uxp-swc-tooltip-factor)*var(--spectrum-tooltip-tip-height))}:host([placement*=bottom]) #tooltip #tip{margin-bottom:calc(var(--uxp-swc-tooltip-factor)*var(--spectrum-tooltip-tip-height))}:host([placement*=left]) #tooltip #tip,:host([placement*=left]) #tooltip #tip[style],:host([placement*=right]) #tooltip #tip,:host([placement*=right]) #tooltip #tip[style]{margin-top:calc(var(
+--spectrum-tooltip-neutral-tip-width,
+var(--spectrum-global-dimension-size-100)
+)*var(--uxp-swc-tooltip-factor)*.5);transform:rotate(45deg)!important}:host([placement*=bottom]) #tooltip #tip,:host([placement*=bottom]) #tooltip #tip[style],:host([placement*=top]) #tooltip #tip,:host([placement*=top]) #tooltip #tip[style]{margin-left:calc(var(
+--spectrum-tooltip-neutral-tip-width,
+var(--spectrum-global-dimension-size-100)
+)*var(--uxp-swc-tooltip-factor)*.5);transform:rotate(45deg)!important}#tooltip{height:auto;max-width:var(
+--mod-tooltip-max-inline-size,var(--spectrum-tooltip-max-inline-size)
+);min-height:var(--mod-tooltip-height,var(--spectrum-tooltip-height));padding-left:var(
+--mod-tooltip-spacing-inline,var(--spectrum-tooltip-spacing-inline)
+);padding-right:var(
+--mod-tooltip-spacing-inline,var(--spectrum-tooltip-spacing-inline)
+);width:auto}::slotted([slot=icon]){height:var(--mod-tooltip-icon-height,var(--spectrum-tooltip-icon-height));margin-left:calc(var(
+--mod-tooltip-icon-spacing-inline-start,
+var(--spectrum-tooltip-icon-spacing-inline-start)
+) - var(
+--mod-tooltip-spacing-inline,
+var(--spectrum-tooltip-spacing-inline)
+));margin-right:var(
+--mod-tooltip-icon-spacing-inline-end,var(--spectrum-tooltip-icon-spacing-inline-end)
+);margin-top:var(
+--mod-tooltip-icon-spacing-block-start,var(--spectrum-tooltip-icon-spacing-block-start)
+);width:var(--mod-tooltip-icon-width,var(--spectrum-tooltip-icon-width))}#label{line-height:var(
+--mod-tooltip-line-height,var(--spectrum-tooltip-line-height)
+);margin-bottom:var(
+--mod-tooltip-spacing-block-end,var(--spectrum-tooltip-spacing-block-end)
+);margin-top:var(
+--mod-tooltip-spacing-block-start,var(--spectrum-tooltip-spacing-block-start)
+)}#tip{clip-path:none!important;height:calc(var(--spectrum-tooltip-tip-inline-size)*var(--uxp-swc-tooltip-factor)*-1)!important;width:calc(var(--spectrum-tooltip-tip-inline-size)*var(--uxp-swc-tooltip-factor)*-1)!important}:host([placement*=bottom]) #tooltip #tip[style],:host([placement*=top]) #tooltip #tip[style]{left:calc(var(--spectrum-tooltip-tip-inline-size)*var(--uxp-swc-tooltip-factor)*-1/2)!important}:host([placement*=left]) #tooltip #tip[style],:host([placement*=right]) #tooltip #tip[style]{top:calc(var(--spectrum-tooltip-tip-inline-size)*var(--uxp-swc-tooltip-factor)*-1/2)!important}:host([placement=bottom]) #tooltip #tip[style],:host([placement=top]) #tooltip #tip[style]{left:50%!important;translate:0!important}:host([placement=left]) #tooltip #tip[style],:host([placement=right]) #tooltip #tip[style]{top:50%!important;translate:0!important}
 `;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (styles);
 
@@ -23907,11 +24822,25 @@ sp-card [slot="footer"] {
   flex-shrink: 0;
 }
 
-.card-heading span {
+.task-name {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
+  flex: 1;
+}
+
+overlay-trigger {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+sp-tooltip {
+  max-width: 350px;
+  word-wrap: break-word;
 }
 
 .card-subheading {
@@ -23940,7 +24869,6 @@ sp-card [slot="footer"] {
 .card-meta {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   margin-top: 4px;
   min-width: 0;
   overflow: hidden;
@@ -23950,14 +24878,26 @@ sp-card [slot="footer"] {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.meta-row:last-child {
+  margin-bottom: 0;
 }
 
 .meta-field {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  margin-right: 32px;
+}
+
+.meta-field .meta-label {
+  margin-bottom: 4px;
+}
+
+.meta-field:last-child {
+  margin-right: 0;
 }
 
 .meta-label {
@@ -98462,6 +99402,7 @@ const getTaskDetails = async taskId => {
     status_after: cu_data.status?.status,
     status: cu_data.status,
     // Full status object with status and color
+    status_last_changed_at: sb_data?.status_last_changed_at,
     estimate_mins_after: cu_data.time_estimate,
     due_date_after: cu_data.due_date,
     date_created: cu_data.date_created,
@@ -98550,6 +99491,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
+const {
+  shell
+} = __webpack_require__(/*! uxp */ "uxp");
 
 /**
  * Opens a URL in the system's default browser via UXP shell API
@@ -98557,21 +99501,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 const openExternalUrl = async url => {
   try {
-    const uxp = __webpack_require__(/*! uxp */ "uxp");
-    if (uxp.shell && uxp.shell.openExternal) {
-      await uxp.shell.openExternal(url);
-    } else if (uxp.host && uxp.host.shell && uxp.host.shell.openExternal) {
-      await uxp.host.shell.openExternal(url);
-    } else {
-      const {
-        shell
-      } = uxp;
-      if (shell && shell.openExternal) {
-        await shell.openExternal(url);
-      } else {
-        console.log('Shell API not available, URL:', url);
-      }
-    }
+    await shell.openExternal(url);
   } catch (e) {
     console.error('Failed to open URL:', e);
   }
@@ -98633,7 +99563,17 @@ const FolderDetailsCard = ({
   }, taskDetails?.task_id && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
     size: "s",
     variant: "neutral"
-  }, taskDetails.task_id), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, taskName)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, taskDetails.task_id), taskDetails?.name ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("overlay-trigger", {
+    type: "hint",
+    placement: "bottom"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "task-name",
+    slot: "trigger"
+  }, taskName), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-tooltip", {
+    slot: "hover-content"
+  }, taskDetails.name)) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "task-name"
+  }, taskName)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     slot: "description",
     class: "card-description"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -98646,7 +99586,9 @@ const FolderDetailsCard = ({
     label: "More Actions"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-menu-item", {
     value: "refresh"
-  }, "Refresh Data")));
+  }, "Refresh Data"), taskDetails?.task_id && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-menu-item", {
+    value: "open-task"
+  }, "Open in ClickUp")));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FolderDetailsCard);
 
@@ -98895,7 +99837,16 @@ const TaskDetailsCard = ({
     class: "meta-field"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     class: "meta-label"
-  }, "Status"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
+  }, "Status"), taskDetails?.status_last_changed_at ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("overlay-trigger", {
+    type: "hint",
+    placement: "bottom"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
+    slot: "trigger",
+    size: "s",
+    style: (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getStatusBadgeStyle)(taskDetails.status.color)
+  }, taskDetails.status.status), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-tooltip", {
+    slot: "hover-content"
+  }, "Changed: ", (0,_lib__WEBPACK_IMPORTED_MODULE_2__.formatDate)(taskDetails.status_last_changed_at), (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate)(taskDetails.status_last_changed_at) && ` (${(0,_lib__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate)(taskDetails.status_last_changed_at)})`)) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
     size: "s",
     style: (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getStatusBadgeStyle)(taskDetails.status.color)
   }, taskDetails.status.status))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -99727,7 +100678,7 @@ __webpack_require__.r(__webpack_exports__);
  * Prevents "CustomElementRegistry already contains an entry" errors on plugin reload
  */
 const safeImportComponents = async () => {
-  const componentsToLoad = [['sp-theme', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/theme/sp-theme.js */ "./node_modules/@spectrum-web-components/theme/sp-theme.dev.js"))], ['sp-theme-styles', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/theme/src/themes.js */ "./node_modules/@spectrum-web-components/theme/src/themes.dev.js"))], ['sp-card', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/card/sp-card.js */ "./node_modules/@swc-uxp-wrappers/card/sp-card.js"))], ['sp-action-button', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/action-button/sp-action-button.js */ "./node_modules/@swc-uxp-wrappers/action-button/sp-action-button.js"))], ['sp-action-group', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/action-group/sp-action-group.js */ "./node_modules/@swc-uxp-wrappers/action-group/sp-action-group.js"))], ['sp-button', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/button/sp-button.js */ "./node_modules/@swc-uxp-wrappers/button/sp-button.js"))], ['sp-menu', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/menu/sp-menu.js */ "./node_modules/@swc-uxp-wrappers/menu/sp-menu.js"))], ['sp-menu-item', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/menu/sp-menu-item.js */ "./node_modules/@swc-uxp-wrappers/menu/sp-menu-item.js"))], ['sp-menu-divider', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/menu/sp-menu-divider.js */ "./node_modules/@swc-uxp-wrappers/menu/sp-menu-divider.js"))], ['sp-popover', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/popover/sp-popover.js */ "./node_modules/@swc-uxp-wrappers/popover/sp-popover.js"))], ['sp-overlay', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/overlay/sp-overlay.js */ "./node_modules/@swc-uxp-wrappers/overlay/sp-overlay.js"))], ['sp-action-menu', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/action-menu/sp-action-menu.js */ "./node_modules/@spectrum-web-components/action-menu/sp-action-menu.dev.js"))], ['sp-badge', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/badge/sp-badge.js */ "./node_modules/@spectrum-web-components/badge/sp-badge.dev.js"))]
+  const componentsToLoad = [['sp-theme', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/theme/sp-theme.js */ "./node_modules/@spectrum-web-components/theme/sp-theme.dev.js"))], ['sp-theme-styles', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/theme/src/themes.js */ "./node_modules/@spectrum-web-components/theme/src/themes.dev.js"))], ['sp-card', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/card/sp-card.js */ "./node_modules/@swc-uxp-wrappers/card/sp-card.js"))], ['sp-action-button', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/action-button/sp-action-button.js */ "./node_modules/@swc-uxp-wrappers/action-button/sp-action-button.js"))], ['sp-action-group', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/action-group/sp-action-group.js */ "./node_modules/@swc-uxp-wrappers/action-group/sp-action-group.js"))], ['sp-button', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/button/sp-button.js */ "./node_modules/@swc-uxp-wrappers/button/sp-button.js"))], ['sp-menu', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/menu/sp-menu.js */ "./node_modules/@swc-uxp-wrappers/menu/sp-menu.js"))], ['sp-menu-item', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/menu/sp-menu-item.js */ "./node_modules/@swc-uxp-wrappers/menu/sp-menu-item.js"))], ['sp-menu-divider', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/menu/sp-menu-divider.js */ "./node_modules/@swc-uxp-wrappers/menu/sp-menu-divider.js"))], ['sp-popover', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/popover/sp-popover.js */ "./node_modules/@swc-uxp-wrappers/popover/sp-popover.js"))], ['sp-overlay', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/overlay/sp-overlay.js */ "./node_modules/@swc-uxp-wrappers/overlay/sp-overlay.js"))], ['sp-action-menu', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/action-menu/sp-action-menu.js */ "./node_modules/@spectrum-web-components/action-menu/sp-action-menu.dev.js"))], ['sp-badge', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @spectrum-web-components/badge/sp-badge.js */ "./node_modules/@spectrum-web-components/badge/sp-badge.dev.js"))], ['sp-tooltip', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/tooltip/sp-tooltip.js */ "./node_modules/@swc-uxp-wrappers/tooltip/sp-tooltip.js"))], ['overlay-trigger', () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! @swc-uxp-wrappers/overlay/overlay-trigger.js */ "./node_modules/@swc-uxp-wrappers/overlay/overlay-trigger.js"))]
   // sp-progressbar and sp-label are native UXP Spectrum widgets (no import needed)
   ];
   for (const [name, importFn] of componentsToLoad) {

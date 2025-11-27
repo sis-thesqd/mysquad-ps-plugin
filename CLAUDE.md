@@ -28,6 +28,12 @@ This is a **UXP Photoshop plugin** built with React 18 and Adobe Spectrum Web Co
 - **Webpack bundles to single file** - Output is `bundle.js` at project root (not `/dist`).
 - **External modules** - `photoshop`, `uxp`, and `os` are UXP runtime modules, not npm packages.
 
+### CSS Constraints in UXP
+
+- **Never use `gap` property** - UXP does not support CSS `gap`. Always use `margin` for spacing between elements.
+- **Use `margin-right` on items** with `:last-child { margin-right: 0; }` for horizontal spacing
+- **Use `margin-bottom` on items** with `:last-child { margin-bottom: 0; }` for vertical spacing
+
 ### Web Components in React
 
 Spectrum Web Components don't integrate natively with React's event system:

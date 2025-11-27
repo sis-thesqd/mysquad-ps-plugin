@@ -75,12 +75,29 @@ const TaskDetailsCard = ({ taskDetails, loading }) => {
             {taskDetails?.status && (
               <div class="meta-field">
                 <span class="meta-label">Status</span>
-                <sp-badge
-                  size="s"
-                  style={getStatusBadgeStyle(taskDetails.status.color)}
-                >
-                  {taskDetails.status.status}
-                </sp-badge>
+                {taskDetails?.status_last_changed_at ? (
+                  <overlay-trigger type="hint" placement="bottom">
+                    <sp-badge
+                      slot="trigger"
+                      size="s"
+                      style={getStatusBadgeStyle(taskDetails.status.color)}
+                    >
+                      {taskDetails.status.status}
+                    </sp-badge>
+                    <sp-tooltip slot="hover-content">
+                      Changed: {formatDate(taskDetails.status_last_changed_at)}
+                      {getRelativeDate(taskDetails.status_last_changed_at) &&
+                        ` (${getRelativeDate(taskDetails.status_last_changed_at)})`}
+                    </sp-tooltip>
+                  </overlay-trigger>
+                ) : (
+                  <sp-badge
+                    size="s"
+                    style={getStatusBadgeStyle(taskDetails.status.color)}
+                  >
+                    {taskDetails.status.status}
+                  </sp-badge>
+                )}
               </div>
             )}
           </div>

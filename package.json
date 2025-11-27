@@ -24,6 +24,7 @@
     "@swc-uxp-wrappers/menu": "^2.0.0",
     "@swc-uxp-wrappers/overlay": "^2.0.0",
     "@swc-uxp-wrappers/popover": "^2.0.0",
+    "@swc-uxp-wrappers/tooltip": "^2.0.0",
     "@swc-uxp-wrappers/utils": "^2.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

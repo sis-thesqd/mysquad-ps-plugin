@@ -25,6 +25,8 @@ const safeImportComponents = async () => {
     ['sp-overlay', () => import('@swc-uxp-wrappers/overlay/sp-overlay.js')],
     ['sp-action-menu', () => import('@spectrum-web-components/action-menu/sp-action-menu.js')],
     ['sp-badge', () => import('@spectrum-web-components/badge/sp-badge.js')],
+    ['sp-tooltip', () => import('@swc-uxp-wrappers/tooltip/sp-tooltip.js')],
+    ['overlay-trigger', () => import('@swc-uxp-wrappers/overlay/overlay-trigger.js')],
     // sp-progressbar and sp-label are native UXP Spectrum widgets (no import needed)
   ];
 
