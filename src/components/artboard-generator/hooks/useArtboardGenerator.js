@@ -206,16 +206,16 @@ export const useArtboardGenerator = () => {
       } else {
         // Use the original method
         results = await generateArtboards(
-          generatableSizes,
-          sourceConfig,
-          {
-            ...options,
-            printSettings,
-          },
-          (current, total, name) => {
-            setProgress({ current, total, name });
-          }
-        );
+        generatableSizes,
+        sourceConfig,
+        {
+          ...options,
+          printSettings,
+        },
+        (current, total, name) => {
+          setProgress({ current, total, name });
+        }
+      );
       }
 
       setGeneratedArtboards(results);
@@ -266,16 +266,16 @@ export const useArtboardGenerator = () => {
       } else {
         // Use the original method
         results = await generateArtboards(
-          [size],
-          sourceConfig,
-          {
-            ...options,
-            printSettings,
-          },
-          (current, total, name) => {
-            setProgress({ current, total, name });
-          }
-        );
+        [size],
+        sourceConfig,
+        {
+          ...options,
+          printSettings,
+        },
+        (current, total, name) => {
+          setProgress({ current, total, name });
+        }
+      );
       }
 
       setGeneratedArtboards((prev) => [...prev, ...results]);
