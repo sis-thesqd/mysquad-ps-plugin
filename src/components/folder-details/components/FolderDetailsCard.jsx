@@ -46,8 +46,29 @@ const FolderDetailsCard = ({ taskDetails, loading, onRefresh }) => {
           openExternalUrl(url);
         }
       };
+
+      // Fix for menu not sizing correctly on first open
+      let hasOpened = false;
+      const handleOpened = () => {
+        if (!hasOpened) {
+          hasOpened = true;
+          // Force popover to recalculate size by triggering a reflow
+          const popover = menu.shadowRoot?.querySelector('sp-popover') ||
+                          menu.querySelector('sp-popover');
+          if (popover) {
+            popover.style.width = 'auto';
+            // Force reflow
+            void popover.offsetWidth;
+          }
+        }
+      };
+
       menu.addEventListener('change', handleChange);
-      return () => menu.removeEventListener('change', handleChange);
+      menu.addEventListener('sp-opened', handleOpened);
+      return () => {
+        menu.removeEventListener('change', handleChange);
+        menu.removeEventListener('sp-opened', handleOpened);
+      };
     }
   }, [onRefresh, taskDetails?.task_id]);
 

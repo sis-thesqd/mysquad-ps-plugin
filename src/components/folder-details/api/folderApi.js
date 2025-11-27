@@ -114,8 +114,10 @@ export const getTaskDetails = async (taskId) => {
     account: sb_data?.account || cu_data.folder?.name?.split(' - ')[0],
     church_name: sb_data?.church_name || cu_data.folder?.name?.split(' - ').slice(1).join(' - '),
     status_after: cu_data.status?.status,
+    status: cu_data.status, // Full status object with status and color
     estimate_mins_after: cu_data.time_estimate,
     due_date_after: cu_data.due_date,
+    date_created: cu_data.date_created,
     responsible_dept: sb_data?.responsible_dept,
     // Additional fields from cu_data
     assignees: cu_data.assignees,

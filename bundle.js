@@ -23939,19 +23939,42 @@ sp-card [slot="footer"] {
 
 .card-meta {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
   margin-top: 4px;
   min-width: 0;
   overflow: hidden;
 }
 
-.card-meta > * {
-  margin-right: 16px;
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
 }
 
-.card-meta > *:last-child {
-  margin-right: 0;
+.meta-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.meta-label {
+  font-size: 10px;
+  color: var(--spectrum-global-color-gray-500, #999);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meta-value {
+  font-size: 13px;
+  color: var(--spectrum-global-color-gray-800, #fff);
+}
+
+.meta-relative {
+  font-size: 11px;
+  color: var(--spectrum-global-color-gray-500, #999);
 }
 
 .description-text {
@@ -24088,6 +24111,7 @@ sp-action-menu sp-menu {
   border-radius: 4px;
   background: var(--spectrum-global-color-gray-100, #323232);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  min-width: 120px;
 }
 
 sp-menu-item {
@@ -98436,8 +98460,11 @@ const getTaskDetails = async taskId => {
     account: sb_data?.account || cu_data.folder?.name?.split(' - ')[0],
     church_name: sb_data?.church_name || cu_data.folder?.name?.split(' - ').slice(1).join(' - '),
     status_after: cu_data.status?.status,
+    status: cu_data.status,
+    // Full status object with status and color
     estimate_mins_after: cu_data.time_estimate,
     due_date_after: cu_data.due_date,
+    date_created: cu_data.date_created,
     responsible_dept: sb_data?.responsible_dept,
     // Additional fields from cu_data
     assignees: cu_data.assignees,
@@ -98575,8 +98602,27 @@ const FolderDetailsCard = ({
           openExternalUrl(url);
         }
       };
+
+      // Fix for menu not sizing correctly on first open
+      let hasOpened = false;
+      const handleOpened = () => {
+        if (!hasOpened) {
+          hasOpened = true;
+          // Force popover to recalculate size by triggering a reflow
+          const popover = menu.shadowRoot?.querySelector('sp-popover') || menu.querySelector('sp-popover');
+          if (popover) {
+            popover.style.width = 'auto';
+            // Force reflow
+            void popover.offsetWidth;
+          }
+        }
+      };
       menu.addEventListener('change', handleChange);
-      return () => menu.removeEventListener('change', handleChange);
+      menu.addEventListener('sp-opened', handleOpened);
+      return () => {
+        menu.removeEventListener('change', handleChange);
+        menu.removeEventListener('sp-opened', handleOpened);
+      };
     }
   }, [onRefresh, taskDetails?.task_id]);
   const churchAccount = taskDetails?.church_name && taskDetails?.account ? `${taskDetails.account} - ${taskDetails.church_name}` : loading ? 'Loading...' : '';
@@ -98772,6 +98818,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_markdown__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-markdown */ "./node_modules/react-markdown/lib/index.js");
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../lib */ "./src/lib/index.js");
+
 
 
 
@@ -98788,21 +98836,6 @@ const formatEstimate = mins => {
     return `${hours}h ${minutes > 0 ? `${minutes}m` : ''}`;
   }
   return `${minutes}m`;
-};
-
-/**
- * Formats a date string into readable format
- * @param {string} dateStr - ISO date string
- * @returns {string|null} Formatted date string
- */
-const formatDate = dateStr => {
-  if (!dateStr) return null;
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  });
 };
 
 /**
@@ -98849,14 +98882,47 @@ const TaskDetailsCard = ({
     class: "card-description"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     class: "card-meta"
-  }, taskDetails?.estimate_mins_after > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-    class: "description-text"
-  }, "Estimate: ", formatEstimate(taskDetails.estimate_mins_after)), taskDetails?.due_date_after && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-    class: "description-text"
-  }, "Draft: ", formatDate(taskDetails.due_date_after)), responsibleDept && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "meta-row"
+  }, responsibleDept && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "meta-field"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-label"
+  }, "Department"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
     size: "s",
     variant: "informative"
-  }, responsibleDept)), hasDescription && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, responsibleDept)), taskDetails?.status && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "meta-field"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-label"
+  }, "Status"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
+    size: "s",
+    style: (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getStatusBadgeStyle)(taskDetails.status.color)
+  }, taskDetails.status.status))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "meta-row"
+  }, taskDetails?.estimate_mins_after > 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "meta-field"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-label"
+  }, "Estimate"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-value"
+  }, formatEstimate(taskDetails.estimate_mins_after))), taskDetails?.due_date_after && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "meta-field"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-label"
+  }, "Draft Due"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-value"
+  }, (0,_lib__WEBPACK_IMPORTED_MODULE_2__.formatDate)(taskDetails.due_date_after), (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate)(taskDetails.due_date_after) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-relative"
+  }, " (", (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate)(taskDetails.due_date_after), ")"))), taskDetails?.date_created && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "meta-field"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-label"
+  }, "Created"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-value"
+  }, (0,_lib__WEBPACK_IMPORTED_MODULE_2__.formatDate)(taskDetails.date_created), (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate)(taskDetails.date_created) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-relative"
+  }, " (", (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate)(taskDetails.date_created), ")"))))), hasDescription && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     class: "description-section"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     class: `description-toggle ${descriptionExpanded ? 'expanded' : ''}`
@@ -99195,6 +99261,132 @@ const ACTIVITY_TYPES = {
 
 /***/ }),
 
+/***/ "./src/lib/badge-utils.js":
+/*!********************************!*\
+  !*** ./src/lib/badge-utils.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getBadgeStyle: () => (/* binding */ getBadgeStyle),
+/* harmony export */   getContrastTextColor: () => (/* binding */ getContrastTextColor),
+/* harmony export */   getStatusBadgeStyle: () => (/* binding */ getStatusBadgeStyle)
+/* harmony export */ });
+/**
+ * Badge utility functions for styling and color management
+ */
+
+/**
+ * Generates inline style object for a badge with custom background color
+ * @param {string} hexColor - Hex color code (e.g., "#ff0000")
+ * @param {string} fallbackColor - Fallback color if hexColor is not provided
+ * @returns {Object} Style object with backgroundColor
+ */
+const getBadgeStyle = (hexColor, fallbackColor = '#666') => {
+  return {
+    backgroundColor: hexColor || fallbackColor
+  };
+};
+
+/**
+ * Determines if text should be light or dark based on background color
+ * Uses relative luminance calculation for accessibility
+ * @param {string} hexColor - Hex color code (e.g., "#ff0000")
+ * @returns {string} Either 'light' or 'dark' for text color
+ */
+const getContrastTextColor = hexColor => {
+  if (!hexColor) return 'light';
+
+  // Remove # if present
+  const hex = hexColor.replace('#', '');
+
+  // Convert to RGB
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? 'dark' : 'light';
+};
+
+/**
+ * Generates complete badge style with background and appropriate text color
+ * @param {string} hexColor - Hex color code for background
+ * @param {string} fallbackColor - Fallback background color
+ * @returns {Object} Style object with backgroundColor and color
+ */
+const getStatusBadgeStyle = (hexColor, fallbackColor = '#666') => {
+  const bgColor = hexColor || fallbackColor;
+  const textColorType = getContrastTextColor(bgColor);
+  return {
+    backgroundColor: bgColor,
+    color: textColorType === 'dark' ? '#000' : '#fff'
+  };
+};
+
+/***/ }),
+
+/***/ "./src/lib/date-utils.js":
+/*!*******************************!*\
+  !*** ./src/lib/date-utils.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   formatDate: () => (/* binding */ formatDate),
+/* harmony export */   getRelativeDate: () => (/* binding */ getRelativeDate)
+/* harmony export */ });
+/**
+ * Date utility functions for formatting and relative date calculations
+ */
+
+/**
+ * Formats a date string into readable format
+ * @param {string|number} dateStr - ISO date string or Unix timestamp (milliseconds)
+ * @returns {string|null} Formatted date string (e.g., "Jan 15, 2024")
+ */
+const formatDate = dateStr => {
+  if (!dateStr) return null;
+  // Handle Unix timestamp (milliseconds) from ClickUp
+  const date = typeof dateStr === 'number' || /^\d+$/.test(dateStr) ? new Date(parseInt(dateStr, 10)) : new Date(dateStr);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+};
+
+/**
+ * Gets relative date label (e.g., "today", "yesterday", "2 days ago", "in 3 days")
+ * @param {string|number} dateStr - ISO date string or Unix timestamp (milliseconds)
+ * @returns {string|null} Relative date string
+ */
+const getRelativeDate = dateStr => {
+  if (!dateStr) return null;
+
+  // Handle Unix timestamp (milliseconds) from ClickUp
+  const date = typeof dateStr === 'number' || /^\d+$/.test(dateStr) ? new Date(parseInt(dateStr, 10)) : new Date(dateStr);
+  const now = new Date();
+  // Reset time to compare dates only
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffTime = compareDate.getTime() - today.getTime();
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return 'today';
+  if (diffDays === 1) return 'tomorrow';
+  if (diffDays === -1) return 'yesterday';
+  if (diffDays > 1) return `in ${diffDays} days`;
+  if (diffDays < -1) return `${Math.abs(diffDays)} days ago`;
+  return null;
+};
+
+/***/ }),
+
 /***/ "./src/lib/index.js":
 /*!**************************!*\
   !*** ./src/lib/index.js ***!
@@ -99207,14 +99399,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ACTIVITY_TYPES: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.ACTIVITY_TYPES),
 /* harmony export */   callRpc: () => (/* reexport safe */ _supabase_api__WEBPACK_IMPORTED_MODULE_0__.callRpc),
 /* harmony export */   extractUsername: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.extractUsername),
+/* harmony export */   formatDate: () => (/* reexport safe */ _date_utils__WEBPACK_IMPORTED_MODULE_2__.formatDate),
+/* harmony export */   getBadgeStyle: () => (/* reexport safe */ _badge_utils__WEBPACK_IMPORTED_MODULE_3__.getBadgeStyle),
+/* harmony export */   getContrastTextColor: () => (/* reexport safe */ _badge_utils__WEBPACK_IMPORTED_MODULE_3__.getContrastTextColor),
+/* harmony export */   getRelativeDate: () => (/* reexport safe */ _date_utils__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate),
+/* harmony export */   getStatusBadgeStyle: () => (/* reexport safe */ _badge_utils__WEBPACK_IMPORTED_MODULE_3__.getStatusBadgeStyle),
 /* harmony export */   isSupabaseConfigured: () => (/* reexport safe */ _supabase_api__WEBPACK_IMPORTED_MODULE_0__.isSupabaseConfigured),
 /* harmony export */   logActivity: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.logActivity)
 /* harmony export */ });
 /* harmony import */ var _supabase_api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./supabase-api */ "./src/lib/supabase-api.js");
 /* harmony import */ var _activity_logger__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./activity-logger */ "./src/lib/activity-logger.js");
+/* harmony import */ var _date_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./date-utils */ "./src/lib/date-utils.js");
+/* harmony import */ var _badge_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./badge-utils */ "./src/lib/badge-utils.js");
 /**
  * Library exports
  */
+
+
 
 
 

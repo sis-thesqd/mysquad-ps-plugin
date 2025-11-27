@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { formatDate, getRelativeDate, getStatusBadgeStyle } from '../../../lib';
 
 /**
  * Formats minutes into hours and minutes display
@@ -14,17 +15,6 @@ const formatEstimate = (mins) => {
     return `${hours}h ${minutes > 0 ? `${minutes}m` : ''}`;
   }
   return `${minutes}m`;
-};
-
-/**
- * Formats a date string into readable format
- * @param {string} dateStr - ISO date string
- * @returns {string|null} Formatted date string
- */
-const formatDate = (dateStr) => {
-  if (!dateStr) return null;
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 };
 
 /**
@@ -75,19 +65,55 @@ const TaskDetailsCard = ({ taskDetails, loading }) => {
     <sp-card heading="Task Details">
       <div slot="description" class="card-description">
         <div class="card-meta">
-          {taskDetails?.estimate_mins_after > 0 && (
-            <span class="description-text">
-              Estimate: {formatEstimate(taskDetails.estimate_mins_after)}
-            </span>
-          )}
-          {taskDetails?.due_date_after && (
-            <span class="description-text">
-              Draft: {formatDate(taskDetails.due_date_after)}
-            </span>
-          )}
-          {responsibleDept && (
-            <sp-badge size="s" variant="informative">{responsibleDept}</sp-badge>
-          )}
+          <div class="meta-row">
+            {responsibleDept && (
+              <div class="meta-field">
+                <span class="meta-label">Department</span>
+                <sp-badge size="s" variant="informative">{responsibleDept}</sp-badge>
+              </div>
+            )}
+            {taskDetails?.status && (
+              <div class="meta-field">
+                <span class="meta-label">Status</span>
+                <sp-badge
+                  size="s"
+                  style={getStatusBadgeStyle(taskDetails.status.color)}
+                >
+                  {taskDetails.status.status}
+                </sp-badge>
+              </div>
+            )}
+          </div>
+          <div class="meta-row">
+            {taskDetails?.estimate_mins_after > 0 && (
+              <div class="meta-field">
+                <span class="meta-label">Estimate</span>
+                <span class="meta-value">{formatEstimate(taskDetails.estimate_mins_after)}</span>
+              </div>
+            )}
+            {taskDetails?.due_date_after && (
+              <div class="meta-field">
+                <span class="meta-label">Draft Due</span>
+                <span class="meta-value">
+                  {formatDate(taskDetails.due_date_after)}
+                  {getRelativeDate(taskDetails.due_date_after) && (
+                    <span class="meta-relative"> ({getRelativeDate(taskDetails.due_date_after)})</span>
+                  )}
+                </span>
+              </div>
+            )}
+            {taskDetails?.date_created && (
+              <div class="meta-field">
+                <span class="meta-label">Created</span>
+                <span class="meta-value">
+                  {formatDate(taskDetails.date_created)}
+                  {getRelativeDate(taskDetails.date_created) && (
+                    <span class="meta-relative"> ({getRelativeDate(taskDetails.date_created)})</span>
+                  )}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
         {hasDescription && (
           <div class="description-section">
