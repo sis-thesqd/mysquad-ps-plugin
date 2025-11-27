@@ -219,8 +219,18 @@ sp-menu-item {
 
 .tab-navigation {
   display: flex;
-  gap: 2px;
+  justify-content: center;
   margin-bottom: 12px;
+}
+
+.tab-navigation sp-action-group {
+  gap: 8px;
+}
+
+.tab-navigation sp-action-button {
+  --spectrum-actionbutton-height: 28px;
+  --mod-actionbutton-height: 28px;
+  padding: 0 16px;
 }
 
 .tab-button {

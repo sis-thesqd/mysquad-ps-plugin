@@ -44,7 +44,7 @@ const TaskDetailsCard = ({ taskDetails, loading }) => {
     return (
       <sp-card heading="Task Details">
         <div slot="description" class="card-description">
-          <span class="description-text">Loading...</span>
+          <span class="description-text">Task details loading...</span>
         </div>
       </sp-card>
     );
