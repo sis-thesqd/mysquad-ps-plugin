@@ -11,11 +11,17 @@ export const useFolderDetails = () => {
   const [taskDetails, setTaskDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isFirstFetch, setIsFirstFetch] = useState(true);
 
   const fetchTaskDetails = useCallback(async () => {
     if (!config.features.folderDetails) {
       setLoading(false);
       return;
+    }
+
+    const isInitialLoad = isFirstFetch;
+    if (isFirstFetch) {
+      setIsFirstFetch(false);
     }
 
     try {
@@ -42,15 +48,19 @@ export const useFolderDetails = () => {
       const details = await getTaskDetails(taskId);
       setTaskDetails(details);
 
-      // Log task fetch activity
-      logActivity(ACTIVITY_TYPES.TASK_FETCH, { taskId, filePath: currentPath });
+      // Log activity - plugin_load on first fetch, task_fetch on subsequent
+      if (isInitialLoad) {
+        logActivity(ACTIVITY_TYPES.PLUGIN_LOAD, { taskId, filePath: currentPath });
+      } else {
+        logActivity(ACTIVITY_TYPES.TASK_FETCH, { taskId, filePath: currentPath });
+      }
 
     } catch (err) {
       setError(err.message || 'Failed to fetch task details');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isFirstFetch]);
 
   const refetch = useCallback(() => {
     fetchTaskDetails();
