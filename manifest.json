@@ -38,6 +38,10 @@
   ],
   "requiredPermissions": {
     "allowCodeGenerationFromStrings": true,
+    "launchProcess": {
+      "schemes": ["https", "http"],
+      "extensions": []
+    },
     "webview": {
       "allow": "yes",
       "domains": [
