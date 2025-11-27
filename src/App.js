@@ -17,15 +17,6 @@ const App = () => {
   const [progress, setProgress] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const loadingStartTime = useRef(null);
-  const hasLoggedPluginLoad = useRef(false);
-
-  // Log plugin load once on mount
-  useEffect(() => {
-    if (!hasLoggedPluginLoad.current) {
-      hasLoggedPluginLoad.current = true;
-      logActivity(ACTIVITY_TYPES.PLUGIN_LOAD);
-    }
-  }, []);
 
   // Handle tab change with logging
   const handleTabChange = (tabId) => {

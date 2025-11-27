@@ -93893,15 +93893,6 @@ const App = () => {
   const [progress, setProgress] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [showLoading, setShowLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const loadingStartTime = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  const hasLoggedPluginLoad = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(false);
-
-  // Log plugin load once on mount
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (!hasLoggedPluginLoad.current) {
-      hasLoggedPluginLoad.current = true;
-      (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.PLUGIN_LOAD);
-    }
-  }, []);
 
   // Handle tab change with logging
   const handleTabChange = tabId => {
@@ -97634,10 +97625,15 @@ const useFolderDetails = () => {
   const [taskDetails, setTaskDetails] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [error, setError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [isFirstFetch, setIsFirstFetch] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const fetchTaskDetails = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
     if (!_config__WEBPACK_IMPORTED_MODULE_3__.config.features.folderDetails) {
       setLoading(false);
       return;
+    }
+    const isInitialLoad = isFirstFetch;
+    if (isFirstFetch) {
+      setIsFirstFetch(false);
     }
     try {
       setLoading(true);
@@ -97661,17 +97657,24 @@ const useFolderDetails = () => {
       const details = await (0,_api_folderApi__WEBPACK_IMPORTED_MODULE_1__.getTaskDetails)(taskId);
       setTaskDetails(details);
 
-      // Log task fetch activity
-      (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.TASK_FETCH, {
-        taskId,
-        filePath: currentPath
-      });
+      // Log activity - plugin_load on first fetch, task_fetch on subsequent
+      if (isInitialLoad) {
+        (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.PLUGIN_LOAD, {
+          taskId,
+          filePath: currentPath
+        });
+      } else {
+        (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.TASK_FETCH, {
+          taskId,
+          filePath: currentPath
+        });
+      }
     } catch (err) {
       setError(err.message || 'Failed to fetch task details');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isFirstFetch]);
   const refetch = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(() => {
     fetchTaskDetails();
   }, [fetchTaskDetails]);
