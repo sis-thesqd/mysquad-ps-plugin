@@ -21,6 +21,7 @@ const safeImportComponents = async () => {
     ['sp-menu', () => import('@swc-uxp-wrappers/menu/sp-menu.js')],
     ['sp-menu-item', () => import('@swc-uxp-wrappers/menu/sp-menu-item.js')],
     ['sp-menu-divider', () => import('@swc-uxp-wrappers/menu/sp-menu-divider.js')],
+    ['sp-divider', () => import('@swc-uxp-wrappers/divider/sp-divider.js')],
     ['sp-popover', () => import('@swc-uxp-wrappers/popover/sp-popover.js')],
     ['sp-overlay', () => import('@swc-uxp-wrappers/overlay/sp-overlay.js')],
     ['sp-action-menu', () => import('@spectrum-web-components/action-menu/sp-action-menu.js')],

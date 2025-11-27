@@ -177,6 +177,10 @@ sp-tooltip {
   margin-bottom: 0;
 }
 
+.card-meta sp-divider {
+  margin-bottom: 16px;
+}
+
 .meta-field {
   display: flex;
   flex-direction: column;

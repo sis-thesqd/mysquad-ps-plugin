@@ -101,6 +101,7 @@ const TaskDetailsCard = ({ taskDetails, loading }) => {
               </div>
             )}
           </div>
+          <sp-divider size="s"></sp-divider>
           <div class="meta-row">
             {taskDetails?.estimate_mins_after > 0 && (
               <div class="meta-field">
