@@ -93877,15 +93877,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./config */ "./src/config/index.js");
 
 
-const TABS = [{
-  id: 'task',
-  label: 'Task Details'
-}, {
-  id: 'generator',
-  label: 'Generator'
-}];
+
 const MIN_LOADING_DISPLAY_TIME = 2000; // 2 seconds minimum
 
 const App = () => {
@@ -93945,7 +93940,7 @@ const App = () => {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "app-header-row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.Header, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.TabNavigation, {
-    tabs: TABS,
+    tabs: _config__WEBPACK_IMPORTED_MODULE_2__.config.tabs,
     activeTab: activeTab,
     onTabChange: setActiveTab
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -93968,114 +93963,13 @@ const App = () => {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.TaskDetailsCard, {
     taskDetails: taskDetails,
     loading: loading
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  })), _config__WEBPACK_IMPORTED_MODULE_2__.config.features.actionsCard && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       marginTop: '16px'
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.ActionsCard, null)))), activeTab === 'generator' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.ArtboardGeneratorTab, null))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
-
-/***/ }),
-
-/***/ "./src/components/Header.jsx":
-/*!***********************************!*\
-  !*** ./src/components/Header.jsx ***!
-  \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-
-
-/**
- * Application header with logo
- */
-const Header = () => {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "header"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
-    src: "icons/logo.svg",
-    alt: "MySquad",
-    style: {
-      height: '40px'
-    }
-  }));
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Header);
-
-/***/ }),
-
-/***/ "./src/components/TabNavigation.jsx":
-/*!******************************************!*\
-  !*** ./src/components/TabNavigation.jsx ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-
-
-/**
- * Tab navigation component for switching between plugin panels
- * Uses Adobe Spectrum Web Components sp-action-group (UXP compatible)
- * @param {Object} props - Component props
- * @param {Array} props.tabs - Array of tab objects with id and label
- * @param {string} props.activeTab - Currently active tab id
- * @param {Function} props.onTabChange - Callback when tab changes
- */
-const TabNavigation = ({
-  tabs,
-  activeTab,
-  onTabChange
-}) => {
-  const buttonRefs = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)({});
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    const handlers = {};
-    tabs.forEach(tab => {
-      const buttonEl = buttonRefs.current[tab.id];
-      if (buttonEl) {
-        handlers[tab.id] = () => {
-          if (onTabChange) {
-            onTabChange(tab.id);
-          }
-        };
-        buttonEl.addEventListener('click', handlers[tab.id]);
-      }
-    });
-    return () => {
-      tabs.forEach(tab => {
-        const buttonEl = buttonRefs.current[tab.id];
-        if (buttonEl && handlers[tab.id]) {
-          buttonEl.removeEventListener('click', handlers[tab.id]);
-        }
-      });
-    };
-  }, [tabs, onTabChange]);
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "tab-navigation"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-group", {
-    selects: "single",
-    selected: activeTab
-  }, tabs.map(tab => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-button", {
-    key: tab.id,
-    ref: el => buttonRefs.current[tab.id] = el,
-    value: tab.id,
-    selected: activeTab === tab.id ? true : undefined,
-    quiet: true
-  }, tab.label))));
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabNavigation);
 
 /***/ }),
 
@@ -97778,16 +97672,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ActionsCard: () => (/* reexport safe */ _actions_components_ActionsCard__WEBPACK_IMPORTED_MODULE_4__["default"]),
 /* harmony export */   ArtboardGeneratorTab: () => (/* reexport safe */ _artboard_generator__WEBPACK_IMPORTED_MODULE_5__.ArtboardGeneratorTab),
 /* harmony export */   FolderDetailsCard: () => (/* reexport safe */ _folder_details_components_FolderDetailsCard__WEBPACK_IMPORTED_MODULE_2__["default"]),
-/* harmony export */   Header: () => (/* reexport safe */ _Header__WEBPACK_IMPORTED_MODULE_0__["default"]),
-/* harmony export */   TabNavigation: () => (/* reexport safe */ _TabNavigation__WEBPACK_IMPORTED_MODULE_1__["default"]),
+/* harmony export */   Header: () => (/* reexport safe */ _ui_Header__WEBPACK_IMPORTED_MODULE_0__["default"]),
+/* harmony export */   TabNavigation: () => (/* reexport safe */ _ui_TabNavigation__WEBPACK_IMPORTED_MODULE_1__["default"]),
 /* harmony export */   TaskDetailsCard: () => (/* reexport safe */ _task_details_components_TaskDetailsCard__WEBPACK_IMPORTED_MODULE_3__["default"]),
 /* harmony export */   extractTaskIdFromPath: () => (/* reexport safe */ _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_7__.extractTaskIdFromPath),
 /* harmony export */   getCurrentDocumentPath: () => (/* reexport safe */ _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_7__.getCurrentDocumentPath),
 /* harmony export */   getTaskDetails: () => (/* reexport safe */ _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_7__.getTaskDetails),
 /* harmony export */   useFolderDetails: () => (/* reexport safe */ _folder_details_hooks_useFolderDetails__WEBPACK_IMPORTED_MODULE_6__.useFolderDetails)
 /* harmony export */ });
-/* harmony import */ var _Header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Header */ "./src/components/Header.jsx");
-/* harmony import */ var _TabNavigation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TabNavigation */ "./src/components/TabNavigation.jsx");
+/* harmony import */ var _ui_Header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ui/Header */ "./src/components/ui/Header.jsx");
+/* harmony import */ var _ui_TabNavigation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ui/TabNavigation */ "./src/components/ui/TabNavigation.jsx");
 /* harmony import */ var _folder_details_components_FolderDetailsCard__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./folder-details/components/FolderDetailsCard */ "./src/components/folder-details/components/FolderDetailsCard.jsx");
 /* harmony import */ var _task_details_components_TaskDetailsCard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task-details/components/TaskDetailsCard */ "./src/components/task-details/components/TaskDetailsCard.jsx");
 /* harmony import */ var _actions_components_ActionsCard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./actions/components/ActionsCard */ "./src/components/actions/components/ActionsCard.jsx");
@@ -97798,7 +97692,7 @@ __webpack_require__.r(__webpack_exports__);
  * Component exports
  */
 
-// Shared components
+// UI components
 
 
 
@@ -97934,6 +97828,107 @@ const TaskDetailsCard = ({
 
 /***/ }),
 
+/***/ "./src/components/ui/Header.jsx":
+/*!**************************************!*\
+  !*** ./src/components/ui/Header.jsx ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+/**
+ * Application header with logo
+ */
+const Header = () => {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "header"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
+    src: "icons/logo.svg",
+    alt: "MySquad",
+    style: {
+      height: '40px'
+    }
+  }));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Header);
+
+/***/ }),
+
+/***/ "./src/components/ui/TabNavigation.jsx":
+/*!*********************************************!*\
+  !*** ./src/components/ui/TabNavigation.jsx ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+/**
+ * Tab navigation component for switching between plugin panels
+ * Uses Adobe Spectrum Web Components sp-action-group (UXP compatible)
+ * @param {Object} props - Component props
+ * @param {Array} props.tabs - Array of tab objects with id and label
+ * @param {string} props.activeTab - Currently active tab id
+ * @param {Function} props.onTabChange - Callback when tab changes
+ */
+const TabNavigation = ({
+  tabs,
+  activeTab,
+  onTabChange
+}) => {
+  const buttonRefs = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)({});
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const handlers = {};
+    tabs.forEach(tab => {
+      const buttonEl = buttonRefs.current[tab.id];
+      if (buttonEl) {
+        handlers[tab.id] = () => {
+          if (onTabChange) {
+            onTabChange(tab.id);
+          }
+        };
+        buttonEl.addEventListener('click', handlers[tab.id]);
+      }
+    });
+    return () => {
+      tabs.forEach(tab => {
+        const buttonEl = buttonRefs.current[tab.id];
+        if (buttonEl && handlers[tab.id]) {
+          buttonEl.removeEventListener('click', handlers[tab.id]);
+        }
+      });
+    };
+  }, [tabs, onTabChange]);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "tab-navigation"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-group", {
+    selects: "single",
+    selected: activeTab
+  }, tabs.map(tab => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-button", {
+    key: tab.id,
+    ref: el => buttonRefs.current[tab.id] = el,
+    value: tab.id,
+    selected: activeTab === tab.id ? true : undefined,
+    quiet: true
+  }, tab.label))));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabNavigation);
+
+/***/ }),
+
 /***/ "./src/config/index.js":
 /*!*****************************!*\
   !*** ./src/config/index.js ***!
@@ -97968,8 +97963,16 @@ const config = {
   // Feature flags
   features: {
     folderDetails: true,
-    actions: true
-  }
+    actionsCard: true
+  },
+  // Navigation tabs
+  tabs: [{
+    id: 'task',
+    label: 'Task Details'
+  }, {
+    id: 'generator',
+    label: 'Generator'
+  }]
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (config);
 

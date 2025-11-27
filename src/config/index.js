@@ -22,8 +22,14 @@ export const config = {
   // Feature flags
   features: {
     folderDetails: true,
-    actions: true,
+    actionsCard: true,
   },
+
+  // Navigation tabs
+  tabs: [
+    { id: 'task', label: 'Task Details' },
+    { id: 'generator', label: 'Generator' },
+  ],
 };
 
 export default config;

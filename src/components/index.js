@@ -2,9 +2,9 @@
  * Component exports
  */
 
-// Shared components
-export { default as Header } from './Header';
-export { default as TabNavigation } from './TabNavigation';
+// UI components
+export { default as Header } from './ui/Header';
+export { default as TabNavigation } from './ui/TabNavigation';
 
 // Feature components
 export { default as FolderDetailsCard } from './folder-details/components/FolderDetailsCard';

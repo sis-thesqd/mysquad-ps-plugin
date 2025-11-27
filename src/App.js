@@ -8,11 +8,7 @@ import {
   ArtboardGeneratorTab,
   useFolderDetails,
 } from './components';
-
-const TABS = [
-  { id: 'task', label: 'Task Details' },
-  { id: 'generator', label: 'Generator' },
-];
+import { config } from './config';
 
 const MIN_LOADING_DISPLAY_TIME = 2000; // 2 seconds minimum
 
@@ -69,7 +65,7 @@ const App = () => {
       <div className="app">
         <div className="app-header-row">
           <Header />
-          <TabNavigation tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+          <TabNavigation tabs={config.tabs} activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
         <div className="content">
           {activeTab === 'task' && (
@@ -86,9 +82,11 @@ const App = () => {
                   <div style={{ marginTop: '16px' }}>
                     <TaskDetailsCard taskDetails={taskDetails} loading={loading} />
                   </div>
-                  <div style={{ marginTop: '16px' }}>
-                    <ActionsCard />
-                  </div>
+                  {config.features.actionsCard && (
+                    <div style={{ marginTop: '16px' }}>
+                      <ActionsCard />
+                    </div>
+                  )}
                 </>
               )}
             </>
