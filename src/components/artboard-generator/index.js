@@ -25,6 +25,18 @@ export {
   DEFAULT_LAYOUT_OPTIONS,
 } from './services/artboardGenerator';
 
+// Batch Artboard Service (duplicate + resize approach)
+export {
+  createArtboardByDuplication,
+  generateArtboardsBatch,
+  buildBatchCommands,
+  executeBatchCommands,
+  getSourceArtboard,
+  calculateScalePercent,
+  getLayerConfig,
+  LAYER_NAMES,
+} from './services/batchArtboardService';
+
 // API
 export { fetchSizes, DEFAULT_SIZES } from './api/sizesApi';
 

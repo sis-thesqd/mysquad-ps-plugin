@@ -100,6 +100,63 @@ const GenerationOptionsPanel = ({ options, onOptionsChange }) => {
       </div>
 
       <div className="options-section">
+        <sp-label size="m">Generation Method</sp-label>
+        <sp-body size="xs" class="field-hint">
+          Choose how artboards are generated from the source.
+        </sp-body>
+        
+        <div className="form-field">
+          <sp-checkbox
+            checked={options.useBatchMethod !== false}
+            onChange={(e) => handleChange('useBatchMethod', e.target.checked)}
+          >
+            Use Batch Duplication Method
+          </sp-checkbox>
+          <sp-body size="xs" class="field-hint">
+            Duplicates entire artboard then resizes and transforms layers. 
+            More reliable for complex artboards with many layers.
+          </sp-body>
+        </div>
+      </div>
+
+      <div className="options-section">
+        <sp-label size="m">Layer Names</sp-label>
+        <sp-body size="xs" class="field-hint">
+          Names of layers to transform when using batch method. These should match layers in your source artboard.
+        </sp-body>
+
+        <div className="form-field">
+          <sp-field-label size="s">Overlay Layer</sp-field-label>
+          <sp-textfield
+            size="s"
+            value={options.overlayLayerName || 'Overlay'}
+            placeholder="Overlay"
+            onInput={(e) => handleChange('overlayLayerName', e.target.value)}
+          />
+        </div>
+
+        <div className="form-field">
+          <sp-field-label size="s">Text Layer</sp-field-label>
+          <sp-textfield
+            size="s"
+            value={options.textLayerName || 'TEXT'}
+            placeholder="TEXT"
+            onInput={(e) => handleChange('textLayerName', e.target.value)}
+          />
+        </div>
+
+        <div className="form-field">
+          <sp-field-label size="s">Background Layer</sp-field-label>
+          <sp-textfield
+            size="s"
+            value={options.backgroundLayerName || 'BKG'}
+            placeholder="BKG"
+            onInput={(e) => handleChange('backgroundLayerName', e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="options-section">
         <sp-label size="m">Type Order</sp-label>
         <sp-body size="xs" class="field-hint">
           Artboards will be grouped and sorted in this order.
