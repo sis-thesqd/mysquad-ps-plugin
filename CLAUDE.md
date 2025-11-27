@@ -69,3 +69,46 @@ All components are exported via barrel file at `src/components/index.js`.
 - **Environment variables**: `.env` file with `REACT_APP_SUPABASE_URL` and `REACT_APP_SUPABASE_ANON_KEY`
 - **Feature flags**: `src/config/index.js`
 - **Plugin manifest**: `manifest.json` (requires `manifestVersion: 5` and `enableSWCSupport: true`)
+
+## User Activity Logging (Required)
+
+**All new features must log user activity** to the `psp_user_activity` Supabase table.
+
+### How to Log Activity
+
+```js
+import { logActivity, ACTIVITY_TYPES } from '../lib/activity-logger';
+
+// Log an activity event
+await logActivity('your_activity_type', {
+  taskId: optionalTaskId,    // Optional: task ID if known
+  filePath: optionalFilePath // Optional: auto-detected if not provided
+});
+```
+
+### Table Schema (`psp_user_activity`)
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `user` | text | System username (auto-extracted from file path) |
+| `activity_type` | text | Event type identifier |
+| `task_id` | text | ClickUp task ID if available |
+| `file_path` | text | Full document path |
+| `created_at` | timestamptz | Auto-generated timestamp |
+
+### Activity Type Naming Convention
+
+Use snake_case for activity types. Examples:
+- `plugin_load` - Plugin initialization
+- `tab_switch` - Tab navigation
+- `task_fetch` - Task data retrieval
+- `generator_use` - Artboard generation
+- `{feature}_action` - New feature actions
+
+### Implementation Requirements
+
+1. Import `logActivity` from `src/lib/activity-logger.js`
+2. Call `logActivity()` at key interaction points
+3. Use descriptive activity type names
+4. Wrap in try/catch if logging is critical to the flow
+5. Activity logging fails silently to not interrupt user workflow

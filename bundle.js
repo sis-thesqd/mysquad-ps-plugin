@@ -93877,11 +93877,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./config */ "./src/config/index.js");
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./lib */ "./src/lib/index.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./config */ "./src/config/index.js");
 
 
 
-const MIN_LOADING_DISPLAY_TIME = 2000; // 2 seconds minimum
 
 const App = () => {
   const [activeTab, setActiveTab] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('task');
@@ -93893,9 +93893,25 @@ const App = () => {
   const [progress, setProgress] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [showLoading, setShowLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const loadingStartTime = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  const hasLoggedPluginLoad = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(false);
+
+  // Log plugin load once on mount
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (!hasLoggedPluginLoad.current) {
+      hasLoggedPluginLoad.current = true;
+      (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.PLUGIN_LOAD);
+    }
+  }, []);
+
+  // Handle tab change with logging
+  const handleTabChange = tabId => {
+    setActiveTab(tabId);
+    (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.TAB_SWITCH);
+  };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     let progressInterval;
     let minTimeTimeout;
+    const minLoadingTime = _config__WEBPACK_IMPORTED_MODULE_3__.config.ui.minLoadingDisplayTime;
     if (loading) {
       // Start loading display
       setShowLoading(true);
@@ -93914,7 +93930,7 @@ const App = () => {
     } else if (loadingStartTime.current) {
       // Loading finished - ensure minimum display time
       const elapsed = Date.now() - loadingStartTime.current;
-      const remainingTime = Math.max(0, MIN_LOADING_DISPLAY_TIME - elapsed);
+      const remainingTime = Math.max(0, minLoadingTime - elapsed);
 
       // Jump to 100%
       setProgress(100);
@@ -93940,9 +93956,9 @@ const App = () => {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "app-header-row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.Header, null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.TabNavigation, {
-    tabs: _config__WEBPACK_IMPORTED_MODULE_2__.config.tabs,
+    tabs: _config__WEBPACK_IMPORTED_MODULE_3__.config.tabs,
     activeTab: activeTab,
-    onTabChange: setActiveTab
+    onTabChange: handleTabChange
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "content"
   }, activeTab === 'task' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, showLoading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -93963,7 +93979,7 @@ const App = () => {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components__WEBPACK_IMPORTED_MODULE_1__.TaskDetailsCard, {
     taskDetails: taskDetails,
     loading: loading
-  })), _config__WEBPACK_IMPORTED_MODULE_2__.config.features.actionsCard && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  })), _config__WEBPACK_IMPORTED_MODULE_3__.config.features.actionsCard && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     style: {
       marginTop: '16px'
     }
@@ -95790,9 +95806,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   transformDuplicatedContent: () => (/* binding */ transformDuplicatedContent),
 /* harmony export */   unitsToPixels: () => (/* binding */ unitsToPixels)
 /* harmony export */ });
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../lib */ "./src/lib/index.js");
 /**
  * Core artboard generation service using Photoshop batchPlay
  */
+
 
 // Photoshop APIs are loaded lazily to avoid errors during module initialization
 const getPhotoshop = () => __webpack_require__(/*! photoshop */ "photoshop");
@@ -97168,6 +97186,8 @@ const createArtboardWithRoles = async ({
  * @returns {Promise<Array>} Array of created artboard info
  */
 const generateArtboards = async (sizes, sourceConfig, options = {}, onProgress = null) => {
+  // Log generator usage
+  (0,_lib__WEBPACK_IMPORTED_MODULE_0__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_0__.ACTIVITY_TYPES.GENERATOR_USE);
   console.log('*'.repeat(60));
   console.log('[generateArtboards] Starting artboard generation');
   console.log(`[generateArtboards] Sizes to generate: ${sizes.length}`, sizes.map(s => s.name));
@@ -97599,7 +97619,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _api_folderApi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../api/folderApi */ "./src/components/folder-details/api/folderApi.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../config */ "./src/config/index.js");
+/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../lib */ "./src/lib/index.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../config */ "./src/config/index.js");
+
 
 
 
@@ -97613,7 +97635,7 @@ const useFolderDetails = () => {
   const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true);
   const [error, setError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const fetchTaskDetails = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(async () => {
-    if (!_config__WEBPACK_IMPORTED_MODULE_2__.config.features.folderDetails) {
+    if (!_config__WEBPACK_IMPORTED_MODULE_3__.config.features.folderDetails) {
       setLoading(false);
       return;
     }
@@ -97638,6 +97660,12 @@ const useFolderDetails = () => {
       // Get task details from webhook API
       const details = await (0,_api_folderApi__WEBPACK_IMPORTED_MODULE_1__.getTaskDetails)(taskId);
       setTaskDetails(details);
+
+      // Log task fetch activity
+      (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.TASK_FETCH, {
+        taskId,
+        filePath: currentPath
+      });
     } catch (err) {
       setError(err.message || 'Failed to fetch task details');
     } finally {
@@ -97963,7 +97991,8 @@ const config = {
   // Feature flags
   features: {
     folderDetails: true,
-    actionsCard: true
+    actionsCard: false,
+    activityLogging: true
   },
   // Navigation tabs
   tabs: [{
@@ -97972,9 +98001,168 @@ const config = {
   }, {
     id: 'generator',
     label: 'Generator'
-  }]
+  }],
+  // UI timing
+  ui: {
+    minLoadingDisplayTime: 3000 // 3 seconds minimum loading display
+  }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (config);
+
+/***/ }),
+
+/***/ "./src/lib/activity-logger.js":
+/*!************************************!*\
+  !*** ./src/lib/activity-logger.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ACTIVITY_TYPES: () => (/* binding */ ACTIVITY_TYPES),
+/* harmony export */   extractUsername: () => (/* binding */ extractUsername),
+/* harmony export */   logActivity: () => (/* binding */ logActivity)
+/* harmony export */ });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/config/index.js");
+/**
+ * User Activity Logger for tracking plugin usage
+ * Logs events to Supabase psp_user_activity table
+ */
+
+const {
+  url: supabaseUrl,
+  anonKey: supabaseKey,
+  isConfigured
+} = _config__WEBPACK_IMPORTED_MODULE_0__.config.api.supabase;
+
+/**
+ * Extract system username from a file path
+ * @param {string} filePath - Full file path (e.g., /Users/jacobvendramin/projects/...)
+ * @returns {string} The username or 'unknown' if not extractable
+ */
+const extractUsername = filePath => {
+  if (!filePath) return 'unknown';
+
+  // Match /Users/{username}/ pattern (macOS)
+  const macMatch = filePath.match(/\/Users\/([^/]+)\//);
+  if (macMatch) return macMatch[1];
+
+  // Match C:\Users\{username}\ pattern (Windows)
+  const winMatch = filePath.match(/[Cc]:\\Users\\([^\\]+)\\/);
+  if (winMatch) return winMatch[1];
+
+  // Match /home/{username}/ pattern (Linux)
+  const linuxMatch = filePath.match(/\/home\/([^/]+)\//);
+  if (linuxMatch) return linuxMatch[1];
+  return 'unknown';
+};
+
+/**
+ * Get the current document path from Photoshop
+ * @returns {Promise<string|null>} The document path or null
+ */
+const getCurrentDocumentPath = async () => {
+  try {
+    const photoshop = __webpack_require__(/*! photoshop */ "photoshop");
+    const doc = photoshop.app.activeDocument;
+    if (!doc || !doc.saved) return null;
+    if (doc.fullName?.fsName) {
+      return doc.fullName.fsName;
+    }
+    if (doc.fullName?.nativePath) {
+      return doc.fullName.nativePath;
+    }
+    if (typeof doc.fullName === 'string') {
+      return doc.fullName;
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+};
+
+/**
+ * Extract task ID from a file path
+ * @param {string} filePath - Full file path
+ * @returns {string|null} The task ID or null
+ */
+const extractTaskIdFromPath = filePath => {
+  if (!filePath) return null;
+  const pathParts = filePath.split('/').filter(part => part.trim() !== '');
+  if (pathParts.length < 3) return null;
+
+  // Remove filename and subfolder to get task folder
+  const taskFolderName = pathParts[pathParts.length - 3];
+  if (!taskFolderName) return null;
+
+  // Extract task ID after last " - "
+  const lastDashIndex = taskFolderName.lastIndexOf(' - ');
+  if (lastDashIndex === -1) return null;
+  return taskFolderName.substring(lastDashIndex + 3);
+};
+
+/**
+ * Log a user activity event to Supabase
+ * @param {string} activityType - Type of activity (plugin_load, tab_switch, task_fetch, generator_use)
+ * @param {Object} options - Additional options
+ * @param {string} [options.taskId] - Task ID if known
+ * @param {string} [options.filePath] - File path if known
+ * @returns {Promise<void>}
+ */
+const logActivity = async (activityType, options = {}) => {
+  // Check feature flag
+  if (!_config__WEBPACK_IMPORTED_MODULE_0__.config.features?.activityLogging) {
+    return;
+  }
+
+  // Check Supabase config
+  if (!isConfigured) {
+    console.warn('Activity logging skipped: Supabase not configured');
+    return;
+  }
+  try {
+    // Get document path if not provided
+    const filePath = options.filePath ?? (await getCurrentDocumentPath());
+
+    // Extract user and task ID
+    const user = extractUsername(filePath);
+    const taskId = options.taskId ?? extractTaskIdFromPath(filePath);
+
+    // Insert activity record
+    const url = `${supabaseUrl}/rest/v1/psp_user_activity`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        user,
+        activity_type: activityType,
+        task_id: taskId,
+        file_path: filePath
+      })
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.warn(`Activity log failed: ${response.status} - ${errorText}`);
+    }
+  } catch (error) {
+    // Silently fail - don't interrupt user workflow
+    console.warn('Activity logging error:', error.message);
+  }
+};
+
+// Activity type constants
+const ACTIVITY_TYPES = {
+  PLUGIN_LOAD: 'plugin_load',
+  TAB_SWITCH: 'tab_switch',
+  TASK_FETCH: 'task_fetch',
+  GENERATOR_USE: 'generator_use'
+};
 
 /***/ }),
 
@@ -97987,13 +98175,18 @@ const config = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ACTIVITY_TYPES: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.ACTIVITY_TYPES),
 /* harmony export */   callRpc: () => (/* reexport safe */ _supabase_api__WEBPACK_IMPORTED_MODULE_0__.callRpc),
-/* harmony export */   isSupabaseConfigured: () => (/* reexport safe */ _supabase_api__WEBPACK_IMPORTED_MODULE_0__.isSupabaseConfigured)
+/* harmony export */   extractUsername: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.extractUsername),
+/* harmony export */   isSupabaseConfigured: () => (/* reexport safe */ _supabase_api__WEBPACK_IMPORTED_MODULE_0__.isSupabaseConfigured),
+/* harmony export */   logActivity: () => (/* reexport safe */ _activity_logger__WEBPACK_IMPORTED_MODULE_1__.logActivity)
 /* harmony export */ });
 /* harmony import */ var _supabase_api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./supabase-api */ "./src/lib/supabase-api.js");
+/* harmony import */ var _activity_logger__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./activity-logger */ "./src/lib/activity-logger.js");
 /**
  * Library exports
  */
+
 
 
 /***/ }),

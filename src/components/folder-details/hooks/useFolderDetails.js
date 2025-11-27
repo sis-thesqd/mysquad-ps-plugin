@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { extractTaskIdFromPath, getTaskDetails, getCurrentDocumentPath } from '../api/folderApi';
+import { logActivity, ACTIVITY_TYPES } from '../../../lib';
 import { config } from '../../../config';
 
 /**
@@ -40,6 +41,9 @@ export const useFolderDetails = () => {
       // Get task details from webhook API
       const details = await getTaskDetails(taskId);
       setTaskDetails(details);
+
+      // Log task fetch activity
+      logActivity(ACTIVITY_TYPES.TASK_FETCH, { taskId, filePath: currentPath });
 
     } catch (err) {
       setError(err.message || 'Failed to fetch task details');

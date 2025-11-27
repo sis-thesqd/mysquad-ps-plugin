@@ -8,9 +8,8 @@ import {
   ArtboardGeneratorTab,
   useFolderDetails,
 } from './components';
+import { logActivity, ACTIVITY_TYPES } from './lib';
 import { config } from './config';
-
-const MIN_LOADING_DISPLAY_TIME = 2000; // 2 seconds minimum
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('task');
@@ -18,10 +17,26 @@ const App = () => {
   const [progress, setProgress] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const loadingStartTime = useRef(null);
+  const hasLoggedPluginLoad = useRef(false);
+
+  // Log plugin load once on mount
+  useEffect(() => {
+    if (!hasLoggedPluginLoad.current) {
+      hasLoggedPluginLoad.current = true;
+      logActivity(ACTIVITY_TYPES.PLUGIN_LOAD);
+    }
+  }, []);
+
+  // Handle tab change with logging
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    logActivity(ACTIVITY_TYPES.TAB_SWITCH);
+  };
 
   useEffect(() => {
     let progressInterval;
     let minTimeTimeout;
+    const minLoadingTime = config.ui.minLoadingDisplayTime;
 
     if (loading) {
       // Start loading display
@@ -41,7 +56,7 @@ const App = () => {
     } else if (loadingStartTime.current) {
       // Loading finished - ensure minimum display time
       const elapsed = Date.now() - loadingStartTime.current;
-      const remainingTime = Math.max(0, MIN_LOADING_DISPLAY_TIME - elapsed);
+      const remainingTime = Math.max(0, minLoadingTime - elapsed);
 
       // Jump to 100%
       setProgress(100);
@@ -65,7 +80,7 @@ const App = () => {
       <div className="app">
         <div className="app-header-row">
           <Header />
-          <TabNavigation tabs={config.tabs} activeTab={activeTab} onTabChange={setActiveTab} />
+          <TabNavigation tabs={config.tabs} activeTab={activeTab} onTabChange={handleTabChange} />
         </div>
         <div className="content">
           {activeTab === 'task' && (

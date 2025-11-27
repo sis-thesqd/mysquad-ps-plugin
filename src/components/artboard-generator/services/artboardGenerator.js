@@ -1,6 +1,7 @@
 /**
  * Core artboard generation service using Photoshop batchPlay
  */
+import { logActivity, ACTIVITY_TYPES } from '../../../lib';
 
 // Photoshop APIs are loaded lazily to avoid errors during module initialization
 const getPhotoshop = () => require('photoshop');
@@ -1185,6 +1186,9 @@ export const createArtboardWithRoles = async ({
  * @returns {Promise<Array>} Array of created artboard info
  */
 export const generateArtboards = async (sizes, sourceConfig, options = {}, onProgress = null) => {
+  // Log generator usage
+  logActivity(ACTIVITY_TYPES.GENERATOR_USE);
+
   console.log('*'.repeat(60));
   console.log('[generateArtboards] Starting artboard generation');
   console.log(`[generateArtboards] Sizes to generate: ${sizes.length}`, sizes.map((s) => s.name));

@@ -22,7 +22,8 @@ export const config = {
   // Feature flags
   features: {
     folderDetails: true,
-    actionsCard: true,
+    actionsCard: false,
+    activityLogging: true,
   },
 
   // Navigation tabs
@@ -30,6 +31,11 @@ export const config = {
     { id: 'task', label: 'Task Details' },
     { id: 'generator', label: 'Generator' },
   ],
+
+  // UI timing
+  ui: {
+    minLoadingDisplayTime: 3000, // 3 seconds minimum loading display
+  },
 };
 
 export default config;
