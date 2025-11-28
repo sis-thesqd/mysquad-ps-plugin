@@ -24864,12 +24864,10 @@ sp-tooltip {
 .card-description {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   list-style: none;
   margin: 0;
   padding: 0;
-  min-width: 0;
-  overflow: hidden;
+  width: 100%;
 }
 
 .card-description::before {
@@ -24880,8 +24878,7 @@ sp-tooltip {
   display: flex;
   flex-direction: column;
   margin-top: 4px;
-  min-width: 0;
-  overflow: hidden;
+  width: 100%;
 }
 
 .meta-row {
@@ -24942,9 +24939,7 @@ sp-tooltip {
 
 .description-section {
   margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  width: 100%;
 }
 
 .description-toggle {
@@ -25048,6 +25043,7 @@ sp-tooltip {
 /* Remove default list styling from card slots */
 sp-card [slot="description"] {
   list-style: none;
+  width: 100%;
 }
 
 sp-card [slot="description"]::marker,
