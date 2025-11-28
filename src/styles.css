@@ -188,6 +188,12 @@ sp-tooltip {
   margin-top: 0;
 }
 
+/* Consistent badge styling */
+sp-badge {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
 .card-meta sp-divider {
   margin-bottom: 12px;
 }

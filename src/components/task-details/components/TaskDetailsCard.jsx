@@ -139,7 +139,7 @@ const TaskDetailsCard = ({ taskDetails, loading }) => {
             )}
             {taskDetails?.due_date_after && (
               <div class="meta-field">
-                <span class="meta-label">Draft Due</span>
+                <span class="meta-label">Draft Date</span>
                 <span class="meta-value">
                   {formatDate(taskDetails.due_date_after)}
                   {getRelativeDate(taskDetails.due_date_after) && (

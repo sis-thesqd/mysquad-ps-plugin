@@ -24896,6 +24896,12 @@ sp-tooltip {
   margin-top: 0;
 }
 
+/* Consistent badge styling */
+sp-badge {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
 .card-meta sp-divider {
   margin-bottom: 12px;
 }
@@ -99946,7 +99952,7 @@ const TaskDetailsCard = ({
     class: "meta-field"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     class: "meta-label"
-  }, "Draft Due"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+  }, "Draft Date"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     class: "meta-value"
   }, (0,_lib__WEBPACK_IMPORTED_MODULE_2__.formatDate)(taskDetails.due_date_after), (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate)(taskDetails.due_date_after) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
     class: "meta-relative"
