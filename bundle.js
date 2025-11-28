@@ -24888,15 +24888,19 @@ sp-tooltip {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .meta-row:last-child {
   margin-bottom: 0;
 }
 
+.meta-row sp-badge {
+  margin-top: 0;
+}
+
 .card-meta sp-divider {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .meta-field {
@@ -24959,6 +24963,27 @@ sp-tooltip {
   background: var(--spectrum-global-color-gray-100, #2a2a2a);
   border-radius: 4px;
   padding: 12px;
+}
+
+/* Tags container */
+.tags-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tags-container sp-badge {
+  margin-right: 6px;
+  margin-bottom: 0;
+}
+
+.tags-container sp-badge:last-child {
+  margin-right: 0;
 }
 
 .markdown-content {
@@ -99821,6 +99846,17 @@ const formatEstimate = mins => {
 };
 
 /**
+ * Gets inline style for tag badges
+ * @param {Object} tag - Tag object with tag_bg and tag_fg
+ * @returns {Object} Style object
+ */
+const getTagBadgeStyle = tag => ({
+  backgroundColor: tag.tag_bg || '#4a4a4a',
+  color: tag.tag_fg || '#ffffff',
+  border: 'none'
+});
+
+/**
  * Displays task metadata like estimate, due date, and department
  * @param {Object} props - Component props
  * @param {Object} props.taskDetails - Task details from Supabase
@@ -99857,6 +99893,7 @@ const TaskDetailsCard = ({
     return null;
   }
   const hasDescription = taskDetails?.markdown_description?.trim();
+  const hasTags = taskDetails?.tags && taskDetails.tags.length > 0;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-card", {
     heading: "Task Details"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -99889,7 +99926,17 @@ const TaskDetailsCard = ({
   }, "Changed: ", (0,_lib__WEBPACK_IMPORTED_MODULE_2__.formatDate)(taskDetails.status_last_changed_at), (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate)(taskDetails.status_last_changed_at) && ` (${(0,_lib__WEBPACK_IMPORTED_MODULE_2__.getRelativeDate)(taskDetails.status_last_changed_at)})`)) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
     size: "s",
     style: (0,_lib__WEBPACK_IMPORTED_MODULE_2__.getStatusBadgeStyle)(taskDetails.status.color)
-  }, taskDetails.status.status))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-divider", {
+  }, taskDetails.status.status)), hasTags && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "meta-field tags-field"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    class: "meta-label"
+  }, "Tags"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    class: "tags-container"
+  }, taskDetails.tags.map((tag, index) => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-badge", {
+    key: index,
+    size: "s",
+    style: getTagBadgeStyle(tag)
+  }, tag.name))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-divider", {
     size: "s"
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     class: "meta-row"

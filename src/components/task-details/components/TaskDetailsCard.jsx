@@ -18,6 +18,17 @@ const formatEstimate = (mins) => {
 };
 
 /**
+ * Gets inline style for tag badges
+ * @param {Object} tag - Tag object with tag_bg and tag_fg
+ * @returns {Object} Style object
+ */
+const getTagBadgeStyle = (tag) => ({
+  backgroundColor: tag.tag_bg || '#4a4a4a',
+  color: tag.tag_fg || '#ffffff',
+  border: 'none'
+});
+
+/**
  * Displays task metadata like estimate, due date, and department
  * @param {Object} props - Component props
  * @param {Object} props.taskDetails - Task details from Supabase
@@ -60,6 +71,7 @@ const TaskDetailsCard = ({ taskDetails, loading }) => {
   }
 
   const hasDescription = taskDetails?.markdown_description?.trim();
+  const hasTags = taskDetails?.tags && taskDetails.tags.length > 0;
 
   return (
     <sp-card heading="Task Details">
@@ -98,6 +110,22 @@ const TaskDetailsCard = ({ taskDetails, loading }) => {
                     {taskDetails.status.status}
                   </sp-badge>
                 )}
+              </div>
+            )}
+            {hasTags && (
+              <div class="meta-field tags-field">
+                <span class="meta-label">Tags</span>
+                <div class="tags-container">
+                  {taskDetails.tags.map((tag, index) => (
+                    <sp-badge
+                      key={index}
+                      size="s"
+                      style={getTagBadgeStyle(tag)}
+                    >
+                      {tag.name}
+                    </sp-badge>
+                  ))}
+                </div>
               </div>
             )}
           </div>
