@@ -251,7 +251,7 @@ sp-badge {
 }
 
 .description-content {
-  max-height: 200px;
+  max-height: 266px;
   overflow-y: auto;
   background: var(--spectrum-global-color-gray-100, #2a2a2a);
   border-radius: 4px;
