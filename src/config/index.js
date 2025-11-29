@@ -35,6 +35,13 @@ export const config = {
     { id: 'generator', label: 'Generator' },
   ],
 
+  // Generator sub-tabs
+  generatorSubTabs: [
+    { id: 'sources', label: 'Sources' },
+    { id: 'options', label: 'Options' },
+    { id: 'print', label: 'Print' },
+  ],
+
   // UI timing
   ui: {
     minLoadingDisplayTime: 3000, // 3 seconds minimum loading display

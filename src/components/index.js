@@ -5,6 +5,7 @@
 // UI components
 export { default as Header } from './ui/Header';
 export { default as TabNavigation } from './ui/TabNavigation';
+export { default as SubTabNavigation } from './ui/SubTabNavigation';
 
 // Feature components
 export { default as FolderDetailsCard } from './folder-details/components/FolderDetailsCard';

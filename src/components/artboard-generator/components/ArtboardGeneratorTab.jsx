@@ -3,33 +3,10 @@ import SourceConfigPanel from './SourceConfigPanel';
 import GenerationOptionsPanel from './GenerationOptionsPanel';
 import PrintSettingsPanel from './PrintSettingsPanel';
 import SizesPreview from './SizesPreview';
+import SubTabNavigation from '../../ui/SubTabNavigation';
 import { usePhotoshopDocument } from '../hooks/usePhotoshopDocument';
 import { useArtboardGenerator } from '../hooks/useArtboardGenerator';
-
-/**
- * Sub-tab navigation for generator sections
- */
-const SubTabNav = ({ activeTab, onTabChange }) => {
-  const tabs = [
-    { id: 'sources', label: 'Sources' },
-    { id: 'options', label: 'Options' },
-    { id: 'print', label: 'Print' },
-  ];
-
-  return (
-    <div className="sub-tab-nav">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          className={`sub-tab-button ${activeTab === tab.id ? 'active' : ''}`}
-          onClick={() => onTabChange(tab.id)}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
-  );
-};
+import { config } from '../../../config';
 
 /**
  * Main artboard generator tab component
@@ -88,7 +65,7 @@ const ArtboardGeneratorTab = () => {
       </div>
 
       {/* Sub-tabs Navigation */}
-      <SubTabNav activeTab={activeSubTab} onTabChange={setActiveSubTab} />
+      <SubTabNavigation tabs={config.generatorSubTabs} activeTab={activeSubTab} onTabChange={setActiveSubTab} />
 
       {/* Panel Content */}
       <div className="generator-content">

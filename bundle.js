@@ -25166,9 +25166,29 @@ sp-menu-item {
 /* Sub-tabs */
 .sub-tab-nav {
   display: flex;
-  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
   margin-bottom: 12px;
-  border-bottom: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  padding-bottom: 0;
+  border-bottom: 1px solid var(--spectrum-global-color-gray-400, #6e6e6e);
+  width: 100%;
+}
+
+.sub-tab-nav sp-action-group {
+  display: flex;
+  justify-content: center;
+}
+
+.sub-tab-nav sp-action-button {
+  margin-right: 8px;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.sub-tab-nav sp-action-button:last-child {
+  margin-right: 0;
 }
 
 .sub-tab-button {
@@ -95189,8 +95209,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _GenerationOptionsPanel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./GenerationOptionsPanel */ "./src/components/artboard-generator/components/GenerationOptionsPanel.jsx");
 /* harmony import */ var _PrintSettingsPanel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./PrintSettingsPanel */ "./src/components/artboard-generator/components/PrintSettingsPanel.jsx");
 /* harmony import */ var _SizesPreview__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./SizesPreview */ "./src/components/artboard-generator/components/SizesPreview.jsx");
-/* harmony import */ var _hooks_usePhotoshopDocument__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../hooks/usePhotoshopDocument */ "./src/components/artboard-generator/hooks/usePhotoshopDocument.js");
-/* harmony import */ var _hooks_useArtboardGenerator__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/useArtboardGenerator */ "./src/components/artboard-generator/hooks/useArtboardGenerator.js");
+/* harmony import */ var _ui_SubTabNavigation__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../ui/SubTabNavigation */ "./src/components/ui/SubTabNavigation.jsx");
+/* harmony import */ var _hooks_usePhotoshopDocument__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/usePhotoshopDocument */ "./src/components/artboard-generator/hooks/usePhotoshopDocument.js");
+/* harmony import */ var _hooks_useArtboardGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../hooks/useArtboardGenerator */ "./src/components/artboard-generator/hooks/useArtboardGenerator.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../config */ "./src/config/index.js");
 
 
 
@@ -95199,31 +95221,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-/**
- * Sub-tab navigation for generator sections
- */
-const SubTabNav = ({
-  activeTab,
-  onTabChange
-}) => {
-  const tabs = [{
-    id: 'sources',
-    label: 'Sources'
-  }, {
-    id: 'options',
-    label: 'Options'
-  }, {
-    id: 'print',
-    label: 'Print'
-  }];
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "sub-tab-nav"
-  }, tabs.map(tab => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-    key: tab.id,
-    className: `sub-tab-button ${activeTab === tab.id ? 'active' : ''}`,
-    onClick: () => onTabChange(tab.id)
-  }, tab.label)));
-};
+
 
 /**
  * Main artboard generator tab component
@@ -95237,7 +95235,7 @@ const ArtboardGeneratorTab = () => {
     layers,
     loading: docLoading,
     refresh: refreshDoc
-  } = (0,_hooks_usePhotoshopDocument__WEBPACK_IMPORTED_MODULE_5__.usePhotoshopDocument)();
+  } = (0,_hooks_usePhotoshopDocument__WEBPACK_IMPORTED_MODULE_6__.usePhotoshopDocument)();
 
   // Generator state
   const {
@@ -95259,7 +95257,7 @@ const ArtboardGeneratorTab = () => {
     generate,
     generateSingle,
     validateConfig
-  } = (0,_hooks_useArtboardGenerator__WEBPACK_IMPORTED_MODULE_6__.useArtboardGenerator)();
+  } = (0,_hooks_useArtboardGenerator__WEBPACK_IMPORTED_MODULE_7__.useArtboardGenerator)();
   const validationErrors = validateConfig();
   const canGenerate = validationErrors.length === 0 && !generating && !docLoading;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -95282,7 +95280,8 @@ const ArtboardGeneratorTab = () => {
   }), !docLoading && artboards.length === 0 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-body", {
     size: "s",
     class: "warning-text"
-  }, "No artboards found in document. Create source artboards first.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(SubTabNav, {
+  }, "No artboards found in document. Create source artboards first.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_SubTabNavigation__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    tabs: _config__WEBPACK_IMPORTED_MODULE_8__.config.generatorSubTabs,
     activeTab: activeSubTab,
     onTabChange: setActiveSubTab
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -99770,30 +99769,33 @@ const useFolderDetails = () => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   ActionsCard: () => (/* reexport safe */ _actions_components_ActionsCard__WEBPACK_IMPORTED_MODULE_4__["default"]),
-/* harmony export */   ArtboardGeneratorTab: () => (/* reexport safe */ _artboard_generator__WEBPACK_IMPORTED_MODULE_5__.ArtboardGeneratorTab),
-/* harmony export */   FolderDetailsCard: () => (/* reexport safe */ _folder_details_components_FolderDetailsCard__WEBPACK_IMPORTED_MODULE_2__["default"]),
+/* harmony export */   ActionsCard: () => (/* reexport safe */ _actions_components_ActionsCard__WEBPACK_IMPORTED_MODULE_5__["default"]),
+/* harmony export */   ArtboardGeneratorTab: () => (/* reexport safe */ _artboard_generator__WEBPACK_IMPORTED_MODULE_6__.ArtboardGeneratorTab),
+/* harmony export */   FolderDetailsCard: () => (/* reexport safe */ _folder_details_components_FolderDetailsCard__WEBPACK_IMPORTED_MODULE_3__["default"]),
 /* harmony export */   Header: () => (/* reexport safe */ _ui_Header__WEBPACK_IMPORTED_MODULE_0__["default"]),
+/* harmony export */   SubTabNavigation: () => (/* reexport safe */ _ui_SubTabNavigation__WEBPACK_IMPORTED_MODULE_2__["default"]),
 /* harmony export */   TabNavigation: () => (/* reexport safe */ _ui_TabNavigation__WEBPACK_IMPORTED_MODULE_1__["default"]),
-/* harmony export */   TaskDetailsCard: () => (/* reexport safe */ _task_details_components_TaskDetailsCard__WEBPACK_IMPORTED_MODULE_3__["default"]),
-/* harmony export */   extractTaskIdFromPath: () => (/* reexport safe */ _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_7__.extractTaskIdFromPath),
-/* harmony export */   getCurrentDocumentPath: () => (/* reexport safe */ _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_7__.getCurrentDocumentPath),
-/* harmony export */   getTaskDetails: () => (/* reexport safe */ _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_7__.getTaskDetails),
-/* harmony export */   useFolderDetails: () => (/* reexport safe */ _folder_details_hooks_useFolderDetails__WEBPACK_IMPORTED_MODULE_6__.useFolderDetails)
+/* harmony export */   TaskDetailsCard: () => (/* reexport safe */ _task_details_components_TaskDetailsCard__WEBPACK_IMPORTED_MODULE_4__["default"]),
+/* harmony export */   extractTaskIdFromPath: () => (/* reexport safe */ _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_8__.extractTaskIdFromPath),
+/* harmony export */   getCurrentDocumentPath: () => (/* reexport safe */ _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_8__.getCurrentDocumentPath),
+/* harmony export */   getTaskDetails: () => (/* reexport safe */ _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_8__.getTaskDetails),
+/* harmony export */   useFolderDetails: () => (/* reexport safe */ _folder_details_hooks_useFolderDetails__WEBPACK_IMPORTED_MODULE_7__.useFolderDetails)
 /* harmony export */ });
 /* harmony import */ var _ui_Header__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ui/Header */ "./src/components/ui/Header.jsx");
 /* harmony import */ var _ui_TabNavigation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ui/TabNavigation */ "./src/components/ui/TabNavigation.jsx");
-/* harmony import */ var _folder_details_components_FolderDetailsCard__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./folder-details/components/FolderDetailsCard */ "./src/components/folder-details/components/FolderDetailsCard.jsx");
-/* harmony import */ var _task_details_components_TaskDetailsCard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task-details/components/TaskDetailsCard */ "./src/components/task-details/components/TaskDetailsCard.jsx");
-/* harmony import */ var _actions_components_ActionsCard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./actions/components/ActionsCard */ "./src/components/actions/components/ActionsCard.jsx");
-/* harmony import */ var _artboard_generator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./artboard-generator */ "./src/components/artboard-generator/index.js");
-/* harmony import */ var _folder_details_hooks_useFolderDetails__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./folder-details/hooks/useFolderDetails */ "./src/components/folder-details/hooks/useFolderDetails.js");
-/* harmony import */ var _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./folder-details/api/folderApi */ "./src/components/folder-details/api/folderApi.js");
+/* harmony import */ var _ui_SubTabNavigation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ui/SubTabNavigation */ "./src/components/ui/SubTabNavigation.jsx");
+/* harmony import */ var _folder_details_components_FolderDetailsCard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./folder-details/components/FolderDetailsCard */ "./src/components/folder-details/components/FolderDetailsCard.jsx");
+/* harmony import */ var _task_details_components_TaskDetailsCard__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task-details/components/TaskDetailsCard */ "./src/components/task-details/components/TaskDetailsCard.jsx");
+/* harmony import */ var _actions_components_ActionsCard__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./actions/components/ActionsCard */ "./src/components/actions/components/ActionsCard.jsx");
+/* harmony import */ var _artboard_generator__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./artboard-generator */ "./src/components/artboard-generator/index.js");
+/* harmony import */ var _folder_details_hooks_useFolderDetails__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./folder-details/hooks/useFolderDetails */ "./src/components/folder-details/hooks/useFolderDetails.js");
+/* harmony import */ var _folder_details_api_folderApi__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./folder-details/api/folderApi */ "./src/components/folder-details/api/folderApi.js");
 /**
  * Component exports
  */
 
 // UI components
+
 
 
 
@@ -100015,6 +100017,76 @@ const Header = () => {
 
 /***/ }),
 
+/***/ "./src/components/ui/SubTabNavigation.jsx":
+/*!************************************************!*\
+  !*** ./src/components/ui/SubTabNavigation.jsx ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+/**
+ * Sub-tab navigation component for secondary navigation within panels
+ * Uses Adobe Spectrum Web Components with smaller size for sub-navigation
+ * @param {Object} props - Component props
+ * @param {Array} props.tabs - Array of tab objects with id and label
+ * @param {string} props.activeTab - Currently active tab id
+ * @param {Function} props.onTabChange - Callback when tab changes
+ */
+const SubTabNavigation = ({
+  tabs,
+  activeTab,
+  onTabChange
+}) => {
+  const buttonRefs = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)({});
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    const handlers = {};
+    tabs.forEach(tab => {
+      const buttonEl = buttonRefs.current[tab.id];
+      if (buttonEl) {
+        handlers[tab.id] = () => {
+          if (onTabChange) {
+            onTabChange(tab.id);
+          }
+        };
+        buttonEl.addEventListener('click', handlers[tab.id]);
+      }
+    });
+    return () => {
+      tabs.forEach(tab => {
+        const buttonEl = buttonRefs.current[tab.id];
+        if (buttonEl && handlers[tab.id]) {
+          buttonEl.removeEventListener('click', handlers[tab.id]);
+        }
+      });
+    };
+  }, [tabs, onTabChange]);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "sub-tab-nav"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-group", {
+    selects: "single",
+    selected: activeTab,
+    size: "s"
+  }, tabs.map(tab => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-button", {
+    key: tab.id,
+    ref: el => buttonRefs.current[tab.id] = el,
+    value: tab.id,
+    selected: activeTab === tab.id ? true : undefined,
+    quiet: true,
+    size: "s"
+  }, tab.label))));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SubTabNavigation);
+
+/***/ }),
+
 /***/ "./src/components/ui/TabNavigation.jsx":
 /*!*********************************************!*\
   !*** ./src/components/ui/TabNavigation.jsx ***!
@@ -100130,6 +100202,17 @@ const config = {
   }, {
     id: 'generator',
     label: 'Generator'
+  }],
+  // Generator sub-tabs
+  generatorSubTabs: [{
+    id: 'sources',
+    label: 'Sources'
+  }, {
+    id: 'options',
+    label: 'Options'
+  }, {
+    id: 'print',
+    label: 'Print'
   }],
   // UI timing
   ui: {
