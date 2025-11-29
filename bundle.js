@@ -100050,11 +100050,17 @@ __webpack_require__.r(__webpack_exports__);
  * @param {Array} props.tabs - Array of tab objects with id and label
  * @param {string} props.activeTab - Currently active tab id
  * @param {Function} props.onTabChange - Callback when tab changes
+ * @param {string} [props.size='s'] - Button size ('s', 'm', 'l', 'xl') - default is small
+ * @param {boolean} [props.quiet=true] - Whether buttons should be quiet style
+ * @param {string} [props.className] - Additional CSS class for the container
  */
 const SubTabNavigation = ({
   tabs,
   activeTab,
-  onTabChange
+  onTabChange,
+  size = 's',
+  quiet = true,
+  className = 'sub-tab-nav'
 }) => {
   const buttonRefs = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)({});
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -100080,18 +100086,18 @@ const SubTabNavigation = ({
     };
   }, [tabs, onTabChange]);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "sub-tab-nav"
+    className: className
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-group", {
     selects: "single",
     selected: activeTab,
-    size: "s"
+    size: size
   }, tabs.map(tab => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-button", {
     key: tab.id,
     ref: el => buttonRefs.current[tab.id] = el,
     value: tab.id,
     selected: activeTab === tab.id ? true : undefined,
-    quiet: true,
-    size: "s"
+    quiet: quiet ? true : undefined,
+    size: size
   }, tab.label))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SubTabNavigation);
@@ -100120,11 +100126,17 @@ __webpack_require__.r(__webpack_exports__);
  * @param {Array} props.tabs - Array of tab objects with id and label
  * @param {string} props.activeTab - Currently active tab id
  * @param {Function} props.onTabChange - Callback when tab changes
+ * @param {string} [props.size] - Button size ('s', 'm', 'l', 'xl') - default is medium
+ * @param {boolean} [props.quiet=true] - Whether buttons should be quiet style
+ * @param {string} [props.className] - Additional CSS class for the container
  */
 const TabNavigation = ({
   tabs,
   activeTab,
-  onTabChange
+  onTabChange,
+  size,
+  quiet = true,
+  className = 'tab-navigation'
 }) => {
   const buttonRefs = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)({});
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
@@ -100150,16 +100162,18 @@ const TabNavigation = ({
     };
   }, [tabs, onTabChange]);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "tab-navigation"
+    className: className
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-group", {
     selects: "single",
-    selected: activeTab
+    selected: activeTab,
+    size: size
   }, tabs.map(tab => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("sp-action-button", {
     key: tab.id,
     ref: el => buttonRefs.current[tab.id] = el,
     value: tab.id,
     selected: activeTab === tab.id ? true : undefined,
-    quiet: true
+    quiet: quiet ? true : undefined,
+    size: size
   }, tab.label))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TabNavigation);
