@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { fetchSizes, DEFAULT_SIZES } from '../api/sizesApi';
+import { fetchSizes } from '../api/sizesApi';
 import { generateArtboards, DEFAULT_PRINT_SETTINGS, DEFAULT_LAYOUT_OPTIONS } from '../services/artboardGenerator';
+import { DEFAULT_SIZES } from '../../../config';
 import { 
   createArtboardByDuplication, 
   generateArtboardsBatch,

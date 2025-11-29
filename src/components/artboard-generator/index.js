@@ -38,5 +38,8 @@ export {
 } from './services/batchArtboardService';
 
 // API
-export { fetchSizes, DEFAULT_SIZES } from './api/sizesApi';
+export { fetchSizes } from './api/sizesApi';
+
+// Re-export DEFAULT_SIZES from config for convenience
+export { DEFAULT_SIZES } from '../../config';
 

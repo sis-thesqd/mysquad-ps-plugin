@@ -3,6 +3,21 @@
  * Centralizes all app configuration and environment variables
  */
 
+/**
+ * Default artboard size presets organized by category
+ */
+export const DEFAULT_SIZES = [
+  // Social Media
+  { width: 1080, height: 1350, name: '4x5 Social ➡️ ', type: 'social' },
+  { width: 1920, height: 1080, name: 'High Definition ➡️ ', type: 'video' },
+  { width: 1080, height: 1440, name: 'Instagram Post ➡️ ', type: 'social' },
+  { width: 1080, height: 1080, name: 'Square ➡️ ', type: 'social' },
+  { width: 1080, height: 1920, name: 'Story ➡️ ', type: 'social' },
+
+  // Print (300 DPI)
+  { width: 1800, height: 1200, name: 'Small Vertical Postcard ➡️ ', type: 'print', requiresBleed: true, bleed: 0.125, bleedUnit: 'inches' },
+];
+
 export const config = {
   // App metadata
   app: {
