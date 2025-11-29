@@ -1,39 +1,6 @@
 import React, { useMemo } from 'react';
-import { groupByType, determineSourceType } from '../services/artboardGenerator';
-
-/**
- * Single size button that generates one artboard when clicked
- */
-const SizeButton = ({ size, onGenerate, disabled, sourceConfig }) => {
-  const sourceType = determineSourceType(size.width / size.height);
-  const hasSource = sourceConfig[sourceType]?.artboard;
-  
-  const sourceTypeIcons = {
-    landscape: '▭',
-    portrait: '▯',
-    square: '□',
-  };
-
-  const handleClick = () => {
-    if (hasSource && onGenerate) {
-      onGenerate(size);
-    }
-  };
-
-  return (
-    <button
-      className={`size-button ${!hasSource ? 'size-button-disabled' : ''} ${size.requiresBleed ? 'size-button-print' : ''}`}
-      onClick={handleClick}
-      disabled={disabled || !hasSource}
-      title={!hasSource ? `No ${sourceType} source artboard configured` : `Generate ${size.name}`}
-    >
-      <span className="size-source-icon">{sourceTypeIcons[sourceType]}</span>
-      <span className="size-name">{size.name}</span>
-      <span className="size-dimensions">{size.width}×{size.height}</span>
-      {size.requiresBleed && <span className="size-badge">Print</span>}
-    </button>
-  );
-};
+import { groupByType } from '../services/artboardGenerator';
+import SizeButton from './SizeButton';
 
 /**
  * Preview component showing loaded sizes as clickable buttons
