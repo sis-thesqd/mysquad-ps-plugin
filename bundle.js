@@ -94943,12 +94943,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components */ "./src/components/index.js");
 /* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./lib */ "./src/lib/index.js");
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./config */ "./src/config/index.js");
+/* harmony import */ var _utils_storage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/storage */ "./src/utils/storage.js");
+
 
 
 
 
 const App = () => {
-  const [activeTab, setActiveTab] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('task');
+  const [activeTab, setActiveTab] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(() => (0,_utils_storage__WEBPACK_IMPORTED_MODULE_4__.getStoredMainTab)('task'));
   const {
     taskDetails,
     loading,
@@ -94959,10 +94961,11 @@ const App = () => {
   const [showLoading, setShowLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const loadingStartTime = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
 
-  // Handle tab change with logging
+  // Handle tab change with logging and persistence
   const handleTabChange = tabId => {
     const tab = _config__WEBPACK_IMPORTED_MODULE_3__.config.tabs.find(t => t.id === tabId);
     setActiveTab(tabId);
+    (0,_utils_storage__WEBPACK_IMPORTED_MODULE_4__.setStoredMainTab)(tabId);
     (0,_lib__WEBPACK_IMPORTED_MODULE_2__.logActivity)(_lib__WEBPACK_IMPORTED_MODULE_2__.ACTIVITY_TYPES.TAB_SWITCH, {
       taskId: taskDetails?.task_id,
       filePath: currentFilePath,
@@ -95213,6 +95216,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _hooks_usePhotoshopDocument__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../hooks/usePhotoshopDocument */ "./src/components/artboard-generator/hooks/usePhotoshopDocument.js");
 /* harmony import */ var _hooks_useArtboardGenerator__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../hooks/useArtboardGenerator */ "./src/components/artboard-generator/hooks/useArtboardGenerator.js");
 /* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../config */ "./src/config/index.js");
+/* harmony import */ var _utils_storage__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../utils/storage */ "./src/utils/storage.js");
+
 
 
 
@@ -95227,7 +95232,13 @@ __webpack_require__.r(__webpack_exports__);
  * Main artboard generator tab component
  */
 const ArtboardGeneratorTab = () => {
-  const [activeSubTab, setActiveSubTab] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('sources');
+  const [activeSubTab, setActiveSubTab] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(() => (0,_utils_storage__WEBPACK_IMPORTED_MODULE_9__.getStoredGeneratorSubTab)('sources'));
+
+  // Handle sub-tab change with persistence
+  const handleSubTabChange = tabId => {
+    setActiveSubTab(tabId);
+    (0,_utils_storage__WEBPACK_IMPORTED_MODULE_9__.setStoredGeneratorSubTab)(tabId);
+  };
 
   // Document data
   const {
@@ -95283,7 +95294,7 @@ const ArtboardGeneratorTab = () => {
   }, "No artboards found in document. Create source artboards first.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ui_SubTabNavigation__WEBPACK_IMPORTED_MODULE_5__["default"], {
     tabs: _config__WEBPACK_IMPORTED_MODULE_8__.config.generatorSubTabs,
     activeTab: activeSubTab,
-    onTabChange: setActiveSubTab
+    onTabChange: handleSubTabChange
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "generator-content"
   }, activeSubTab === 'sources' && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SourceConfigPanel__WEBPACK_IMPORTED_MODULE_1__["default"], {
@@ -100867,6 +100878,99 @@ const openClickUpTask = async taskId => {
   const url = `https://app.clickup.com/t/${taskId}`;
   return openExternalUrl(url);
 };
+
+/***/ }),
+
+/***/ "./src/utils/storage.js":
+/*!******************************!*\
+  !*** ./src/utils/storage.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   STORAGE_KEYS: () => (/* binding */ STORAGE_KEYS),
+/* harmony export */   getStoredGeneratorSubTab: () => (/* binding */ getStoredGeneratorSubTab),
+/* harmony export */   getStoredMainTab: () => (/* binding */ getStoredMainTab),
+/* harmony export */   getStoredValue: () => (/* binding */ getStoredValue),
+/* harmony export */   setStoredGeneratorSubTab: () => (/* binding */ setStoredGeneratorSubTab),
+/* harmony export */   setStoredMainTab: () => (/* binding */ setStoredMainTab),
+/* harmony export */   setStoredValue: () => (/* binding */ setStoredValue)
+/* harmony export */ });
+/**
+ * Storage utilities for persisting user preferences
+ * Uses localStorage with fallback for UXP compatibility
+ */
+
+const STORAGE_KEYS = {
+  MAIN_TAB: 'mysquad_active_tab',
+  GENERATOR_SUB_TAB: 'mysquad_generator_sub_tab'
+};
+
+/**
+ * Get a value from localStorage
+ * @param {string} key - Storage key
+ * @param {*} defaultValue - Default value if not found
+ * @returns {*} Stored value or default
+ */
+const getStoredValue = (key, defaultValue) => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored !== null ? stored : defaultValue;
+  } catch (e) {
+    // localStorage may not be available in some UXP contexts
+    return defaultValue;
+  }
+};
+
+/**
+ * Set a value in localStorage
+ * @param {string} key - Storage key
+ * @param {*} value - Value to store
+ */
+const setStoredValue = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {
+    // Silently fail if localStorage not available
+  }
+};
+
+/**
+ * Get the stored main tab
+ * @param {string} defaultTab - Default tab id
+ * @returns {string} Tab id
+ */
+const getStoredMainTab = (defaultTab = 'task') => {
+  return getStoredValue(STORAGE_KEYS.MAIN_TAB, defaultTab);
+};
+
+/**
+ * Set the stored main tab
+ * @param {string} tabId - Tab id to store
+ */
+const setStoredMainTab = tabId => {
+  setStoredValue(STORAGE_KEYS.MAIN_TAB, tabId);
+};
+
+/**
+ * Get the stored generator sub-tab
+ * @param {string} defaultTab - Default tab id
+ * @returns {string} Tab id
+ */
+const getStoredGeneratorSubTab = (defaultTab = 'sources') => {
+  return getStoredValue(STORAGE_KEYS.GENERATOR_SUB_TAB, defaultTab);
+};
+
+/**
+ * Set the stored generator sub-tab
+ * @param {string} tabId - Tab id to store
+ */
+const setStoredGeneratorSubTab = tabId => {
+  setStoredValue(STORAGE_KEYS.GENERATOR_SUB_TAB, tabId);
+};
+
 
 /***/ }),
 

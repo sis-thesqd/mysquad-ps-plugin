@@ -10,18 +10,20 @@ import {
 } from './components';
 import { logActivity, ACTIVITY_TYPES } from './lib';
 import { config } from './config';
+import { getStoredMainTab, setStoredMainTab } from './utils/storage';
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState('task');
+  const [activeTab, setActiveTab] = useState(() => getStoredMainTab('task'));
   const { taskDetails, loading, refetch, currentFilePath } = useFolderDetails();
   const [progress, setProgress] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const loadingStartTime = useRef(null);
 
-  // Handle tab change with logging
+  // Handle tab change with logging and persistence
   const handleTabChange = (tabId) => {
     const tab = config.tabs.find(t => t.id === tabId);
     setActiveTab(tabId);
+    setStoredMainTab(tabId);
     logActivity(ACTIVITY_TYPES.TAB_SWITCH, {
       taskId: taskDetails?.task_id,
       filePath: currentFilePath,

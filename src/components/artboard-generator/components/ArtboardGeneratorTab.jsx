@@ -7,12 +7,19 @@ import SubTabNavigation from '../../ui/SubTabNavigation';
 import { usePhotoshopDocument } from '../hooks/usePhotoshopDocument';
 import { useArtboardGenerator } from '../hooks/useArtboardGenerator';
 import { config } from '../../../config';
+import { getStoredGeneratorSubTab, setStoredGeneratorSubTab } from '../../../utils/storage';
 
 /**
  * Main artboard generator tab component
  */
 const ArtboardGeneratorTab = () => {
-  const [activeSubTab, setActiveSubTab] = useState('sources');
+  const [activeSubTab, setActiveSubTab] = useState(() => getStoredGeneratorSubTab('sources'));
+
+  // Handle sub-tab change with persistence
+  const handleSubTabChange = (tabId) => {
+    setActiveSubTab(tabId);
+    setStoredGeneratorSubTab(tabId);
+  };
   
   // Document data
   const { artboards, layers, loading: docLoading, refresh: refreshDoc } = usePhotoshopDocument();
@@ -65,7 +72,7 @@ const ArtboardGeneratorTab = () => {
       </div>
 
       {/* Sub-tabs Navigation */}
-      <SubTabNavigation tabs={config.generatorSubTabs} activeTab={activeSubTab} onTabChange={setActiveSubTab} />
+      <SubTabNavigation tabs={config.generatorSubTabs} activeTab={activeSubTab} onTabChange={handleSubTabChange} />
 
       {/* Panel Content */}
       <div className="generator-content">
