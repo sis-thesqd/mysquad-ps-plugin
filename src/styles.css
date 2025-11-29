@@ -736,6 +736,7 @@ sp-menu-item {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-right: 6px;
 }
 
 .size-button .size-dimensions {
