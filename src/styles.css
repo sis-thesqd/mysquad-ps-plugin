@@ -390,6 +390,15 @@ sp-action-menu sp-menu {
 sp-menu-item {
   padding-left: 16px;
   padding-right: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Ensure picker menus and popovers are full width */
+sp-picker sp-menu,
+sp-picker sp-popover {
+  width: 100%;
+  min-width: 100%;
 }
 
 /* ==========================================================================

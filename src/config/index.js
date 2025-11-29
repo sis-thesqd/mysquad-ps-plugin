@@ -4,6 +4,101 @@
  */
 
 /**
+ * Layer role definitions for artboard generator
+ */
+export const LAYER_ROLES = [
+  { id: 'background', label: 'Background', required: false },
+  { id: 'title', label: 'Title / Main Content', required: false },
+  { id: 'overlays', label: 'Overlays', required: false },
+  { id: 'cornerTopLeft', label: 'Corner: Top Left', required: false },
+  { id: 'cornerTopRight', label: 'Corner: Top Right', required: false },
+  { id: 'cornerBottomLeft', label: 'Corner: Bottom Left', required: false },
+  { id: 'cornerBottomRight', label: 'Corner: Bottom Right', required: false },
+];
+
+/**
+ * Layer name patterns for auto-detection
+ * Each role has an array of patterns (case-insensitive) to match against layer names
+ */
+export const LAYER_NAME_PATTERNS = {
+  background: ['bkg', 'background', 'bg', 'back'],
+  title: ['text', 'title', 'headline', 'heading', 'copy', 'txt', 'main'],
+  overlays: ['adjust', 'overlay', 'overlays', 'effects', 'gradient', 'vignette'],
+  cornerTopLeft: ['corner-tl', 'corner_tl', 'top-left', 'top_left', 'tl', 'logo-tl'],
+  cornerTopRight: ['corner-tr', 'corner_tr', 'top-right', 'top_right', 'tr', 'logo-tr', 'logo'],
+  cornerBottomLeft: ['corner-bl', 'corner_bl', 'bottom-left', 'bottom_left', 'bl', 'logo-bl'],
+  cornerBottomRight: ['corner-br', 'corner_br', 'bottom-right', 'bottom_right', 'br', 'logo-br', 'cta', 'button'],
+};
+
+/**
+ * Source type configurations for artboard generator
+ */
+export const SOURCE_TYPES = [
+  { id: 'landscape', label: 'Landscape (16:9)', icon: '▭' },
+  { id: 'portrait', label: 'Portrait (9:16)', icon: '▯' },
+  { id: 'square', label: 'Square (1:1)', icon: '□' },
+];
+
+/**
+ * Source type icons for visual identification
+ */
+export const SOURCE_TYPE_ICONS = {
+  landscape: '▭ ',
+  portrait: '▯ ',
+  square: '□ ',
+};
+
+/**
+ * Aspect ratio thresholds for determining source type
+ */
+export const ASPECT_RATIO_THRESHOLDS = {
+  PORTRAIT_MAX: 0.85,
+  SQUARE_MAX: 1.15,
+};
+
+/**
+ * Default source configuration template
+ */
+export const DEFAULT_SOURCE_CONFIG = {
+  landscape: {
+    artboard: '',
+    layers: {
+      background: null,
+      title: null,
+      overlays: null,
+      cornerTopLeft: null,
+      cornerTopRight: null,
+      cornerBottomLeft: null,
+      cornerBottomRight: null,
+    },
+  },
+  portrait: {
+    artboard: '',
+    layers: {
+      background: null,
+      title: null,
+      overlays: null,
+      cornerTopLeft: null,
+      cornerTopRight: null,
+      cornerBottomLeft: null,
+      cornerBottomRight: null,
+    },
+  },
+  square: {
+    artboard: '',
+    layers: {
+      background: null,
+      title: null,
+      overlays: null,
+      cornerTopLeft: null,
+      cornerTopRight: null,
+      cornerBottomLeft: null,
+      cornerBottomRight: null,
+    },
+  },
+};
+
+/**
  * Default artboard size presets organized by category
  */
 export const DEFAULT_SIZES = [

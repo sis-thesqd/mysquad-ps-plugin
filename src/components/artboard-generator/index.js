@@ -20,7 +20,7 @@ export {
   groupByType,
   determineSourceType,
   unitsToPixels,
-  LAYER_ROLES,
+  LAYER_ROLES_ENUM,
   DEFAULT_PRINT_SETTINGS,
   DEFAULT_LAYOUT_OPTIONS,
 } from './services/artboardGenerator';

@@ -1,54 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
 import { fetchSizes } from '../api/sizesApi';
 import { generateArtboards, DEFAULT_PRINT_SETTINGS, DEFAULT_LAYOUT_OPTIONS } from '../services/artboardGenerator';
-import { DEFAULT_SIZES } from '../../../config';
-import { 
-  createArtboardByDuplication, 
+import { DEFAULT_SIZES, DEFAULT_SOURCE_CONFIG } from '../../../config';
+import {
+  createArtboardByDuplication,
   generateArtboardsBatch,
-  LAYER_NAMES 
+  LAYER_NAMES
 } from '../services/batchArtboardService';
-
-/**
- * Default source configuration template
- */
-const DEFAULT_SOURCE_CONFIG = {
-  landscape: {
-    artboard: '',
-    layers: {
-      background: null,
-      title: null,
-      overlays: null,
-      cornerTopLeft: null,
-      cornerTopRight: null,
-      cornerBottomLeft: null,
-      cornerBottomRight: null,
-    },
-  },
-  portrait: {
-    artboard: '',
-    layers: {
-      background: null,
-      title: null,
-      overlays: null,
-      cornerTopLeft: null,
-      cornerTopRight: null,
-      cornerBottomLeft: null,
-      cornerBottomRight: null,
-    },
-  },
-  square: {
-    artboard: '',
-    layers: {
-      background: null,
-      title: null,
-      overlays: null,
-      cornerTopLeft: null,
-      cornerTopRight: null,
-      cornerBottomLeft: null,
-      cornerBottomRight: null,
-    },
-  },
-};
 
 /**
  * Default generation options

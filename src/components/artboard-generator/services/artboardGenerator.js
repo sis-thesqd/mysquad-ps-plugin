@@ -2,6 +2,7 @@
  * Core artboard generation service using Photoshop batchPlay
  */
 import { logActivity, ACTIVITY_TYPES } from '../../../lib';
+import { ASPECT_RATIO_THRESHOLDS } from '../../../config';
 
 // Photoshop APIs are loaded lazily to avoid errors during module initialization
 const getPhotoshop = () => require('photoshop');
@@ -13,12 +14,7 @@ const getBatchPlay = () => getPhotoshop().action.batchPlay;
 // Constants
 // ============================================================================
 
-const ASPECT_RATIO_THRESHOLDS = {
-  PORTRAIT_MAX: 0.85,
-  SQUARE_MAX: 1.15,
-};
-
-export const LAYER_ROLES = {
+export const LAYER_ROLES_ENUM = {
   BACKGROUND: 'background',
   TITLE: 'title',
   OVERLAYS: 'overlays',
@@ -189,13 +185,13 @@ export const calculatePosition = (anchor, layerSize, targetSize, relativePositio
  */
 export const getLayerRoleConfig = (role) => {
   const configs = {
-    [LAYER_ROLES.BACKGROUND]: { scaleMode: 'cover', anchor: 'center' },
-    [LAYER_ROLES.TITLE]: { scaleMode: 'contain', anchor: 'center' },
-    [LAYER_ROLES.OVERLAYS]: { scaleMode: 'cover', anchor: 'center' },
-    [LAYER_ROLES.CORNER_TOP_LEFT]: { scaleMode: 'relative', anchor: 'top-left' },
-    [LAYER_ROLES.CORNER_TOP_RIGHT]: { scaleMode: 'relative', anchor: 'top-right' },
-    [LAYER_ROLES.CORNER_BOTTOM_LEFT]: { scaleMode: 'relative', anchor: 'bottom-left' },
-    [LAYER_ROLES.CORNER_BOTTOM_RIGHT]: { scaleMode: 'relative', anchor: 'bottom-right' },
+    [LAYER_ROLES_ENUM.BACKGROUND]: { scaleMode: 'cover', anchor: 'center' },
+    [LAYER_ROLES_ENUM.TITLE]: { scaleMode: 'contain', anchor: 'center' },
+    [LAYER_ROLES_ENUM.OVERLAYS]: { scaleMode: 'cover', anchor: 'center' },
+    [LAYER_ROLES_ENUM.CORNER_TOP_LEFT]: { scaleMode: 'relative', anchor: 'top-left' },
+    [LAYER_ROLES_ENUM.CORNER_TOP_RIGHT]: { scaleMode: 'relative', anchor: 'top-right' },
+    [LAYER_ROLES_ENUM.CORNER_BOTTOM_LEFT]: { scaleMode: 'relative', anchor: 'bottom-left' },
+    [LAYER_ROLES_ENUM.CORNER_BOTTOM_RIGHT]: { scaleMode: 'relative', anchor: 'bottom-right' },
   };
   return configs[role] || { scaleMode: 'contain', anchor: 'center' };
 };
@@ -1323,7 +1319,7 @@ export default {
   findNextArtboardPosition,
   duplicateArtboardContents,
   transformDuplicatedContent,
-  LAYER_ROLES,
+  LAYER_ROLES_ENUM,
   DEFAULT_PRINT_SETTINGS,
   DEFAULT_LAYOUT_OPTIONS,
 };

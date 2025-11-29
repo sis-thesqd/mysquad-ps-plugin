@@ -1,14 +1,6 @@
 import React from 'react';
 import { determineSourceType } from '../services/artboardGenerator';
-
-/**
- * Source type icons for visual identification
- */
-const SOURCE_TYPE_ICONS = {
-  landscape: '▭ ',
-  portrait: '▯ ',
-  square: '□ ',
-};
+import { SOURCE_TYPE_ICONS } from '../../../config';
 
 /**
  * Single size button that generates one artboard when clicked
