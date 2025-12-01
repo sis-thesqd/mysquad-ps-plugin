@@ -33,7 +33,23 @@
       "preferredFloatingSize": {
         "width": 400,
         "height": 700
-      }
+      },
+      "icons": [
+        {
+          "width": 23,
+          "height": 23,
+          "path": "icons/dark.png",
+          "scale": [1, 2],
+          "theme": ["darkest", "dark"]
+        },
+        {
+          "width": 23,
+          "height": 23,
+          "path": "icons/light.png",
+          "scale": [1, 2],
+          "theme": ["lightest", "light"]
+        }
+      ]
     }
   ],
   "requiredPermissions": {
@@ -66,18 +82,16 @@
     {
       "width": 23,
       "height": 23,
-      "path": "icons/logo.svg",
-      "scale": [
-        1,
-        2
-      ],
-      "theme": [
-        "dark",
-        "lightest"
-      ],
-      "species": [
-        "generic"
-      ]
+      "path": "icons/dark.png",
+      "scale": [1, 2],
+      "theme": ["darkest", "dark"]
+    },
+    {
+      "width": 23,
+      "height": 23,
+      "path": "icons/light.png",
+      "scale": [1, 2],
+      "theme": ["lightest", "light"]
     }
   ]
 }
