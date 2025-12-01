@@ -11,6 +11,7 @@ export { default as SubTabNavigation } from './ui/SubTabNavigation';
 export { default as FolderDetailsCard } from './folder-details/components/FolderDetailsCard';
 export { default as TaskDetailsCard } from './task-details/components/TaskDetailsCard';
 export { default as ActionsCard } from './actions/components/ActionsCard';
+export { default as TaskSearchDialog } from './folder-details/components/TaskSearchDialog';
 
 // Artboard Generator
 export { ArtboardGeneratorTab } from './artboard-generator';

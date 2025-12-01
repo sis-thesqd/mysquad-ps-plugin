@@ -6,6 +6,7 @@ import {
   TaskDetailsCard,
   ActionsCard,
   ArtboardGeneratorTab,
+  TaskSearchDialog,
   useFolderDetails,
 } from './components';
 import { logActivity, ACTIVITY_TYPES } from './lib';
@@ -14,7 +15,20 @@ import { getStoredMainTab, setStoredMainTab } from './utils/storage';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState(() => getStoredMainTab('task'));
-  const { taskDetails, loading, refetch, currentFilePath } = useFolderDetails();
+  const {
+    taskDetails,
+    loading,
+    refetch,
+    currentFilePath,
+    // Search fallback state
+    isSearchMode,
+    searchResults,
+    searchLoading,
+    searchError,
+    confirming,
+    handleTaskSelection,
+    handleCancelSearch,
+  } = useFolderDetails();
   const [progress, setProgress] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const loadingStartTime = useRef(null);
@@ -110,6 +124,17 @@ const App = () => {
           )}
         </div>
       </div>
+
+      {/* Task search dialog - shown when task ID cannot be extracted from path */}
+      <TaskSearchDialog
+        open={isSearchMode}
+        searchResults={searchResults}
+        loading={searchLoading}
+        confirming={confirming}
+        onSelectTask={handleTaskSelection}
+        onCancel={handleCancelSearch}
+        error={searchError}
+      />
     </sp-theme>
   );
 };

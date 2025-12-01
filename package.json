@@ -21,6 +21,7 @@
     "@swc-uxp-wrappers/action-group": "^2.0.0",
     "@swc-uxp-wrappers/button": "^2.0.0",
     "@swc-uxp-wrappers/card": "^2.0.0",
+    "@swc-uxp-wrappers/dialog": "^2.0.0",
     "@swc-uxp-wrappers/field-label": "^2.0.0",
     "@swc-uxp-wrappers/menu": "^2.0.0",
     "@swc-uxp-wrappers/overlay": "^2.0.0",

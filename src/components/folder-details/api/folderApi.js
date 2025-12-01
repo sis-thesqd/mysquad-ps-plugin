@@ -152,6 +152,72 @@ export const getTaskDetailsFromSupabase = async (taskId) => {
 };
 
 /**
+ * Searches for tasks by folder path when task ID cannot be extracted
+ * @param {string} folderPath - The file/folder path to search with
+ * @returns {Promise<Array>} Array of matching task results
+ */
+export const searchTasksByFolderPath = async (folderPath) => {
+  if (!folderPath) {
+    return [];
+  }
+
+  const url = `${WEBHOOK_BASE_URL}/ps-plugin-search-task-2aPgPALVvb7lmS9C?folder_path=${encodeURIComponent(folderPath)}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to search tasks: ${response.status} - ${errorText}`);
+  }
+
+  const data = await response.json();
+
+  // Return empty array if no results
+  if (!data || !Array.isArray(data)) {
+    return [];
+  }
+
+  return data;
+};
+
+/**
+ * Updates the missing folder mapping after user selects a task
+ * @param {string} taskId - The selected task ID
+ * @param {string} folderPath - The folder path to map
+ * @returns {Promise<Object>} Response from the update endpoint
+ */
+export const updateMissingFolder = async (taskId, folderPath) => {
+  if (!taskId || !folderPath) {
+    throw new Error('Task ID and folder path are required');
+  }
+
+  const url = `${WEBHOOK_BASE_URL}/ps-plugin-update-missing-folder-2aPgPALVvb7lmS9C`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      task_id: taskId,
+      folder_path: folderPath,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update folder mapping: ${response.status} - ${errorText}`);
+  }
+
+  return await response.json();
+};
+
+/**
  * Gets the current document path from Photoshop
  */
 export const getCurrentDocumentPath = async () => {
