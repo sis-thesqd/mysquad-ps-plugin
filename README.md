@@ -1,4 +1,4 @@
-# mySquad.ps (Spectrum)
+# mySquad.ps
 
 A UXP Photoshop plugin built with React and Adobe Spectrum Web Components.
 
