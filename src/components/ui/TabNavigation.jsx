@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 
 /**
  * Tab navigation component for switching between plugin panels
- * Uses Adobe Spectrum Web Components sp-action-group (UXP compatible)
+ * Uses individual action buttons without sp-action-group to avoid UXP issues
  * @param {Object} props - Component props
  * @param {Array} props.tabs - Array of tab objects with id and label
  * @param {string} props.activeTab - Currently active tab id
@@ -48,7 +48,7 @@ const TabNavigation = ({
 
   return (
     <div className={className}>
-      <sp-action-group selects="single" selected={activeTab} size={size}>
+      <div className="tab-button-group">
         {tabs.map((tab) => (
           <sp-action-button
             key={tab.id}
@@ -61,7 +61,7 @@ const TabNavigation = ({
             {tab.label}
           </sp-action-button>
         ))}
-      </sp-action-group>
+      </div>
     </div>
   );
 };

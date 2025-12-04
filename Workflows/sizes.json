@@ -1,0 +1,775 @@
+{
+    "nodes": [
+      {
+        "parameters": {
+          "authentication": "oAuth2",
+          "operation": "get",
+          "id": "={{ $json.query.taskid }}"
+        },
+        "id": "f733cc7d-ddc7-482b-bc73-dde0d05ef79a",
+        "name": "Fetch Task Details",
+        "type": "n8n-nodes-base.clickUp",
+        "typeVersion": 1,
+        "position": [
+          -800,
+          344
+        ]
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "checklists[0].items",
+          "options": {}
+        },
+        "id": "e3229a7c-15f8-4bed-b090-b48bbf517626",
+        "name": "Extract Checklist Items",
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          -576,
+          344
+        ]
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.name }}",
+          "attributes": {
+            "attributes": [
+              {
+                "name": "name",
+                "description": "The name of the size, make best guess if none is given.",
+                "required": true
+              },
+              {
+                "name": "size",
+                "description": "You are tasked with converting a given string to a pixel dimension if it contains size information. Follow these rules:\n\nIf the string specifies a size in inches or centimeters and is for a print project:\n\nUse the provided DPI for conversion.\nIf no DPI is provided, default to 300 DPI.\nFor non-print projects, use the pixel size directly.\n\nIf the string references “HD title,” output 1920x1080 pixels.\n\nFor specific resolutions (e.g., 4K), adjust accordingly to match standard pixel dimensions.\n\nFor custom sizes given for print, multiply the dimensions by the DPI to calculate the final pixel size.\n\nEnsure the output is in the format “Width x Height” (e.g., 1920x1080) with no additional text.",
+                "required": true
+              },
+              {
+                "name": "contents",
+                "description": "any content requested to be on the deliverable. output nothing if none are present."
+              },
+              {
+                "name": "bleed",
+                "description": "Extract the bleed value if mentioned (e.g. 'With 0.125\" bleed' returns '0.125'). Output nothing if no bleed is mentioned."
+              }
+            ]
+          },
+          "options": {
+            "systemPromptTemplate": "You are an expert extraction algorithm.\nOnly extract relevant information from the text.\nIf you do not know the value of an attribute asked to extract, you may omit the attribute's value."
+          }
+        },
+        "id": "ce65fa10-f51a-46e3-8c42-9d28e78b6570",
+        "name": "Parse Size Information",
+        "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+        "typeVersion": 1,
+        "position": [
+          352,
+          440
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.output.size }}",
+                      "rightValue": "1920x1080",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "HD Title Slide"
+              }
+            ]
+          },
+          "options": {
+            "fallbackOutput": "extra"
+          }
+        },
+        "id": "76e418cf-8fe0-4a2b-b501-ccaadb8b7018",
+        "name": "Categorize Sizes",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          928,
+          344
+        ]
+      },
+      {
+        "parameters": {
+          "sortFieldsUi": {
+            "sortField": [
+              {
+                "fieldName": "output.name",
+                "order": "descending"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "910da7fb-b05a-4971-a8fa-66fe36c95c70",
+        "name": "Sort Standard Sizes",
+        "type": "n8n-nodes-base.sort",
+        "typeVersion": 1,
+        "position": [
+          1376,
+          248
+        ]
+      },
+      {
+        "parameters": {
+          "sortFieldsUi": {
+            "sortField": [
+              {
+                "fieldName": "output.name"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "ab467335-9236-4e2e-941b-610a63bffb50",
+        "name": "Sort Special Sizes",
+        "type": "n8n-nodes-base.sort",
+        "typeVersion": 1,
+        "position": [
+          1152,
+          440
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Access the items array\n// Each item has a 'json' property, and within that, 'output' with 'name' and 'size'\n\n// Define a function to extract the base name by removing all known suffixes\nfunction getBaseName(name) {\n    // Remove known suffixes iteratively\n    let suffixes = [' Bkg Only', ' Title', ' Blank', ' Slide'];\n    let baseName = name.trim();\n    let changed;\n    do {\n        changed = false;\n        for (let suffix of suffixes) {\n            if (baseName.endsWith(suffix)) {\n                baseName = baseName.slice(0, -suffix.length).trim();\n                changed = true;\n            }\n        }\n    } while (changed);\n    return baseName;\n}\n\n// Define a function to assign a rank based on the suffix\nfunction getSuffixRank(name) {\n    if (/Title\\b/i.test(name)) return 1;      // 'Title' suffix gets highest priority\n    if (/Bkg Only\\b/i.test(name)) return 2;   // 'Bkg Only' suffix gets next priority\n    if (/Blank\\b/i.test(name)) return 3;      // 'Blank' suffix gets lower priority\n    return 0;                                // No suffix\n}\n\n// Sort the items array\nitems.sort((a, b) => {\n    // Extract names from each item\n    let nameA = a.json.output.name;\n    let nameB = b.json.output.name;\n\n    // Get base names\n    let baseNameA = getBaseName(nameA);\n    let baseNameB = getBaseName(nameB);\n\n    // Compare base names\n    if (baseNameA !== baseNameB) {\n        return baseNameA.localeCompare(baseNameB);\n    } else {\n        // Base names are the same, sort by suffix rank\n        let rankA = getSuffixRank(nameA);\n        let rankB = getSuffixRank(nameB);\n        return rankA - rankB;\n    }\n});\n\n// Return the sorted items\nreturn items;\n"
+        },
+        "id": "0cfbf1ee-884f-40d8-902c-d0dbb581ad57",
+        "name": "Custom Size Sorting",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1376,
+          440
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "deaa5b8d-d21f-48ac-b7ed-39f362aa429a",
+        "name": "Combine Sorted Sizes",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          1600,
+          344
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "fac92a8c-81fc-41fa-8d75-36afc8b1d3fe",
+                "leftValue": "={{ $json.output.size }}",
+                "rightValue": "^\\d+x\\d+$",
+                "operator": {
+                  "type": "string",
+                  "operation": "regex"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "aa8fc504-cac6-4d6c-b7fc-9c7811b92010",
+        "name": "Validate Size Format",
+        "type": "n8n-nodes-base.filter",
+        "typeVersion": 2.2,
+        "position": [
+          1824,
+          344
+        ]
+      },
+      {
+        "parameters": {
+          "aggregate": "aggregateAllItemData",
+          "destinationFieldName": "",
+          "options": {}
+        },
+        "id": "07b82e7e-1038-4fb2-bc12-5b473d711e5c",
+        "name": "Compile Size List",
+        "type": "n8n-nodes-base.aggregate",
+        "typeVersion": 1,
+        "position": [
+          2048,
+          344
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f25ebe15-0c92-4669-ab4f-3305b8d87594",
+                "name": "sizes",
+                "value": "={{ $json[''].map(item => { const [w, h] = item.output.size.split('x').map(Number); const bleedValue = item.output.bleed ? parseFloat(item.output.bleed) : 0; const hasBleed = bleedValue > 0; return { name: item.output.name, width: w, height: h, type: hasBleed ? 'print' : 'other', requiresBleed: hasBleed, bleed: bleedValue, bleedUnit: 'inches', contents: item.output.contents || '' }; }) }}",
+                "type": "array"
+              },
+              {
+                "id": "87309ef3-2e87-411f-8a40-82b90616f41f",
+                "name": "name",
+                "value": "={{ $('Fetch Task Details').item.json.name.replace(/[^\\w\\-\\/: ]/g, '_').trim() }} - Finals",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "140fb5ba-f166-46d1-8270-1dcb1e6f7dc5",
+        "name": "Prepare Response Data",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2272,
+          344
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "40c0d083-6f9a-4bc7-97dd-f7639d29f5d8",
+        "name": "Send Response",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.1,
+        "position": [
+          2496,
+          344
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "4c3a2dbc-9685-41f7-bb13-26c81d899fd1",
+        "name": "OpenAI Chat Model1",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          -280,
+          632
+        ]
+      },
+      {
+        "parameters": {
+          "inputText": "={{ $json.name }}",
+          "categories": {
+            "categories": [
+              {
+                "category": "Feet",
+                "description": "When the name of the file has the measurement in feet or '. Take into account the name of the item too example a \"card\" is not likely to be measured in feet."
+              },
+              {
+                "category": "Inches",
+                "description": "When the name of the file has the measurement in inches or \".Take into account the name of the item too example a \"card\" is likely to be measured in inches."
+              },
+              {
+                "category": "Pixels",
+                "description": "When the name of the file has the measurement in pixels or px"
+              }
+            ]
+          },
+          "options": {
+            "fallback": "other",
+            "systemPromptTemplate": "Please classify the text provided by the user into one of the following categories: {categories}, and use the provided formatting instructions below. Don't explain, and only output the json.",
+            "enableAutoFixing": true
+          }
+        },
+        "id": "ce8f985f-ff00-461d-bb49-1fb45860be05",
+        "name": "Text Classifier",
+        "type": "@n8n/n8n-nodes-langchain.textClassifier",
+        "typeVersion": 1,
+        "position": [
+          -352,
+          344
+        ]
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.name }}",
+          "attributes": {
+            "attributes": [
+              {
+                "name": "name",
+                "description": "The name of the size, make best guess if none is given.",
+                "required": true
+              },
+              {
+                "name": "size",
+                "description": "Follow these rules:\n\nIf the string specifies a size in inches or centimeters and is for a print project:\n\nUse the provided DPI for conversion.\nIf no DPI is provided, default to 300 DPI.\nFor non-print projects, use the pixel size directly.\n\nIf the string references “HD title,” output 1920x1080 pixels.\n\nFor specific resolutions (e.g., 4K), adjust accordingly to match standard pixel dimensions.\n\nFor custom sizes given for print, multiply the dimensions by the DPI to calculate the final pixel size.\n\nEnsure the output is in the format “Width x Height” (e.g., 1920x1080) with no additional text.",
+                "required": true
+              },
+              {
+                "name": "contents",
+                "description": "any content requested to be on the deliverable. output nothing if none are present."
+              },
+              {
+                "name": "bleed",
+                "description": "Extract the bleed value if mentioned (e.g. 'With 0.125\" bleed' returns '0.125'). Output nothing if no bleed is mentioned."
+              }
+            ]
+          },
+          "options": {
+            "systemPromptTemplate": "You are an expert extraction algorithm.\nOnly extract relevant information from the text.\nIf you do not know the value of an attribute asked to extract, you may omit the attribute's value."
+          }
+        },
+        "id": "d2f274f6-b1ab-4c05-a4d8-d98e7c16aadf",
+        "name": "Parse Size Information1",
+        "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+        "typeVersion": 1,
+        "position": [
+          352,
+          248
+        ]
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.name }}",
+          "attributes": {
+            "attributes": [
+              {
+                "name": "name",
+                "description": "The name of the size, make best guess if none is given.",
+                "required": true
+              },
+              {
+                "name": "size",
+                "description": "Extract the size of the requested deliverable in feet in a WidthxHeigh format.",
+                "required": true
+              },
+              {
+                "name": "contents",
+                "description": "any content requested to be on the deliverable. output nothing if none are present."
+              },
+              {
+                "name": "bleed",
+                "description": "Extract the bleed value if mentioned (e.g. 'With 0.125\" bleed' returns '0.125'). Output nothing if no bleed is mentioned."
+              }
+            ]
+          },
+          "options": {
+            "systemPromptTemplate": "You are an expert extraction algorithm.\nOnly extract relevant information from the text.\nIf you do not know the value of an attribute asked to extract, you may omit the attribute's value."
+          }
+        },
+        "id": "5b630d61-3c3f-46c7-ba26-7566fd6a50df",
+        "name": "Parse Size Information2",
+        "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "id": "5dd22a99-f245-43c4-aee7-c69b7303bc52",
+        "name": "OpenAI Chat Model4",
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1,
+        "position": [
+          72,
+          224
+        ]
+      },
+      {
+        "parameters": {
+          "text": "={{ $json.name }}",
+          "attributes": {
+            "attributes": [
+              {
+                "name": "name",
+                "description": "The name of the size, make best guess if none is given.",
+                "required": true
+              },
+              {
+                "name": "size",
+                "description": "You are tasked with converting a given string to a pixel dimension if it contains size information. Follow these rules:\n\nIf the string specifies a size in inches or centimeters and is for a print project:\n\nUse the provided DPI for conversion.\nIf no DPI is provided, default to 300 DPI.\nFor non-print projects, use the pixel size directly.\n\nIf the string references “HD title,” output 1920x1080 pixels.\n\nFor specific resolutions (e.g., 4K), adjust accordingly to match standard pixel dimensions.\n\nFor custom sizes given for print, multiply the dimensions by the DPI to calculate the final pixel size.\n\nEnsure the output is in the format “Width x Height” (e.g., 1920x1080) with no additional text.",
+                "required": true
+              },
+              {
+                "name": "contents",
+                "description": "any content requested to be on the deliverable. output nothing if none are present."
+              },
+              {
+                "name": "bleed",
+                "description": "Extract the bleed value if mentioned (e.g. 'With 0.125\" bleed' returns '0.125'). Output nothing if no bleed is mentioned."
+              }
+            ]
+          },
+          "options": {
+            "systemPromptTemplate": "You are an expert extraction algorithm.\nOnly extract relevant information from the text.\nIf you do not know the value of an attribute asked to extract, you may omit the attribute's value."
+          }
+        },
+        "id": "924fb978-a47a-41f0-a630-dcc7fc27cc71",
+        "name": "Parse Size Information3",
+        "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+        "typeVersion": 1,
+        "position": [
+          352,
+          632
+        ]
+      },
+      {
+        "parameters": {
+          "numberInputs": 4
+        },
+        "id": "1f456ccb-55a1-4932-8ffb-a892e76dddab",
+        "name": "Merge",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          704,
+          312
+        ]
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b25617ee-42c8-4d6e-a3c5-272754236a56",
+                "name": "output.name",
+                "value": "={{ $json.output.name }}",
+                "type": "string"
+              },
+              {
+                "id": "eddc9c19-003c-4230-b437-8d0709bea7ca",
+                "name": "output.size",
+                "value": "={{ \n  (() => {\n    const size = $json[\"output\"][\"size\"]; // current size format like \"10'x3'\"\n    const [width, height] = size.split('x').map(dimension => parseFloat(dimension) * 12); // convert feet to inches\n    const widthInPixels = (width / 10) * 720; // convert width to pixels\n    const heightInPixels = (height / 10) * 720; // convert height to pixels\n    return `${Math.round(widthInPixels)}x${Math.round(heightInPixels)}`; // return as \"widthInPixelsxheightInPixels\"\n  })() \n}}",
+                "type": "string"
+              },
+              {
+                "id": "ab428470-28b4-403b-a733-a2babbaa2885",
+                "name": "output.contents",
+                "value": "={{ $json.output.contents }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "3afd7aeb-4962-4804-a3e2-075558d0e688",
+        "name": "Edit Fields",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          416,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "path": "f676633c-95c7-4893-ac6f-bb3a56bfefae",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "1cabca78-f9be-4fcd-9e18-951eedf12e1a",
+        "name": "Incoming Request",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -1024,
+          344
+        ],
+        "webhookId": "2a5d0da5-9156-4c3f-a3f1-1d90049fa8ad"
+      }
+    ],
+    "connections": {
+      "Fetch Task Details": {
+        "main": [
+          [
+            {
+              "node": "Extract Checklist Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Checklist Items": {
+        "main": [
+          [
+            {
+              "node": "Text Classifier",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Size Information": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 2
+            }
+          ]
+        ]
+      },
+      "Categorize Sizes": {
+        "main": [
+          [
+            {
+              "node": "Sort Standard Sizes",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Sort Special Sizes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sort Standard Sizes": {
+        "main": [
+          [
+            {
+              "node": "Combine Sorted Sizes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sort Special Sizes": {
+        "main": [
+          [
+            {
+              "node": "Custom Size Sorting",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Custom Size Sorting": {
+        "main": [
+          [
+            {
+              "node": "Combine Sorted Sizes",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Combine Sorted Sizes": {
+        "main": [
+          [
+            {
+              "node": "Validate Size Format",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate Size Format": {
+        "main": [
+          [
+            {
+              "node": "Compile Size List",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Compile Size List": {
+        "main": [
+          [
+            {
+              "node": "Prepare Response Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepare Response Data": {
+        "main": [
+          [
+            {
+              "node": "Send Response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Text Classifier",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Text Classifier": {
+        "main": [
+          [
+            {
+              "node": "Parse Size Information2",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Parse Size Information1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Parse Size Information",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Parse Size Information3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Size Information1": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Parse Size Information2": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model4": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Parse Size Information3",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Parse Size Information2",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Parse Size Information1",
+              "type": "ai_languageModel",
+              "index": 0
+            },
+            {
+              "node": "Parse Size Information",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Size Information3": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 3
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Categorize Sizes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Incoming Request": {
+        "main": [
+          [
+            {
+              "node": "Fetch Task Details",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "pinData": {},
+    "meta": {
+      "instanceId": "d142547b7576f41859ca5d30ba209f360f6a1abfb2c66b4a43edc74b28b1782c"
+    }
+  }

@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
-import { fetchSizes } from '../api/sizesApi';
+import { fetchSizes, fetchSizesByTaskId, clearSizesCache } from '../api/sizesApi';
 import { generateArtboards, DEFAULT_PRINT_SETTINGS, DEFAULT_LAYOUT_OPTIONS } from '../services/artboardGenerator';
 import { DEFAULT_SIZES, DEFAULT_SOURCE_CONFIG } from '../../../config';
+import { getCachedTaskSizes, getCacheAgeString } from '../../../utils/storage';
 import {
   createArtboardByDuplication,
   generateArtboardsBatch,
@@ -30,8 +31,10 @@ const getLayerNamesFromOptions = (options) => [
 
 /**
  * Hook for managing artboard generator state and operations
+ * @param {Object} options - Hook options
+ * @param {string} options.taskId - Optional task ID to fetch sizes from
  */
-export const useArtboardGenerator = () => {
+export const useArtboardGenerator = ({ taskId } = {}) => {
   // Source configuration state
   const [sourceConfig, setSourceConfig] = useState(DEFAULT_SOURCE_CONFIG);
   
@@ -45,12 +48,65 @@ export const useArtboardGenerator = () => {
   const [sizes, setSizes] = useState(DEFAULT_SIZES);
   const [sizesLoading, setSizesLoading] = useState(false);
   const [sizesError, setSizesError] = useState(null);
+  const [taskName, setTaskName] = useState('');
+  const [sizesCachedAt, setSizesCachedAt] = useState(null);
+  const [sizesFromCache, setSizesFromCache] = useState(false);
   
   // Generation state
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0, name: '' });
   const [generationError, setGenerationError] = useState(null);
   const [generatedArtboards, setGeneratedArtboards] = useState([]);
+
+  /**
+   * Fetch sizes from linked ClickUp task
+   * @param {Object} options - Load options
+   * @param {boolean} options.forceRefresh - Skip cache and fetch fresh data
+   */
+  const loadSizesFromTask = useCallback(async ({ forceRefresh = false } = {}) => {
+    console.log('[loadSizesFromTask] Button clicked, taskId:', taskId, 'forceRefresh:', forceRefresh);
+    
+    if (!taskId) {
+      console.log('[loadSizesFromTask] No taskId, showing error');
+      setSizesError('No task linked to this file');
+      return;
+    }
+
+    setSizesLoading(true);
+    setSizesError(null);
+
+    try {
+      console.log('[loadSizesFromTask] Calling fetchSizesByTaskId...');
+      const result = await fetchSizesByTaskId(taskId, { forceRefresh });
+      console.log('[loadSizesFromTask] Got result:', result);
+      setSizes(result.sizes);
+      setTaskName(result.taskName);
+      setSizesCachedAt(result.cachedAt);
+      setSizesFromCache(result.fromCache);
+    } catch (error) {
+      console.error('[loadSizesFromTask] Error:', error);
+      setSizesError(error.message);
+      setSizes([]);
+      setSizesCachedAt(null);
+      setSizesFromCache(false);
+    } finally {
+      setSizesLoading(false);
+    }
+  }, [taskId]);
+
+  /**
+   * Force refresh sizes from task (bypass cache)
+   */
+  const refreshSizesFromTask = useCallback(async () => {
+    return loadSizesFromTask({ forceRefresh: true });
+  }, [loadSizesFromTask]);
+
+  /**
+   * Get human-readable cache age
+   */
+  const getCacheAge = useCallback(() => {
+    return getCacheAgeString(sizesCachedAt);
+  }, [sizesCachedAt]);
 
   /**
    * Fetch sizes from API endpoint
@@ -105,8 +161,30 @@ export const useArtboardGenerator = () => {
       errors.push('At least one source artboard must be configured');
     }
 
+    // Check if any sizes can be generated with current config
+    if (hasSource && sizes.length > 0) {
+      const neededOrientations = new Set();
+      sizes.forEach(size => {
+        const ratio = size.width / size.height;
+        if (ratio < 0.85) neededOrientations.add('portrait');
+        else if (ratio > 1.15) neededOrientations.add('landscape');
+        else neededOrientations.add('square');
+      });
+
+      const missingOrientations = [];
+      neededOrientations.forEach(orientation => {
+        if (!sourceConfig[orientation]?.artboard) {
+          missingOrientations.push(orientation);
+        }
+      });
+
+      if (missingOrientations.length > 0) {
+        errors.push(`Missing source for: ${missingOrientations.join(', ')}`);
+      }
+    }
+
     return errors;
-  }, [sourceConfig]);
+  }, [sourceConfig, sizes]);
 
   /**
    * Check if a specific size can be generated (has required source)
@@ -276,8 +354,14 @@ export const useArtboardGenerator = () => {
     sizesLoading,
     sizesError,
     loadSizes,
+    loadSizesFromTask,
+    refreshSizesFromTask,
     loadDefaultSizes,
     clearSizes,
+    taskName,
+    sizesCachedAt,
+    sizesFromCache,
+    getCacheAge,
     
     // Generation
     generating,
@@ -291,6 +375,7 @@ export const useArtboardGenerator = () => {
     
     // Utilities
     reset,
+    taskId,
   };
 };
 

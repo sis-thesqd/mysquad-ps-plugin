@@ -127,6 +127,7 @@ export const config = {
       anonKey: process.env.REACT_APP_SUPABASE_ANON_KEY,
       isConfigured: !!(process.env.REACT_APP_SUPABASE_URL && process.env.REACT_APP_SUPABASE_ANON_KEY),
     },
+    sizesWebhook: 'https://sisx.thesqd.com/webhook/f676633c-95c7-4893-ac6f-bb3a56bfefae',
   },
 
   // Feature flags
@@ -143,13 +144,6 @@ export const config = {
   tabs: [
     { id: 'task', label: 'Task Details' },
     { id: 'generator', label: 'Generator' },
-  ],
-
-  // Generator sub-tabs
-  generatorSubTabs: [
-    { id: 'sources', label: 'Sources' },
-    { id: 'options', label: 'Options' },
-    { id: 'print', label: 'Print' },
   ],
 
   // UI timing

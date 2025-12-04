@@ -409,8 +409,16 @@ sp-picker sp-popover {
   display: flex;
 }
 
-.tab-navigation sp-action-group {
-  gap: 12px;
+.tab-button-group {
+  display: flex;
+}
+
+.tab-button-group sp-action-button {
+  margin-right: 8px;
+}
+
+.tab-button-group sp-action-button:last-child {
+  margin-right: 0;
 }
 
 .tab-navigation sp-action-button {
@@ -835,6 +843,487 @@ sp-picker sp-popover {
 /* Number Field Sizing */
 .generator-content sp-number-field {
   min-width: 80px;
+}
+
+/* ==========================================================================
+   Configuration Status
+   ========================================================================== */
+
+.config-status {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.config-status-empty {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px dashed var(--spectrum-global-color-gray-300, #4a4a4a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.config-status-empty sp-body {
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+}
+
+.config-status-complete {
+  background: rgba(45, 157, 120, 0.1);
+  border: 1px solid var(--spectrum-global-color-green-500, #2d9d78);
+}
+
+.config-status-incomplete {
+  background: rgba(230, 134, 25, 0.1);
+  border: 1px solid var(--spectrum-global-color-orange-500, #e68619);
+}
+
+.config-status-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.config-status-sources {
+  display: flex;
+  align-items: center;
+}
+
+.status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.status-icon-success {
+  background: var(--spectrum-global-color-green-500, #2d9d78);
+  color: white;
+}
+
+.status-icon-warning {
+  background: var(--spectrum-global-color-orange-500, #e68619);
+  color: white;
+}
+
+.missing-sources {
+  color: var(--spectrum-global-color-orange-500, #e68619);
+  margin-left: 4px;
+}
+
+.config-status-badges {
+  display: flex;
+  margin-left: auto;
+}
+
+.config-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-left: 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+}
+
+/* ==========================================================================
+   Source Section Improvements
+   ========================================================================== */
+
+.source-section-configured {
+  border-left: 3px solid var(--spectrum-global-color-green-500, #2d9d78);
+  padding-left: 12px;
+}
+
+.source-section-incomplete {
+  border-left: 3px solid var(--spectrum-global-color-orange-500, #e68619);
+  padding-left: 12px;
+}
+
+.source-status-badge {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.source-status-configured {
+  background: rgba(45, 157, 120, 0.2);
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+}
+
+.source-status-needed {
+  background: rgba(230, 134, 25, 0.2);
+  color: var(--spectrum-global-color-orange-500, #e68619);
+}
+
+/* Detection Message */
+.detection-message {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: rgba(45, 157, 120, 0.1);
+  border-radius: 3px;
+  animation: fadeIn 0.3s ease;
+}
+
+.detection-icon {
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+.detection-message sp-body {
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Collapsible Layer Roles
+   ========================================================================== */
+
+.layer-roles-section {
+  margin-top: 8px;
+}
+
+.layer-roles-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  border-radius: 4px;
+  color: var(--spectrum-global-color-gray-700, #d4d4d4);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.layer-roles-toggle:hover {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+}
+
+.toggle-icon {
+  font-size: 10px;
+  margin-right: 8px;
+  transition: transform 0.2s ease;
+}
+
+.toggle-icon-expanded {
+  transform: rotate(90deg);
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+}
+
+.layer-count-badge {
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-radius: 3px;
+  font-size: 10px;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+}
+
+/* ==========================================================================
+   Size Filter
+   ========================================================================== */
+
+.sizes-filter {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sizes-filter sp-textfield {
+  flex: 1;
+}
+
+.filter-count {
+  margin-left: 8px;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  white-space: nowrap;
+}
+
+.no-matches {
+  padding: 16px;
+  text-align: center;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+}
+
+/* Orientation Summary */
+.orientation-summary {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.orientation-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  margin-right: 8px;
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  border-radius: 12px;
+  font-size: 11px;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+}
+
+.orientation-chip:last-child {
+  margin-right: 0;
+}
+
+/* ==========================================================================
+   Size Button Wrapper (for disabled messaging)
+   ========================================================================== */
+
+.size-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.size-button-needs-source .size-button {
+  border-color: var(--spectrum-global-color-orange-400, #da7b11);
+  border-style: dashed;
+}
+
+.size-missing-source {
+  font-size: 9px;
+  color: var(--spectrum-global-color-orange-500, #e68619);
+  margin-top: 2px;
+  padding-left: 2px;
+}
+
+/* ==========================================================================
+   Empty State Improvements
+   ========================================================================== */
+
+.sizes-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.empty-state-hint {
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  margin-top: 4px;
+}
+
+.empty-state {
+  padding: 16px;
+  text-align: center;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+}
+
+/* Hint Text */
+.hint-text {
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  margin-left: 8px;
+}
+
+/* ==========================================================================
+   Settings Panel (Collapsible)
+   ========================================================================== */
+
+.settings-panel {
+  margin-top: 16px;
+  border-top: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  padding-top: 12px;
+}
+
+.settings-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  border-radius: 4px;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.settings-toggle:hover {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  color: var(--spectrum-global-color-gray-700, #d4d4d4);
+}
+
+.settings-toggle-expanded {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
+}
+
+.settings-icon {
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.settings-label {
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.settings-summary {
+  flex: 1;
+  text-align: left;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  font-size: 11px;
+}
+
+.settings-chevron {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.settings-chevron-expanded {
+  transform: rotate(180deg);
+}
+
+.settings-content {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  padding: 12px;
+}
+
+.settings-group {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+.settings-group:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.settings-group-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.settings-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.settings-field {
+  flex: 1;
+  min-width: 70px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.settings-field:last-child {
+  margin-right: 0;
+}
+
+.settings-field sp-field-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+}
+
+.settings-field sp-number-field,
+.settings-field sp-picker {
+  width: 100%;
+}
+
+/* ==========================================================================
+   Sizes Section Header
+   ========================================================================== */
+
+.sizes-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sizes-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.task-name-badge {
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: var(--spectrum-global-color-blue-400, #2680eb);
+  color: white;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.cache-badge {
+  margin-left: 6px;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  font-size: 10px;
+}
+
+.sizes-section-header .sizes-actions {
+  display: flex;
+}
+
+.sizes-section-header .sizes-actions sp-action-button {
+  margin-left: 8px;
+}
+
+/* ==========================================================================
+   Generation Section Inline (inside sizes)
+   ========================================================================== */
+
+.generation-section-inline {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+.generation-section-inline .generation-progress {
+  margin-bottom: 12px;
+}
+
+.generation-section-inline sp-button {
+  align-self: flex-start;
+}
+
+.validation-warnings-inline {
+  margin-bottom: 8px;
 }
 
 /* ==========================================================================

@@ -120,7 +120,7 @@ const App = () => {
           )}
 
           {activeTab === 'generator' && (
-            <ArtboardGeneratorTab />
+            <ArtboardGeneratorTab taskDetails={taskDetails} />
           )}
         </div>
       </div>

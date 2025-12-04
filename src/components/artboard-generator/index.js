@@ -8,6 +8,9 @@ export { default as SourceConfigPanel } from './components/SourceConfigPanel';
 export { default as GenerationOptionsPanel } from './components/GenerationOptionsPanel';
 export { default as PrintSettingsPanel } from './components/PrintSettingsPanel';
 export { default as SizesPreview } from './components/SizesPreview';
+export { default as ConfigurationStatus } from './components/ConfigurationStatus';
+export { default as SettingsPanel } from './components/SettingsPanel';
+export { default as SizeButton } from './components/SizeButton';
 
 // Hooks
 export { usePhotoshopDocument } from './hooks/usePhotoshopDocument';

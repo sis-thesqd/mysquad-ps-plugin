@@ -3047,8 +3047,16 @@ sp-picker sp-popover {
   display: flex;
 }
 
-.tab-navigation sp-action-group {
-  gap: 12px;
+.tab-button-group {
+  display: flex;
+}
+
+.tab-button-group sp-action-button {
+  margin-right: 8px;
+}
+
+.tab-button-group sp-action-button:last-child {
+  margin-right: 0;
 }
 
 .tab-navigation sp-action-button {
@@ -3473,6 +3481,487 @@ sp-picker sp-popover {
 /* Number Field Sizing */
 .generator-content sp-number-field {
   min-width: 80px;
+}
+
+/* ==========================================================================
+   Configuration Status
+   ========================================================================== */
+
+.config-status {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.config-status-empty {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px dashed var(--spectrum-global-color-gray-300, #4a4a4a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.config-status-empty sp-body {
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+}
+
+.config-status-complete {
+  background: rgba(45, 157, 120, 0.1);
+  border: 1px solid var(--spectrum-global-color-green-500, #2d9d78);
+}
+
+.config-status-incomplete {
+  background: rgba(230, 134, 25, 0.1);
+  border: 1px solid var(--spectrum-global-color-orange-500, #e68619);
+}
+
+.config-status-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.config-status-sources {
+  display: flex;
+  align-items: center;
+}
+
+.status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.status-icon-success {
+  background: var(--spectrum-global-color-green-500, #2d9d78);
+  color: white;
+}
+
+.status-icon-warning {
+  background: var(--spectrum-global-color-orange-500, #e68619);
+  color: white;
+}
+
+.missing-sources {
+  color: var(--spectrum-global-color-orange-500, #e68619);
+  margin-left: 4px;
+}
+
+.config-status-badges {
+  display: flex;
+  margin-left: auto;
+}
+
+.config-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-left: 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+}
+
+/* ==========================================================================
+   Source Section Improvements
+   ========================================================================== */
+
+.source-section-configured {
+  border-left: 3px solid var(--spectrum-global-color-green-500, #2d9d78);
+  padding-left: 12px;
+}
+
+.source-section-incomplete {
+  border-left: 3px solid var(--spectrum-global-color-orange-500, #e68619);
+  padding-left: 12px;
+}
+
+.source-status-badge {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.source-status-configured {
+  background: rgba(45, 157, 120, 0.2);
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+}
+
+.source-status-needed {
+  background: rgba(230, 134, 25, 0.2);
+  color: var(--spectrum-global-color-orange-500, #e68619);
+}
+
+/* Detection Message */
+.detection-message {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: rgba(45, 157, 120, 0.1);
+  border-radius: 3px;
+  animation: fadeIn 0.3s ease;
+}
+
+.detection-icon {
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+.detection-message sp-body {
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Collapsible Layer Roles
+   ========================================================================== */
+
+.layer-roles-section {
+  margin-top: 8px;
+}
+
+.layer-roles-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  border-radius: 4px;
+  color: var(--spectrum-global-color-gray-700, #d4d4d4);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.layer-roles-toggle:hover {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+}
+
+.toggle-icon {
+  font-size: 10px;
+  margin-right: 8px;
+  transition: transform 0.2s ease;
+}
+
+.toggle-icon-expanded {
+  transform: rotate(90deg);
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+}
+
+.layer-count-badge {
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-radius: 3px;
+  font-size: 10px;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+}
+
+/* ==========================================================================
+   Size Filter
+   ========================================================================== */
+
+.sizes-filter {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sizes-filter sp-textfield {
+  flex: 1;
+}
+
+.filter-count {
+  margin-left: 8px;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  white-space: nowrap;
+}
+
+.no-matches {
+  padding: 16px;
+  text-align: center;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+}
+
+/* Orientation Summary */
+.orientation-summary {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.orientation-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  margin-right: 8px;
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  border-radius: 12px;
+  font-size: 11px;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+}
+
+.orientation-chip:last-child {
+  margin-right: 0;
+}
+
+/* ==========================================================================
+   Size Button Wrapper (for disabled messaging)
+   ========================================================================== */
+
+.size-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.size-button-needs-source .size-button {
+  border-color: var(--spectrum-global-color-orange-400, #da7b11);
+  border-style: dashed;
+}
+
+.size-missing-source {
+  font-size: 9px;
+  color: var(--spectrum-global-color-orange-500, #e68619);
+  margin-top: 2px;
+  padding-left: 2px;
+}
+
+/* ==========================================================================
+   Empty State Improvements
+   ========================================================================== */
+
+.sizes-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.empty-state-hint {
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  margin-top: 4px;
+}
+
+.empty-state {
+  padding: 16px;
+  text-align: center;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+}
+
+/* Hint Text */
+.hint-text {
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  margin-left: 8px;
+}
+
+/* ==========================================================================
+   Settings Panel (Collapsible)
+   ========================================================================== */
+
+.settings-panel {
+  margin-top: 16px;
+  border-top: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  padding-top: 12px;
+}
+
+.settings-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  border-radius: 4px;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.settings-toggle:hover {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  color: var(--spectrum-global-color-gray-700, #d4d4d4);
+}
+
+.settings-toggle-expanded {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
+}
+
+.settings-icon {
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.settings-label {
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.settings-summary {
+  flex: 1;
+  text-align: left;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  font-size: 11px;
+}
+
+.settings-chevron {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.settings-chevron-expanded {
+  transform: rotate(180deg);
+}
+
+.settings-content {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  padding: 12px;
+}
+
+.settings-group {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+.settings-group:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.settings-group-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.settings-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.settings-field {
+  flex: 1;
+  min-width: 70px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.settings-field:last-child {
+  margin-right: 0;
+}
+
+.settings-field sp-field-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 10px;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+}
+
+.settings-field sp-number-field,
+.settings-field sp-picker {
+  width: 100%;
+}
+
+/* ==========================================================================
+   Sizes Section Header
+   ========================================================================== */
+
+.sizes-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sizes-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.task-name-badge {
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: var(--spectrum-global-color-blue-400, #2680eb);
+  color: white;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.cache-badge {
+  margin-left: 6px;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  font-size: 10px;
+}
+
+.sizes-section-header .sizes-actions {
+  display: flex;
+}
+
+.sizes-section-header .sizes-actions sp-action-button {
+  margin-left: 8px;
+}
+
+/* ==========================================================================
+   Generation Section Inline (inside sizes)
+   ========================================================================== */
+
+.generation-section-inline {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+.generation-section-inline .generation-progress {
+  margin-bottom: 12px;
+}
+
+.generation-section-inline sp-button {
+  align-self: flex-start;
+}
+
+.validation-warnings-inline {
+  margin-bottom: 8px;
 }
 
 /* ==========================================================================
@@ -16887,7 +17376,7 @@ const Header = () => {
 
 /**
  * Tab navigation component for switching between plugin panels
- * Uses Adobe Spectrum Web Components sp-action-group (UXP compatible)
+ * Uses individual action buttons without sp-action-group to avoid UXP issues
  * @param {Object} props - Component props
  * @param {Array} props.tabs - Array of tab objects with id and label
  * @param {string} props.activeTab - Currently active tab id
@@ -16929,10 +17418,8 @@ const TabNavigation = ({
   }, [tabs, onTabChange]);
   return /*#__PURE__*/react.createElement("div", {
     className: className
-  }, /*#__PURE__*/react.createElement("sp-action-group", {
-    selects: "single",
-    selected: activeTab,
-    size: size
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "tab-button-group"
   }, tabs.map(tab => /*#__PURE__*/react.createElement("sp-action-button", {
     key: tab.id,
     ref: el => buttonRefs.current[tab.id] = el,
@@ -16965,8 +17452,8 @@ const SubTabNavigation = ({
   quiet = true,
   className = 'sub-tab-nav'
 }) => {
-  const buttonRefs = (0,react.useRef)({});
-  (0,react.useEffect)(() => {
+  const buttonRefs = useRef({});
+  useEffect(() => {
     const handlers = {};
     tabs.forEach(tab => {
       const buttonEl = buttonRefs.current[tab.id];
@@ -16988,13 +17475,13 @@ const SubTabNavigation = ({
       });
     };
   }, [tabs, onTabChange]);
-  return /*#__PURE__*/react.createElement("div", {
+  return /*#__PURE__*/React.createElement("div", {
     className: className
-  }, /*#__PURE__*/react.createElement("sp-action-group", {
+  }, /*#__PURE__*/React.createElement("sp-action-group", {
     selects: "single",
     selected: activeTab,
     size: size
-  }, tabs.map(tab => /*#__PURE__*/react.createElement("sp-action-button", {
+  }, tabs.map(tab => /*#__PURE__*/React.createElement("sp-action-button", {
     key: tab.id,
     ref: el => buttonRefs.current[tab.id] = el,
     value: tab.id,
@@ -17003,7 +17490,7 @@ const SubTabNavigation = ({
     size: size
   }, tab.label))));
 };
-/* harmony default export */ const ui_SubTabNavigation = (SubTabNavigation);
+/* harmony default export */ const ui_SubTabNavigation = ((/* unused pure expression or super */ null && (SubTabNavigation)));
 ;// ./src/config/index.js
 /**
  * Application Configuration
@@ -17186,7 +17673,8 @@ const config = {
       url: "https://wttgwoxlezqoyzmesekt-all.supabase.co",
       anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0dGd3b3hsZXpxb3l6bWVzZWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM3NjE4NjQsImV4cCI6MjAzOTMzNzg2NH0.2gZNG2xI81F1fSNlFJT8jy9i3DYxz716QcoPsuLyG7Q",
       isConfigured: !!( true && "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0dGd3b3hsZXpxb3l6bWVzZWt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjM3NjE4NjQsImV4cCI6MjAzOTMzNzg2NH0.2gZNG2xI81F1fSNlFJT8jy9i3DYxz716QcoPsuLyG7Q")
-    }
+    },
+    sizesWebhook: 'https://sisx.thesqd.com/webhook/f676633c-95c7-4893-ac6f-bb3a56bfefae'
   },
   // Feature flags
   features: {
@@ -17204,17 +17692,6 @@ const config = {
   }, {
     id: 'generator',
     label: 'Generator'
-  }],
-  // Generator sub-tabs
-  generatorSubTabs: [{
-    id: 'sources',
-    label: 'Sources'
-  }, {
-    id: 'options',
-    label: 'Options'
-  }, {
-    id: 'print',
-    label: 'Print'
   }],
   // UI timing
   ui: {
@@ -38104,25 +38581,91 @@ const autoDetectLayerRoles = (layers, artboardName) => {
 
 
 /**
+ * Determines what orientations are needed based on loaded sizes
+ * @param {Array} sizes - Loaded sizes
+ * @returns {Set<string>} Set of needed orientation types
+ */
+const getNeededOrientations = sizes => {
+  if (!sizes || sizes.length === 0) {
+    // Show all orientations if no sizes loaded yet
+    return new Set(['landscape', 'portrait', 'square']);
+  }
+  const needed = new Set();
+  sizes.forEach(size => {
+    const ratio = size.width / size.height;
+    if (ratio < ASPECT_RATIO_THRESHOLDS.PORTRAIT_MAX) {
+      needed.add('portrait');
+    } else if (ratio > ASPECT_RATIO_THRESHOLDS.SQUARE_MAX) {
+      needed.add('landscape');
+    } else {
+      needed.add('square');
+    }
+  });
+  return needed;
+};
+
+/**
+ * Count how many layers were auto-detected
+ */
+const countDetectedLayers = detectedLayers => {
+  return Object.values(detectedLayers).filter(v => v !== null && v !== '').length;
+};
+
+/**
  * Source configuration panel for selecting source artboards and layer roles
  * @param {Object} props - Component props
  * @param {Array} props.artboards - Available artboards in the document
  * @param {Array} props.layers - Available layers in the document
  * @param {Object} props.sourceConfig - Current source configuration
  * @param {Function} props.onConfigChange - Callback when configuration changes
+ * @param {Array} props.sizes - Loaded sizes (to determine which orientations are needed)
  */
 const SourceConfigPanel = ({
   artboards,
   layers,
   sourceConfig,
-  onConfigChange
+  onConfigChange,
+  sizes = []
 }) => {
+  // Track which source sections have expanded layer roles
+  const [expandedSources, setExpandedSources] = (0,react.useState)({});
+  // Track auto-detection feedback messages
+  const [detectionMessages, setDetectionMessages] = (0,react.useState)({});
+  const neededOrientations = (0,react.useMemo)(() => getNeededOrientations(sizes), [sizes]);
+  const toggleLayerRoles = (0,react.useCallback)(sourceId => {
+    setExpandedSources(prev => ({
+      ...prev,
+      [sourceId]: !prev[sourceId]
+    }));
+  }, []);
   const handleArtboardChange = (0,react.useCallback)((sourceType, artboardName) => {
     // Auto-detect layer roles when artboard is selected
     let detectedLayers = {};
+    let detectedCount = 0;
     if (artboardName) {
       detectedLayers = autoDetectLayerRoles(layers, artboardName);
-      console.log('Auto-detected layers for', artboardName, ':', detectedLayers);
+      detectedCount = countDetectedLayers(detectedLayers);
+
+      // Show feedback message
+      if (detectedCount > 0) {
+        setDetectionMessages(prev => ({
+          ...prev,
+          [sourceType]: `Auto-detected ${detectedCount} layer${detectedCount !== 1 ? 's' : ''}`
+        }));
+        // Clear message after 3 seconds
+        setTimeout(() => {
+          setDetectionMessages(prev => ({
+            ...prev,
+            [sourceType]: null
+          }));
+        }, 3000);
+      }
+    } else {
+      // Clear message when artboard is deselected
+      setDetectionMessages(prev => ({
+        ...prev,
+        [sourceType]: null
+      }));
     }
     onConfigChange({
       ...sourceConfig,
@@ -38142,6 +38685,17 @@ const SourceConfigPanel = ({
       [sourceType]: config
     });
   }, [onConfigChange, sourceConfig]);
+
+  // Count configured layers for a source
+  const getConfiguredLayerCount = (0,react.useCallback)(sourceType => {
+    const layerConfig = sourceConfig[sourceType]?.layers || {};
+    return Object.values(layerConfig).filter(v => v !== null && v !== '').length;
+  }, [sourceConfig]);
+
+  // Filter sources to only show needed orientations
+  const visibleSources = (0,react.useMemo)(() => {
+    return SOURCE_TYPES.filter(source => neededOrientations.has(source.id));
+  }, [neededOrientations]);
   return /*#__PURE__*/react.createElement("div", {
     className: "source-config-panel"
   }, /*#__PURE__*/react.createElement("div", {
@@ -38151,339 +38705,60 @@ const SourceConfigPanel = ({
   }, "Source Configuration"), /*#__PURE__*/react.createElement("sp-body", {
     size: "s",
     class: "panel-description"
-  }, "Configure the source artboards and assign layer roles for automatic scaling.")), SOURCE_TYPES.map(source => /*#__PURE__*/react.createElement("div", {
-    key: source.id,
-    className: "source-section"
-  }, /*#__PURE__*/react.createElement("div", {
-    className: "source-header"
-  }, /*#__PURE__*/react.createElement("span", {
-    className: "source-icon"
-  }, source.icon), /*#__PURE__*/react.createElement("sp-label", {
-    size: "m"
-  }, source.label)), /*#__PURE__*/react.createElement(components_ArtboardPicker, {
-    sourceId: source.id,
-    value: sourceConfig[source.id]?.artboard || '',
-    artboards: artboards,
-    onChange: handleArtboardChange
-  }), sourceConfig[source.id]?.artboard && /*#__PURE__*/react.createElement(components_LayerRoleSelectors, {
-    sourceType: source.id,
-    config: sourceConfig[source.id],
-    layers: layers,
-    onChange: handleSourceChange
-  }))));
+  }, "Select source artboards for each orientation. Layer roles auto-detect based on naming.")), visibleSources.length === 0 && /*#__PURE__*/react.createElement("div", {
+    className: "empty-state"
+  }, /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, "Load sizes to see which orientations are needed.")), visibleSources.map(source => {
+    const isConfigured = !!sourceConfig[source.id]?.artboard;
+    const isExpanded = expandedSources[source.id];
+    const configuredLayerCount = getConfiguredLayerCount(source.id);
+    const detectionMessage = detectionMessages[source.id];
+    return /*#__PURE__*/react.createElement("div", {
+      key: source.id,
+      className: `source-section ${isConfigured ? 'source-section-configured' : 'source-section-incomplete'}`
+    }, /*#__PURE__*/react.createElement("div", {
+      className: "source-header"
+    }, /*#__PURE__*/react.createElement("span", {
+      className: "source-icon"
+    }, source.icon), /*#__PURE__*/react.createElement("sp-label", {
+      size: "m"
+    }, source.label), isConfigured && /*#__PURE__*/react.createElement("span", {
+      className: "source-status-badge source-status-configured"
+    }, "\u2713"), !isConfigured && /*#__PURE__*/react.createElement("span", {
+      className: "source-status-badge source-status-needed"
+    }, "Required")), /*#__PURE__*/react.createElement(components_ArtboardPicker, {
+      sourceId: source.id,
+      value: sourceConfig[source.id]?.artboard || '',
+      artboards: artboards,
+      onChange: handleArtboardChange
+    }), detectionMessage && /*#__PURE__*/react.createElement("div", {
+      className: "detection-message"
+    }, /*#__PURE__*/react.createElement("span", {
+      className: "detection-icon"
+    }, "\u2713"), /*#__PURE__*/react.createElement("sp-body", {
+      size: "xs"
+    }, detectionMessage)), isConfigured && /*#__PURE__*/react.createElement("div", {
+      className: "layer-roles-section"
+    }, /*#__PURE__*/react.createElement("button", {
+      className: "layer-roles-toggle",
+      onClick: () => toggleLayerRoles(source.id),
+      type: "button"
+    }, /*#__PURE__*/react.createElement("span", {
+      className: `toggle-icon ${isExpanded ? 'toggle-icon-expanded' : ''}`
+    }, "\u25B6"), /*#__PURE__*/react.createElement("span", {
+      className: "toggle-label"
+    }, "Layer Roles", configuredLayerCount > 0 && /*#__PURE__*/react.createElement("span", {
+      className: "layer-count-badge"
+    }, configuredLayerCount, " assigned"))), isExpanded && /*#__PURE__*/react.createElement(components_LayerRoleSelectors, {
+      sourceType: source.id,
+      config: sourceConfig[source.id],
+      layers: layers,
+      onChange: handleSourceChange
+    })));
+  }));
 };
 /* harmony default export */ const components_SourceConfigPanel = (SourceConfigPanel);
-;// ./src/components/artboard-generator/components/GenerationOptionsPanel.jsx
-
-
-/**
- * Generation options panel for configuring layout and API settings
- */
-const GenerationOptionsPanel = ({
-  options,
-  onOptionsChange
-}) => {
-  const handleChange = (field, value) => {
-    onOptionsChange({
-      ...options,
-      [field]: value
-    });
-  };
-  const handleNumberChange = (field, e) => {
-    const value = parseInt(e.target.value, 10);
-    if (!isNaN(value)) {
-      handleChange(field, value);
-    }
-  };
-  return /*#__PURE__*/react.createElement("div", {
-    className: "generation-options-panel"
-  }, /*#__PURE__*/react.createElement("div", {
-    className: "panel-header"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "l"
-  }, "Generation Options"), /*#__PURE__*/react.createElement("sp-body", {
-    size: "s",
-    class: "panel-description"
-  }, "Configure API endpoint and artboard layout settings.")), /*#__PURE__*/react.createElement("div", {
-    className: "options-section"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "m"
-  }, "API Settings"), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Sizes API Endpoint"), /*#__PURE__*/react.createElement("sp-textfield", {
-    size: "s",
-    value: options.apiEndpoint || '',
-    placeholder: "https://api.example.com/sizes",
-    onInput: e => handleChange('apiEndpoint', e.target.value)
-  }), /*#__PURE__*/react.createElement("sp-body", {
-    size: "xs",
-    class: "field-hint"
-  }, "Enter the URL that returns artboard size configurations in JSON format."))), /*#__PURE__*/react.createElement("div", {
-    className: "options-section"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "m"
-  }, "Layout Settings"), /*#__PURE__*/react.createElement("div", {
-    className: "form-row"
-  }, /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Columns"), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: options.columns || 4,
-    min: 1,
-    max: 10,
-    onInput: e => handleNumberChange('columns', e)
-  })), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Gap (px)"), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: options.gap || 100,
-    min: 0,
-    max: 500,
-    step: 10,
-    onInput: e => handleNumberChange('gap', e)
-  }))), /*#__PURE__*/react.createElement("div", {
-    className: "form-row"
-  }, /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Group Gap (px)"), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: options.groupGap || 300,
-    min: 0,
-    max: 1000,
-    step: 50,
-    onInput: e => handleNumberChange('groupGap', e)
-  })), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Start X (px)"), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: options.startX || 2500,
-    min: 0,
-    max: 10000,
-    step: 100,
-    onInput: e => handleNumberChange('startX', e)
-  })))), /*#__PURE__*/react.createElement("div", {
-    className: "options-section"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "m"
-  }, "Generation Method"), /*#__PURE__*/react.createElement("sp-body", {
-    size: "xs",
-    class: "field-hint"
-  }, "Choose how artboards are generated from the source."), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-checkbox", {
-    checked: options.useBatchMethod !== false,
-    onChange: e => handleChange('useBatchMethod', e.target.checked)
-  }, "Use Batch Duplication Method"), /*#__PURE__*/react.createElement("sp-body", {
-    size: "xs",
-    class: "field-hint"
-  }, "Duplicates entire artboard then resizes and transforms layers. More reliable for complex artboards with many layers."))), /*#__PURE__*/react.createElement("div", {
-    className: "options-section"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "m"
-  }, "Layer Names"), /*#__PURE__*/react.createElement("sp-body", {
-    size: "xs",
-    class: "field-hint"
-  }, "Names of layers to transform when using batch method. These should match layers in your source artboard."), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Overlay Layer"), /*#__PURE__*/react.createElement("sp-textfield", {
-    size: "s",
-    value: options.overlayLayerName || 'Overlay',
-    placeholder: "Overlay",
-    onInput: e => handleChange('overlayLayerName', e.target.value)
-  })), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Text Layer"), /*#__PURE__*/react.createElement("sp-textfield", {
-    size: "s",
-    value: options.textLayerName || 'TEXT',
-    placeholder: "TEXT",
-    onInput: e => handleChange('textLayerName', e.target.value)
-  })), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Background Layer"), /*#__PURE__*/react.createElement("sp-textfield", {
-    size: "s",
-    value: options.backgroundLayerName || 'BKG',
-    placeholder: "BKG",
-    onInput: e => handleChange('backgroundLayerName', e.target.value)
-  }))), /*#__PURE__*/react.createElement("div", {
-    className: "options-section"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "m"
-  }, "Type Order"), /*#__PURE__*/react.createElement("sp-body", {
-    size: "xs",
-    class: "field-hint"
-  }, "Artboards will be grouped and sorted in this order."), /*#__PURE__*/react.createElement("div", {
-    className: "type-order-list"
-  }, (options.typeOrder || ['social', 'display', 'video', 'email', 'print', 'web', 'other']).map((type, index) => /*#__PURE__*/react.createElement("sp-badge", {
-    key: type,
-    size: "s",
-    variant: "neutral"
-  }, index + 1, ". ", type)))));
-};
-/* harmony default export */ const components_GenerationOptionsPanel = (GenerationOptionsPanel);
-;// ./src/components/artboard-generator/components/PrintSettingsPanel.jsx
-
-
-/**
- * Print settings panel for configuring bleed and crop marks
- */
-const PrintSettingsPanel = ({
-  settings,
-  onSettingsChange
-}) => {
-  const handleChange = (field, value) => {
-    onSettingsChange({
-      ...settings,
-      [field]: value
-    });
-  };
-  const handleNumberChange = (field, e) => {
-    const value = parseFloat(e.target.value);
-    if (!isNaN(value)) {
-      handleChange(field, value);
-    }
-  };
-  const handleColorChange = (channel, e) => {
-    const value = parseInt(e.target.value, 10);
-    if (!isNaN(value)) {
-      handleChange('cropMarkColor', {
-        ...settings.cropMarkColor,
-        [channel]: Math.max(0, Math.min(255, value))
-      });
-    }
-  };
-  return /*#__PURE__*/react.createElement("div", {
-    className: "print-settings-panel"
-  }, /*#__PURE__*/react.createElement("div", {
-    className: "panel-header"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "l"
-  }, "Print Settings"), /*#__PURE__*/react.createElement("sp-body", {
-    size: "s",
-    class: "panel-description"
-  }, "Configure bleed and crop mark settings for print artboards.")), /*#__PURE__*/react.createElement("div", {
-    className: "options-section"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "m"
-  }, "Bleed Settings"), /*#__PURE__*/react.createElement("div", {
-    className: "form-row"
-  }, /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Bleed Amount"), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: settings.bleed || 0.125,
-    min: 0,
-    max: 1,
-    step: 0.0625,
-    formatOptions: "{\"minimumFractionDigits\": 3}",
-    onInput: e => handleNumberChange('bleed', e)
-  })), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Bleed Unit"), /*#__PURE__*/react.createElement("sp-picker", {
-    size: "s",
-    value: settings.bleedUnit || 'inches',
-    onInput: e => handleChange('bleedUnit', e.target.value)
-  }, /*#__PURE__*/react.createElement("sp-menu", {
-    slot: "options"
-  }, /*#__PURE__*/react.createElement("sp-menu-item", {
-    value: "inches"
-  }, "Inches"), /*#__PURE__*/react.createElement("sp-menu-item", {
-    value: "mm"
-  }, "Millimeters"), /*#__PURE__*/react.createElement("sp-menu-item", {
-    value: "pixels"
-  }, "Pixels")))))), /*#__PURE__*/react.createElement("div", {
-    className: "options-section"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "m"
-  }, "Crop Marks"), /*#__PURE__*/react.createElement("div", {
-    className: "form-row"
-  }, /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Mark Length"), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: settings.cropMarkLength || 0.25,
-    min: 0.1,
-    max: 1,
-    step: 0.0625,
-    formatOptions: "{\"minimumFractionDigits\": 3}",
-    onInput: e => handleNumberChange('cropMarkLength', e)
-  })), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Mark Weight (px)"), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: settings.cropMarkWeight || 1,
-    min: 0.5,
-    max: 5,
-    step: 0.5,
-    onInput: e => handleNumberChange('cropMarkWeight', e)
-  }))), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Mark Offset"), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: settings.cropMarkOffset || 0.0625,
-    min: 0,
-    max: 0.5,
-    step: 0.0625,
-    formatOptions: "{\"minimumFractionDigits\": 4}",
-    onInput: e => handleNumberChange('cropMarkOffset', e)
-  }), /*#__PURE__*/react.createElement("sp-body", {
-    size: "xs",
-    class: "field-hint"
-  }, "Gap between trim edge and crop mark (in bleed unit).")), /*#__PURE__*/react.createElement("div", {
-    className: "form-field"
-  }, /*#__PURE__*/react.createElement("sp-field-label", {
-    size: "s"
-  }, "Mark Color (RGB)"), /*#__PURE__*/react.createElement("div", {
-    className: "color-inputs"
-  }, /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: settings.cropMarkColor?.r || 0,
-    min: 0,
-    max: 255,
-    placeholder: "R",
-    onInput: e => handleColorChange('r', e)
-  }), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: settings.cropMarkColor?.g || 0,
-    min: 0,
-    max: 255,
-    placeholder: "G",
-    onInput: e => handleColorChange('g', e)
-  }), /*#__PURE__*/react.createElement("sp-number-field", {
-    size: "s",
-    value: settings.cropMarkColor?.b || 0,
-    min: 0,
-    max: 255,
-    placeholder: "B",
-    onInput: e => handleColorChange('b', e)
-  })))));
-};
-/* harmony default export */ const components_PrintSettingsPanel = (PrintSettingsPanel);
 ;// ./src/components/artboard-generator/services/artboardGenerator.js
 /**
  * Core artboard generation service using Photoshop batchPlay
@@ -39992,6 +40267,11 @@ const generateArtboards = async (sizes, sourceConfig, options = {}, onProgress =
 
 
 
+const SOURCE_TYPE_LABELS = {
+  landscape: 'Landscape',
+  portrait: 'Portrait',
+  square: 'Square'
+};
 
 /**
  * Single size button that generates one artboard when clicked
@@ -40009,16 +40289,25 @@ const SizeButton = ({
 }) => {
   const sourceType = determineSourceType(size.width / size.height);
   const hasSource = sourceConfig[sourceType]?.artboard;
+  const isDisabled = disabled || !hasSource;
   const handleClick = () => {
     if (hasSource && onGenerate) {
       onGenerate(size);
     }
   };
-  return /*#__PURE__*/react.createElement("button", {
+  const getTooltip = () => {
+    if (!hasSource) {
+      return `Needs ${SOURCE_TYPE_LABELS[sourceType]} source`;
+    }
+    return `Generate ${size.name} (${size.width}×${size.height})`;
+  };
+  return /*#__PURE__*/react.createElement("div", {
+    className: `size-button-wrapper ${!hasSource ? 'size-button-needs-source' : ''}`
+  }, /*#__PURE__*/react.createElement("button", {
     className: `size-button ${!hasSource ? 'size-button-disabled' : ''} ${size.requiresBleed ? 'size-button-print' : ''}`,
     onClick: handleClick,
-    disabled: disabled || !hasSource,
-    title: !hasSource ? `No ${sourceType} source artboard configured` : `Generate ${size.name}`
+    disabled: isDisabled,
+    title: getTooltip()
   }, /*#__PURE__*/react.createElement("span", {
     className: "size-source-icon"
   }, SOURCE_TYPE_ICONS[sourceType]), /*#__PURE__*/react.createElement("span", {
@@ -40027,7 +40316,9 @@ const SizeButton = ({
     className: "size-dimensions"
   }, size.width, "\xD7", size.height), size.requiresBleed && /*#__PURE__*/react.createElement("span", {
     className: "size-badge"
-  }, "Print"));
+  }, "Print")), !hasSource && /*#__PURE__*/react.createElement("span", {
+    className: "size-missing-source"
+  }, "Configure ", SOURCE_TYPE_LABELS[sourceType]));
 };
 /* harmony default export */ const components_SizeButton = (SizeButton);
 ;// ./src/components/artboard-generator/components/SizesPreview.jsx
@@ -40037,6 +40328,7 @@ const SizeButton = ({
 
 /**
  * Preview component showing loaded sizes as clickable buttons
+ * with filtering and improved UX
  */
 const SizesPreview = ({
   sizes,
@@ -40045,10 +40337,41 @@ const SizesPreview = ({
   sourceConfig,
   disabled
 }) => {
-  const groupedSizes = (0,react.useMemo)(() => {
-    if (!sizes || sizes.length === 0) return {};
-    return groupByType(sizes);
-  }, [sizes]);
+  const [filterText, setFilterText] = (0,react.useState)('');
+  const filterRef = (0,react.useRef)(null);
+
+  // Handle filter input change with ref-based event handling for UXP
+  (0,react.useEffect)(() => {
+    const input = filterRef.current;
+    if (!input) return;
+    const handleInput = e => {
+      setFilterText(e.target.value || '');
+    };
+    input.addEventListener('input', handleInput);
+    return () => input.removeEventListener('input', handleInput);
+  }, []);
+
+  // Filter and group sizes
+  const {
+    filteredSizes,
+    groupedSizes,
+    matchCount
+  } = (0,react.useMemo)(() => {
+    if (!sizes || sizes.length === 0) {
+      return {
+        filteredSizes: [],
+        groupedSizes: {},
+        matchCount: 0
+      };
+    }
+    const searchTerm = filterText.toLowerCase().trim();
+    const filtered = searchTerm ? sizes.filter(size => size.name.toLowerCase().includes(searchTerm) || size.type?.toLowerCase().includes(searchTerm) || `${size.width}x${size.height}`.includes(searchTerm)) : sizes;
+    return {
+      filteredSizes: filtered,
+      groupedSizes: groupByType(filtered),
+      matchCount: filtered.length
+    };
+  }, [sizes, filterText]);
   const typeLabels = {
     social: 'Social Media',
     display: 'Display Ads',
@@ -40058,12 +40381,31 @@ const SizesPreview = ({
     web: 'Web',
     other: 'Other'
   };
+
+  // Get orientation counts for info display
+  const orientationCounts = (0,react.useMemo)(() => {
+    const counts = {
+      landscape: 0,
+      portrait: 0,
+      square: 0
+    };
+    (filteredSizes || []).forEach(size => {
+      const ratio = size.width / size.height;
+      if (ratio < 0.85) counts.portrait++;else if (ratio > 1.15) counts.landscape++;else counts.square++;
+    });
+    return counts;
+  }, [filteredSizes]);
   if (!sizes || sizes.length === 0) {
     return /*#__PURE__*/react.createElement("div", {
       className: "sizes-preview sizes-empty"
-    }, /*#__PURE__*/react.createElement("sp-body", {
+    }, /*#__PURE__*/react.createElement("div", {
+      className: "empty-state-icon"
+    }, "\uD83D\uDCD0"), /*#__PURE__*/react.createElement("sp-body", {
       size: "s"
-    }, "No sizes loaded. Click \"Use Defaults\" to load standard sizes."));
+    }, "No sizes loaded yet"), /*#__PURE__*/react.createElement("sp-body", {
+      size: "xs",
+      class: "empty-state-hint"
+    }, "Click \"Fetch Sizes\" or \"Use Defaults\" above to load artboard sizes"));
   }
   return /*#__PURE__*/react.createElement("div", {
     className: "sizes-preview"
@@ -40071,11 +40413,41 @@ const SizesPreview = ({
     className: "sizes-header"
   }, /*#__PURE__*/react.createElement("sp-label", {
     size: "m"
-  }, "Click a size to generate (", sizes.length, " available)"), /*#__PURE__*/react.createElement("sp-action-button", {
+  }, "Sizes (", sizes.length, " total)"), /*#__PURE__*/react.createElement("sp-action-button", {
     size: "s",
     quiet: true,
     onClick: onClear
   }, "Clear")), /*#__PURE__*/react.createElement("div", {
+    className: "sizes-filter"
+  }, /*#__PURE__*/react.createElement("sp-textfield", {
+    ref: filterRef,
+    size: "s",
+    placeholder: "Filter sizes by name, type, or dimensions...",
+    value: filterText,
+    quiet: true
+  }, /*#__PURE__*/react.createElement("sp-icon", {
+    slot: "icon",
+    name: "ui:Magnify",
+    size: "s"
+  })), filterText && /*#__PURE__*/react.createElement("sp-body", {
+    size: "xs",
+    class: "filter-count"
+  }, matchCount, " of ", sizes.length, " sizes")), /*#__PURE__*/react.createElement("div", {
+    className: "orientation-summary"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "orientation-chip",
+    title: "Landscape sizes"
+  }, "\u25AD ", orientationCounts.landscape), /*#__PURE__*/react.createElement("span", {
+    className: "orientation-chip",
+    title: "Portrait sizes"
+  }, "\u25AF ", orientationCounts.portrait), /*#__PURE__*/react.createElement("span", {
+    className: "orientation-chip",
+    title: "Square sizes"
+  }, "\u25A1 ", orientationCounts.square)), filterText && matchCount === 0 && /*#__PURE__*/react.createElement("div", {
+    className: "no-matches"
+  }, /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, "No sizes match \"", filterText, "\"")), /*#__PURE__*/react.createElement("div", {
     className: "sizes-groups"
   }, Object.entries(groupedSizes).map(([type, typeSizes]) => {
     if (!typeSizes || typeSizes.length === 0) return null;
@@ -40085,7 +40457,7 @@ const SizesPreview = ({
     }, /*#__PURE__*/react.createElement("sp-label", {
       size: "s",
       class: "group-label"
-    }, typeLabels[type] || type), /*#__PURE__*/react.createElement("div", {
+    }, typeLabels[type] || type, " (", typeSizes.length, ")"), /*#__PURE__*/react.createElement("div", {
       className: "size-buttons"
     }, typeSizes.map((size, index) => /*#__PURE__*/react.createElement(components_SizeButton, {
       key: `${size.name}-${index}`,
@@ -40097,6 +40469,286 @@ const SizesPreview = ({
   })));
 };
 /* harmony default export */ const components_SizesPreview = (SizesPreview);
+;// ./src/components/artboard-generator/components/ConfigurationStatus.jsx
+
+
+
+/**
+ * Determines what orientations are needed based on loaded sizes
+ * @param {Array} sizes - Loaded sizes
+ * @returns {Set<string>} Set of needed orientation types
+ */
+const ConfigurationStatus_getNeededOrientations = sizes => {
+  const needed = new Set();
+  sizes.forEach(size => {
+    const ratio = size.width / size.height;
+    if (ratio < ASPECT_RATIO_THRESHOLDS.PORTRAIT_MAX) {
+      needed.add('portrait');
+    } else if (ratio > ASPECT_RATIO_THRESHOLDS.SQUARE_MAX) {
+      needed.add('landscape');
+    } else {
+      needed.add('square');
+    }
+  });
+  return needed;
+};
+
+/**
+ * Configuration status summary component
+ * Shows progress of source configuration at a glance
+ */
+const ConfigurationStatus = ({
+  sourceConfig,
+  sizes,
+  options,
+  printSettings
+}) => {
+  const status = (0,react.useMemo)(() => {
+    const neededOrientations = ConfigurationStatus_getNeededOrientations(sizes);
+    const configured = [];
+    const missing = [];
+    SOURCE_TYPES.forEach(source => {
+      const isConfigured = !!sourceConfig[source.id]?.artboard;
+      const isNeeded = neededOrientations.has(source.id);
+      if (isNeeded) {
+        if (isConfigured) {
+          configured.push(source);
+        } else {
+          missing.push(source);
+        }
+      }
+    });
+    return {
+      configured,
+      missing,
+      total: configured.length + missing.length,
+      isComplete: missing.length === 0 && configured.length > 0,
+      neededOrientations
+    };
+  }, [sourceConfig, sizes]);
+  const optionsSummary = (0,react.useMemo)(() => {
+    const parts = [];
+    if (options.columns !== 4) parts.push(`${options.columns} cols`);
+    if (options.gap !== 100) parts.push(`${options.gap}px gap`);
+    if (options.useBatchMethod === false) parts.push('Legacy mode');
+    return parts.length > 0 ? parts.join(', ') : 'Default';
+  }, [options]);
+  const printSummary = (0,react.useMemo)(() => {
+    if (!printSettings.bleed || printSettings.bleed === 0) return 'No bleed';
+    return `${printSettings.bleed}" bleed`;
+  }, [printSettings]);
+
+  // Don't show if no sizes loaded
+  if (sizes.length === 0) {
+    return /*#__PURE__*/react.createElement("div", {
+      className: "config-status config-status-empty"
+    }, /*#__PURE__*/react.createElement("sp-icon", {
+      name: "ui:InfoMedium",
+      size: "s"
+    }), /*#__PURE__*/react.createElement("sp-body", {
+      size: "s"
+    }, "Load sizes to see configuration requirements"));
+  }
+  return /*#__PURE__*/react.createElement("div", {
+    className: `config-status ${status.isComplete ? 'config-status-complete' : 'config-status-incomplete'}`
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "config-status-main"
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "config-status-sources"
+  }, status.isComplete ? /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("span", {
+    className: "status-icon status-icon-success"
+  }, "\u2713"), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, status.configured.length, " of ", status.total, " sources configured")) : /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("span", {
+    className: "status-icon status-icon-warning"
+  }, "!"), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, status.configured.length, " of ", status.total, " sources configured", status.missing.length > 0 && /*#__PURE__*/react.createElement("span", {
+    className: "missing-sources"
+  }, "\u2014 need ", status.missing.map(s => s.label.split(' ')[0]).join(', '))))), /*#__PURE__*/react.createElement("div", {
+    className: "config-status-badges"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "config-badge",
+    title: "Layout options"
+  }, optionsSummary), /*#__PURE__*/react.createElement("span", {
+    className: "config-badge",
+    title: "Print settings"
+  }, printSummary))));
+};
+/* harmony default export */ const components_ConfigurationStatus = (ConfigurationStatus);
+;// ./src/components/artboard-generator/components/SettingsPanel.jsx
+
+
+/**
+ * Compact settings panel that expands when clicked
+ * Combines Generation Options and Print Settings into a single collapsible section
+ */
+const SettingsPanel = ({
+  options,
+  onOptionsChange,
+  printSettings,
+  onPrintSettingsChange
+}) => {
+  const [isExpanded, setIsExpanded] = (0,react.useState)(false);
+  const handleOptionChange = (field, value) => {
+    onOptionsChange({
+      ...options,
+      [field]: value
+    });
+  };
+  const handleOptionNumberChange = (field, e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value)) {
+      handleOptionChange(field, value);
+    }
+  };
+  const handlePrintChange = (field, value) => {
+    onPrintSettingsChange({
+      ...printSettings,
+      [field]: value
+    });
+  };
+  const handlePrintNumberChange = (field, e) => {
+    const value = parseFloat(e.target.value);
+    if (!isNaN(value)) {
+      handlePrintChange(field, value);
+    }
+  };
+
+  // Summary text for collapsed state
+  const getSummary = () => {
+    const parts = [];
+    if (options.columns !== 4) parts.push(`${options.columns} cols`);
+    if (options.gap !== 100) parts.push(`${options.gap}px gap`);
+    if (printSettings.bleed) parts.push(`${printSettings.bleed}" bleed`);
+    return parts.length > 0 ? parts.join(' · ') : 'Default settings';
+  };
+  return /*#__PURE__*/react.createElement("div", {
+    className: "settings-panel"
+  }, /*#__PURE__*/react.createElement("button", {
+    className: `settings-toggle ${isExpanded ? 'settings-toggle-expanded' : ''}`,
+    onClick: () => setIsExpanded(!isExpanded),
+    type: "button"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "settings-icon"
+  }, "\u2699"), /*#__PURE__*/react.createElement("span", {
+    className: "settings-label"
+  }, "Settings"), /*#__PURE__*/react.createElement("span", {
+    className: "settings-summary"
+  }, getSummary()), /*#__PURE__*/react.createElement("span", {
+    className: `settings-chevron ${isExpanded ? 'settings-chevron-expanded' : ''}`
+  }, "\u25BC")), isExpanded && /*#__PURE__*/react.createElement("div", {
+    className: "settings-content"
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "settings-group"
+  }, /*#__PURE__*/react.createElement("sp-label", {
+    size: "s",
+    class: "settings-group-label"
+  }, "Layout"), /*#__PURE__*/react.createElement("div", {
+    className: "settings-row"
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "settings-field"
+  }, /*#__PURE__*/react.createElement("sp-field-label", {
+    size: "xs"
+  }, "Columns"), /*#__PURE__*/react.createElement("sp-number-field", {
+    size: "s",
+    value: options.columns || 4,
+    min: 1,
+    max: 10,
+    onInput: e => handleOptionNumberChange('columns', e)
+  })), /*#__PURE__*/react.createElement("div", {
+    className: "settings-field"
+  }, /*#__PURE__*/react.createElement("sp-field-label", {
+    size: "xs"
+  }, "Gap"), /*#__PURE__*/react.createElement("sp-number-field", {
+    size: "s",
+    value: options.gap || 100,
+    min: 0,
+    max: 500,
+    step: 10,
+    onInput: e => handleOptionNumberChange('gap', e)
+  })), /*#__PURE__*/react.createElement("div", {
+    className: "settings-field"
+  }, /*#__PURE__*/react.createElement("sp-field-label", {
+    size: "xs"
+  }, "Group Gap"), /*#__PURE__*/react.createElement("sp-number-field", {
+    size: "s",
+    value: options.groupGap || 300,
+    min: 0,
+    max: 1000,
+    step: 50,
+    onInput: e => handleOptionNumberChange('groupGap', e)
+  })), /*#__PURE__*/react.createElement("div", {
+    className: "settings-field"
+  }, /*#__PURE__*/react.createElement("sp-field-label", {
+    size: "xs"
+  }, "Start X"), /*#__PURE__*/react.createElement("sp-number-field", {
+    size: "s",
+    value: options.startX || 2500,
+    min: 0,
+    max: 10000,
+    step: 100,
+    onInput: e => handleOptionNumberChange('startX', e)
+  })))), /*#__PURE__*/react.createElement("div", {
+    className: "settings-group"
+  }, /*#__PURE__*/react.createElement("sp-label", {
+    size: "s",
+    class: "settings-group-label"
+  }, "Print"), /*#__PURE__*/react.createElement("div", {
+    className: "settings-row"
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "settings-field"
+  }, /*#__PURE__*/react.createElement("sp-field-label", {
+    size: "xs"
+  }, "Bleed"), /*#__PURE__*/react.createElement("sp-number-field", {
+    size: "s",
+    value: printSettings.bleed || 0.125,
+    min: 0,
+    max: 1,
+    step: 0.0625,
+    formatOptions: "{\"minimumFractionDigits\": 3}",
+    onInput: e => handlePrintNumberChange('bleed', e)
+  })), /*#__PURE__*/react.createElement("div", {
+    className: "settings-field"
+  }, /*#__PURE__*/react.createElement("sp-field-label", {
+    size: "xs"
+  }, "Unit"), /*#__PURE__*/react.createElement("sp-picker", {
+    size: "s",
+    value: printSettings.bleedUnit || 'inches',
+    onInput: e => handlePrintChange('bleedUnit', e.target.value)
+  }, /*#__PURE__*/react.createElement("sp-menu", {
+    slot: "options"
+  }, /*#__PURE__*/react.createElement("sp-menu-item", {
+    value: "inches"
+  }, "in"), /*#__PURE__*/react.createElement("sp-menu-item", {
+    value: "mm"
+  }, "mm"), /*#__PURE__*/react.createElement("sp-menu-item", {
+    value: "pixels"
+  }, "px")))), /*#__PURE__*/react.createElement("div", {
+    className: "settings-field"
+  }, /*#__PURE__*/react.createElement("sp-field-label", {
+    size: "xs"
+  }, "Mark Length"), /*#__PURE__*/react.createElement("sp-number-field", {
+    size: "s",
+    value: printSettings.cropMarkLength || 0.25,
+    min: 0.1,
+    max: 1,
+    step: 0.0625,
+    onInput: e => handlePrintNumberChange('cropMarkLength', e)
+  })))), /*#__PURE__*/react.createElement("div", {
+    className: "settings-group"
+  }, /*#__PURE__*/react.createElement("sp-label", {
+    size: "s",
+    class: "settings-group-label"
+  }, "API Endpoint (optional)"), /*#__PURE__*/react.createElement("sp-textfield", {
+    size: "s",
+    value: options.apiEndpoint || '',
+    placeholder: "https://api.example.com/sizes",
+    onInput: e => handleOptionChange('apiEndpoint', e.target.value),
+    quiet: true
+  }))));
+};
+/* harmony default export */ const components_SettingsPanel = (SettingsPanel);
 ;// ./src/components/artboard-generator/hooks/usePhotoshopDocument.js
 
 
@@ -40313,10 +40965,171 @@ const usePhotoshopDocument = () => {
   };
 };
 /* harmony default export */ const hooks_usePhotoshopDocument = ((/* unused pure expression or super */ null && (usePhotoshopDocument)));
+;// ./src/utils/storage.js
+/**
+ * Storage utilities for persisting user preferences
+ * Uses localStorage with fallback for UXP compatibility
+ */
+
+const STORAGE_KEYS = {
+  MAIN_TAB: 'mysquad_active_tab',
+  GENERATOR_SUB_TAB: 'mysquad_generator_sub_tab',
+  TASK_SIZES_CACHE: 'mysquad_task_sizes_cache'
+};
+
+// Cache duration in milliseconds (15 minutes)
+const CACHE_DURATION_MS = 15 * 60 * 1000;
+
+/**
+ * Get a value from localStorage
+ * @param {string} key - Storage key
+ * @param {*} defaultValue - Default value if not found
+ * @returns {*} Stored value or default
+ */
+const getStoredValue = (key, defaultValue) => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored !== null ? stored : defaultValue;
+  } catch (e) {
+    // localStorage may not be available in some UXP contexts
+    return defaultValue;
+  }
+};
+
+/**
+ * Set a value in localStorage
+ * @param {string} key - Storage key
+ * @param {*} value - Value to store
+ */
+const setStoredValue = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {
+    // Silently fail if localStorage not available
+  }
+};
+
+/**
+ * Get the stored main tab
+ * @param {string} defaultTab - Default tab id
+ * @returns {string} Tab id
+ */
+const getStoredMainTab = (defaultTab = 'task') => {
+  return getStoredValue(STORAGE_KEYS.MAIN_TAB, defaultTab);
+};
+
+/**
+ * Set the stored main tab
+ * @param {string} tabId - Tab id to store
+ */
+const setStoredMainTab = tabId => {
+  setStoredValue(STORAGE_KEYS.MAIN_TAB, tabId);
+};
+
+/**
+ * Get the stored generator sub-tab
+ * @param {string} defaultTab - Default tab id
+ * @returns {string} Tab id
+ */
+const getStoredGeneratorSubTab = (defaultTab = 'sources') => {
+  return getStoredValue(STORAGE_KEYS.GENERATOR_SUB_TAB, defaultTab);
+};
+
+/**
+ * Set the stored generator sub-tab
+ * @param {string} tabId - Tab id to store
+ */
+const setStoredGeneratorSubTab = tabId => {
+  setStoredValue(STORAGE_KEYS.GENERATOR_SUB_TAB, tabId);
+};
+
+/**
+ * Get cached task sizes
+ * @param {string} taskId - The task ID to get cache for
+ * @returns {Object|null} Cached data with sizes, taskName, and cachedAt, or null if not found/expired
+ */
+const getCachedTaskSizes = taskId => {
+  try {
+    const cacheJson = localStorage.getItem(STORAGE_KEYS.TASK_SIZES_CACHE);
+    if (!cacheJson) return null;
+    const cache = JSON.parse(cacheJson);
+    const taskCache = cache[taskId];
+    if (!taskCache) return null;
+
+    // Check if cache is expired
+    const age = Date.now() - taskCache.cachedAt;
+    if (age > CACHE_DURATION_MS) {
+      return null;
+    }
+    return taskCache;
+  } catch (e) {
+    console.error('[getCachedTaskSizes] Error reading cache:', e);
+    return null;
+  }
+};
+
+/**
+ * Set cached task sizes
+ * @param {string} taskId - The task ID to cache for
+ * @param {Object} data - Object with sizes array and taskName
+ */
+const setCachedTaskSizes = (taskId, data) => {
+  try {
+    let cache = {};
+    const existingJson = localStorage.getItem(STORAGE_KEYS.TASK_SIZES_CACHE);
+    if (existingJson) {
+      cache = JSON.parse(existingJson);
+    }
+    cache[taskId] = {
+      ...data,
+      cachedAt: Date.now()
+    };
+    localStorage.setItem(STORAGE_KEYS.TASK_SIZES_CACHE, JSON.stringify(cache));
+  } catch (e) {
+    console.error('[setCachedTaskSizes] Error writing cache:', e);
+  }
+};
+
+/**
+ * Clear cached task sizes for a specific task
+ * @param {string} taskId - The task ID to clear cache for
+ */
+const clearCachedTaskSizes = taskId => {
+  try {
+    const existingJson = localStorage.getItem(STORAGE_KEYS.TASK_SIZES_CACHE);
+    if (!existingJson) return;
+    const cache = JSON.parse(existingJson);
+    delete cache[taskId];
+    localStorage.setItem(STORAGE_KEYS.TASK_SIZES_CACHE, JSON.stringify(cache));
+  } catch (e) {
+    console.error('[clearCachedTaskSizes] Error clearing cache:', e);
+  }
+};
+
+/**
+ * Get the age of cached task sizes in human-readable format
+ * @param {number} cachedAt - Timestamp when data was cached
+ * @returns {string} Human-readable age string
+ */
+const getCacheAgeString = cachedAt => {
+  if (!cachedAt) return '';
+  const ageMs = Date.now() - cachedAt;
+  const seconds = Math.floor(ageMs / 1000);
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 1) return 'just now';
+  if (minutes === 1) return '1 min ago';
+  if (minutes < 60) return `${minutes} mins ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours === 1) return '1 hour ago';
+  return `${hours} hours ago`;
+};
+
 ;// ./src/components/artboard-generator/api/sizesApi.js
 /**
  * API functions for fetching artboard size configurations
  */
+
+
 
 /**
  * Fetch artboard sizes from an API endpoint
@@ -40364,8 +41177,103 @@ const fetchSizes = async endpoint => {
     throw error;
   }
 };
+
+/**
+ * Fetch artboard sizes from the linked ClickUp task
+ * @param {string} taskId - The ClickUp task ID
+ * @param {Object} options - Fetch options
+ * @param {boolean} options.forceRefresh - Skip cache and fetch fresh data
+ * @returns {Promise<Object>} Object with sizes array, task name, cachedAt timestamp, and fromCache flag
+ */
+const fetchSizesByTaskId = async (taskId, {
+  forceRefresh = false
+} = {}) => {
+  console.log('[fetchSizesByTaskId] Called with taskId:', taskId, 'forceRefresh:', forceRefresh);
+  if (!taskId) {
+    throw new Error('Task ID is required');
+  }
+
+  // Check cache first (unless force refresh)
+  if (!forceRefresh) {
+    const cached = getCachedTaskSizes(taskId);
+    if (cached) {
+      console.log('[fetchSizesByTaskId] Returning cached data from:', new Date(cached.cachedAt).toLocaleTimeString());
+      return {
+        sizes: cached.sizes,
+        taskName: cached.taskName,
+        cachedAt: cached.cachedAt,
+        fromCache: true
+      };
+    }
+  }
+  const endpoint = `${config.api.sizesWebhook}?taskid=${encodeURIComponent(taskId)}`;
+  console.log('[fetchSizesByTaskId] Fetching from:', endpoint);
+  try {
+    const response = await fetch(endpoint, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log('[fetchSizesByTaskId] Response status:', response.status);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+
+    // Validate the response has sizes array
+    if (!data.sizes || !Array.isArray(data.sizes)) {
+      throw new Error('Invalid response format: expected sizes array');
+    }
+
+    // Transform and validate each size object
+    const sizes = data.sizes.map((size, index) => {
+      if (typeof size.width !== 'number' || typeof size.height !== 'number') {
+        throw new Error(`Invalid size at index ${index}: width and height must be numbers`);
+      }
+      return {
+        width: size.width,
+        height: size.height,
+        name: size.name || `${size.type || 'size'}_${size.width}x${size.height}`,
+        type: size.type || 'other',
+        requiresBleed: size.requiresBleed || false,
+        bleed: size.bleed || 0.125,
+        bleedUnit: size.bleedUnit || 'inches',
+        contents: size.contents || ''
+      };
+    });
+    const taskName = data.name || '';
+    const cachedAt = Date.now();
+
+    // Store in cache
+    setCachedTaskSizes(taskId, {
+      sizes,
+      taskName
+    });
+    console.log('[fetchSizesByTaskId] Success! Got', sizes.length, 'sizes:', sizes);
+    return {
+      sizes,
+      taskName,
+      cachedAt,
+      fromCache: false
+    };
+  } catch (error) {
+    console.error('[fetchSizesByTaskId] Error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Clear cached sizes for a specific task
+ * @param {string} taskId - The ClickUp task ID
+ */
+const clearSizesCache = taskId => {
+  clearCachedTaskSizes(taskId);
+};
 /* harmony default export */ const sizesApi = ({
-  fetchSizes
+  fetchSizes,
+  fetchSizesByTaskId,
+  clearSizesCache
 });
 ;// ./src/components/artboard-generator/services/batchArtboardService.js
 /**
@@ -40397,6 +41305,336 @@ const DEFAULT_ARTBOARD_BACKGROUND = {
   grain: 255.0,
   // Note: Photoshop uses 'grain' for green in some contexts
   red: 255.0
+};
+
+// ============================================================================
+// Unit Conversion
+// ============================================================================
+
+/**
+ * Convert units to pixels
+ * @param {number} value - The value to convert
+ * @param {string} unit - Unit type: inches, mm, pixels
+ * @param {number} resolution - Document PPI (default 300)
+ * @returns {number} Value in pixels
+ */
+const batchArtboardService_unitsToPixels = (value, unit, resolution = 300) => {
+  switch (unit) {
+    case 'inches':
+      return value * resolution;
+    case 'mm':
+      return value / 25.4 * resolution;
+    case 'pixels':
+    default:
+      return value;
+  }
+};
+
+/**
+ * Calculate artboard size with bleed if required
+ * @param {Object} sizeConfig - Size configuration { width, height, requiresBleed, bleed, bleedUnit }
+ * @returns {Object} { width, height, bleedPx } - Adjusted dimensions and bleed in pixels
+ */
+const calculateSizeWithBleed = sizeConfig => {
+  let width = sizeConfig.width;
+  let height = sizeConfig.height;
+  let bleedPx = 0;
+  if (sizeConfig.requiresBleed && sizeConfig.bleed) {
+    bleedPx = batchArtboardService_unitsToPixels(sizeConfig.bleed, sizeConfig.bleedUnit || 'inches');
+    width += bleedPx * 2; // Bleed on left and right
+    height += bleedPx * 2; // Bleed on top and bottom
+    console.log(`[calculateSizeWithBleed] Adding bleed: ${sizeConfig.bleed}${sizeConfig.bleedUnit} = ${bleedPx}px per side`);
+    console.log(`[calculateSizeWithBleed] Original: ${sizeConfig.width}x${sizeConfig.height} → With bleed: ${width}x${height}`);
+  }
+  return {
+    width,
+    height,
+    bleedPx
+  };
+};
+
+// ============================================================================
+// Crop Marks & Guides
+// ============================================================================
+
+/**
+ * Default crop mark settings
+ */
+const DEFAULT_CROP_MARK_SETTINGS = {
+  length: 0.25,
+  // Length of crop marks in inches
+  weight: 1,
+  // Stroke weight in pixels
+  offset: 0.0625,
+  // Offset from trim edge in inches
+  color: {
+    r: 0,
+    g: 0,
+    b: 0
+  } // Black
+};
+
+/**
+ * Generate command to add margin guides using newGuideLayout
+ * This targets the selected artboard and sets guides at the bleed boundaries
+ * @param {number} bleedPx - Bleed amount in pixels (used as margin on all sides)
+ * @returns {Object} BatchPlay command
+ */
+const generateGuideLayoutCommand = bleedPx => ({
+  _obj: 'newGuideLayout',
+  guideLayout: {
+    _obj: 'guideLayout',
+    '$GdCA': 0,
+    // Alpha
+    '$GdCB': 255,
+    // Blue
+    '$GdCG': 255,
+    // Green  
+    '$GdCR': 74,
+    // Red (cyan color)
+    marginTop: {
+      _unit: 'pixelsUnit',
+      _value: bleedPx
+    },
+    marginBottom: {
+      _unit: 'pixelsUnit',
+      _value: bleedPx
+    },
+    marginLeft: {
+      _unit: 'pixelsUnit',
+      _value: bleedPx
+    },
+    marginRight: {
+      _unit: 'pixelsUnit',
+      _value: bleedPx
+    }
+  },
+  guideTarget: {
+    _enum: 'guideTarget',
+    _value: 'guideTargetSelectedArtboards'
+  },
+  presetKind: {
+    _enum: 'presetKindType',
+    _value: 'presetKindCustom'
+  },
+  replace: true,
+  _options: {
+    dialogOptions: 'dontDisplay'
+  }
+});
+
+/**
+ * Generate command to create a rectangle shape (for crop marks)
+ * Uses thin rectangles to simulate lines
+ * @param {Object} bounds - Rectangle bounds { left, top, right, bottom }
+ * @param {Object} color - Color { r, g, b }
+ * @returns {Object} BatchPlay command
+ */
+const generateCropMarkRectangle = (bounds, color = {
+  r: 0,
+  g: 0,
+  b: 0
+}) => ({
+  _obj: 'make',
+  _target: [{
+    _ref: 'contentLayer'
+  }],
+  using: {
+    _obj: 'contentLayer',
+    shape: {
+      _obj: 'rectangle',
+      unitValueQuadVersion: 1,
+      top: {
+        _unit: 'pixelsUnit',
+        _value: bounds.top
+      },
+      left: {
+        _unit: 'pixelsUnit',
+        _value: bounds.left
+      },
+      bottom: {
+        _unit: 'pixelsUnit',
+        _value: bounds.bottom
+      },
+      right: {
+        _unit: 'pixelsUnit',
+        _value: bounds.right
+      },
+      topLeft: {
+        _unit: 'pixelsUnit',
+        _value: 0
+      },
+      topRight: {
+        _unit: 'pixelsUnit',
+        _value: 0
+      },
+      bottomLeft: {
+        _unit: 'pixelsUnit',
+        _value: 0
+      },
+      bottomRight: {
+        _unit: 'pixelsUnit',
+        _value: 0
+      }
+    },
+    strokeStyle: {
+      _obj: 'strokeStyle',
+      fillEnabled: true,
+      strokeEnabled: false,
+      strokeStyleVersion: 2
+    },
+    type: {
+      _obj: 'solidColorLayer',
+      color: {
+        _obj: 'RGBColor',
+        red: color.r,
+        grain: color.g,
+        // Photoshop uses 'grain' for green
+        blue: color.b
+      }
+    }
+  },
+  _options: {
+    dialogOptions: 'dontDisplay'
+  }
+});
+
+/**
+ * Add guides for bleed/trim boundaries using newGuideLayout
+ * This sets margin guides on the selected artboard at the bleed boundaries
+ * @param {number} bleedPx - Bleed amount in pixels
+ * @param {number} artboardId - ID of the artboard to add guides to
+ * @returns {Promise<void>}
+ */
+const addBleedGuides = async (bleedPx, artboardId) => {
+  console.log('[addBleedGuides] Adding trim guides for bleed:', bleedPx, 'px');
+  const batchPlay = batchArtboardService_getBatchPlay();
+
+  // First select the artboard
+  await batchPlay([{
+    _obj: 'select',
+    _target: [{
+      _ref: 'layer',
+      _id: artboardId
+    }],
+    makeVisible: false,
+    _options: {
+      dialogOptions: 'dontDisplay'
+    }
+  }], {
+    synchronousExecution: true
+  });
+
+  // Apply guide layout with margins matching the bleed
+  await batchPlay([generateGuideLayoutCommand(bleedPx)], {
+    synchronousExecution: true
+  });
+  console.log('[addBleedGuides] ✓ Added margin guides at', bleedPx, 'px from edges');
+};
+
+/**
+ * Create crop marks for a print artboard using thin rectangles
+ * @param {Object} artboardBounds - Artboard bounds { left, top, right, bottom }
+ * @param {number} bleedPx - Bleed amount in pixels
+ * @param {Object} settings - Crop mark settings
+ * @returns {Promise<void>}
+ */
+const batchArtboardService_createCropMarks = async (artboardBounds, bleedPx, settings = DEFAULT_CROP_MARK_SETTINGS) => {
+  console.log('[createCropMarks] Creating crop marks');
+  const batchPlay = batchArtboardService_getBatchPlay();
+
+  // Convert settings to pixels
+  const markLength = batchArtboardService_unitsToPixels(settings.length, 'inches');
+  const markOffset = batchArtboardService_unitsToPixels(settings.offset, 'inches');
+  const markWeight = settings.weight;
+
+  // Calculate trim boundaries (where content ends, bleed begins)
+  const trimLeft = artboardBounds.left + bleedPx;
+  const trimTop = artboardBounds.top + bleedPx;
+  const trimRight = artboardBounds.right - bleedPx;
+  const trimBottom = artboardBounds.bottom - bleedPx;
+  console.log('[createCropMarks] Mark length:', markLength, 'px, offset:', markOffset, 'px, weight:', markWeight, 'px');
+  console.log('[createCropMarks] Trim bounds:', {
+    trimLeft,
+    trimTop,
+    trimRight,
+    trimBottom
+  });
+
+  // Define crop mark rectangles (8 marks - 2 per corner)
+  // Each mark is a thin rectangle simulating a line
+  const marks = [
+  // Top-left corner - horizontal mark (left of trim)
+  {
+    left: trimLeft - markOffset - markLength,
+    top: trimTop - markWeight / 2,
+    right: trimLeft - markOffset,
+    bottom: trimTop + markWeight / 2
+  },
+  // Top-left corner - vertical mark (above trim)
+  {
+    left: trimLeft - markWeight / 2,
+    top: trimTop - markOffset - markLength,
+    right: trimLeft + markWeight / 2,
+    bottom: trimTop - markOffset
+  },
+  // Top-right corner - horizontal mark (right of trim)
+  {
+    left: trimRight + markOffset,
+    top: trimTop - markWeight / 2,
+    right: trimRight + markOffset + markLength,
+    bottom: trimTop + markWeight / 2
+  },
+  // Top-right corner - vertical mark (above trim)
+  {
+    left: trimRight - markWeight / 2,
+    top: trimTop - markOffset - markLength,
+    right: trimRight + markWeight / 2,
+    bottom: trimTop - markOffset
+  },
+  // Bottom-left corner - horizontal mark (left of trim)
+  {
+    left: trimLeft - markOffset - markLength,
+    top: trimBottom - markWeight / 2,
+    right: trimLeft - markOffset,
+    bottom: trimBottom + markWeight / 2
+  },
+  // Bottom-left corner - vertical mark (below trim)
+  {
+    left: trimLeft - markWeight / 2,
+    top: trimBottom + markOffset,
+    right: trimLeft + markWeight / 2,
+    bottom: trimBottom + markOffset + markLength
+  },
+  // Bottom-right corner - horizontal mark (right of trim)
+  {
+    left: trimRight + markOffset,
+    top: trimBottom - markWeight / 2,
+    right: trimRight + markOffset + markLength,
+    bottom: trimBottom + markWeight / 2
+  },
+  // Bottom-right corner - vertical mark (below trim)
+  {
+    left: trimRight - markWeight / 2,
+    top: trimBottom + markOffset,
+    right: trimRight + markWeight / 2,
+    bottom: trimBottom + markOffset + markLength
+  }];
+
+  // Create each crop mark
+  for (let i = 0; i < marks.length; i++) {
+    const mark = marks[i];
+    console.log(`[createCropMarks] Creating mark ${i + 1}/8...`);
+    await batchPlay([generateCropMarkRectangle(mark, settings.color)], {
+      synchronousExecution: true
+    });
+  }
+
+  // Select all crop mark layers and group them
+  console.log('[createCropMarks] Grouping crop marks...');
+  // Note: Grouping would require selecting multiple layers - skipping for simplicity
+
+  console.log('[createCropMarks] ✓ Created 8 crop marks');
 };
 
 // ============================================================================
@@ -40482,11 +41720,272 @@ const getLayerConfig = layerName => {
   if (lowerName.includes('text') || lowerName.includes('title')) return configs[LAYER_NAMES.TEXT];
   if (lowerName.includes('bkg') || lowerName.includes('background')) return configs[LAYER_NAMES.BACKGROUND];
 
-  // Default config
+  // Default config - use 'cover' for most layers to fill the artboard
   return {
-    scaleMode: 'relative',
+    scaleMode: 'cover',
     shouldAlign: true
   };
+};
+
+/**
+ * Transform all top-level layers in an artboard to fit the new size
+ * This handles any layer structure, not just specifically named layers
+ * @param {Object} artboard - The artboard layer object
+ * @param {number} artboardId - The artboard ID
+ * @param {Object} sourceSize - Source artboard dimensions { width, height }
+ * @param {Object} targetSize - Target artboard dimensions { width, height }
+ * @param {Object} batchPlay - The batchPlay function
+ * @returns {Promise<void>}
+ */
+const transformAllLayers = async (artboard, artboardId, sourceSize, targetSize, batchPlay) => {
+  if (!artboard || !artboard.layers || artboard.layers.length === 0) {
+    console.log('[transformAllLayers] No layers to transform');
+    return;
+  }
+  console.log(`[transformAllLayers] Transforming ${artboard.layers.length} top-level layers`);
+  console.log(`[transformAllLayers] Source: ${sourceSize.width}x${sourceSize.height} → Target: ${targetSize.width}x${targetSize.height}`);
+
+  // Calculate the scale factor based on artboard size change
+  // Use 'cover' mode to ensure content fills the artboard
+  const widthScale = targetSize.width / sourceSize.width;
+  const heightScale = targetSize.height / sourceSize.height;
+  const coverScale = Math.max(widthScale, heightScale);
+  const scalePercent = coverScale * 100;
+  console.log(`[transformAllLayers] Scale factor: ${coverScale.toFixed(4)} (${scalePercent.toFixed(2)}%)`);
+
+  // Select ALL top-level layers at once for batch transformation
+  const allLayerIds = artboard.layers.map(l => l.id);
+  console.log(`[transformAllLayers] Layer IDs to transform:`, allLayerIds);
+  if (allLayerIds.length === 0) {
+    return;
+  }
+
+  // Step 1: Select the artboard first (as alignment reference)
+  await batchPlay([{
+    _obj: 'select',
+    _target: [{
+      _ref: 'layer',
+      _id: artboardId
+    }],
+    makeVisible: false,
+    _options: {
+      dialogOptions: 'dontDisplay'
+    }
+  }], {
+    synchronousExecution: true
+  });
+
+  // Step 2: Add all layers to selection
+  for (const layerId of allLayerIds) {
+    await batchPlay([{
+      _obj: 'select',
+      _target: [{
+        _ref: 'layer',
+        _id: layerId
+      }],
+      selectionModifier: {
+        _enum: 'selectionModifierType',
+        _value: 'addToSelection'
+      },
+      makeVisible: false,
+      _options: {
+        dialogOptions: 'dontDisplay'
+      }
+    }], {
+      synchronousExecution: true
+    });
+  }
+
+  // Step 3: Align all selected layers to artboard center
+  console.log('[transformAllLayers] Aligning all layers to artboard center...');
+  await batchPlay([{
+    _obj: 'align',
+    _target: [{
+      _ref: 'layer',
+      _enum: 'ordinal',
+      _value: 'targetEnum'
+    }],
+    alignToCanvas: false,
+    using: {
+      _enum: 'alignDistributeSelector',
+      _value: 'ADSCentersH'
+    }
+  }, {
+    _obj: 'align',
+    _target: [{
+      _ref: 'layer',
+      _enum: 'ordinal',
+      _value: 'targetEnum'
+    }],
+    alignToCanvas: false,
+    using: {
+      _enum: 'alignDistributeSelector',
+      _value: 'ADSCentersV'
+    }
+  }], {
+    synchronousExecution: true
+  });
+
+  // Step 4: Select only the layers (not artboard) for scaling
+  await batchPlay([{
+    _obj: 'select',
+    _target: [{
+      _ref: 'layer',
+      _id: allLayerIds[0]
+    }],
+    makeVisible: false,
+    _options: {
+      dialogOptions: 'dontDisplay'
+    }
+  }], {
+    synchronousExecution: true
+  });
+  for (let i = 1; i < allLayerIds.length; i++) {
+    await batchPlay([{
+      _obj: 'select',
+      _target: [{
+        _ref: 'layer',
+        _id: allLayerIds[i]
+      }],
+      selectionModifier: {
+        _enum: 'selectionModifierType',
+        _value: 'addToSelection'
+      },
+      makeVisible: false,
+      _options: {
+        dialogOptions: 'dontDisplay'
+      }
+    }], {
+      synchronousExecution: true
+    });
+  }
+
+  // Step 5: Scale all layers together
+  console.log(`[transformAllLayers] Scaling all layers by ${scalePercent.toFixed(2)}%...`);
+  await batchPlay([{
+    _obj: 'transform',
+    _target: [{
+      _ref: 'layer',
+      _enum: 'ordinal',
+      _value: 'targetEnum'
+    }],
+    freeTransformCenterState: {
+      _enum: 'quadCenterState',
+      _value: 'QCSAverage'
+    },
+    width: {
+      _unit: 'percentUnit',
+      _value: scalePercent
+    },
+    height: {
+      _unit: 'percentUnit',
+      _value: scalePercent
+    },
+    linked: true,
+    interfaceIconFrameDimmed: {
+      _enum: 'interpolationType',
+      _value: 'bicubic'
+    }
+  }], {
+    synchronousExecution: true
+  });
+
+  // Step 6: Re-center after scaling (scaling can shift position)
+  await batchPlay([{
+    _obj: 'select',
+    _target: [{
+      _ref: 'layer',
+      _id: artboardId
+    }],
+    makeVisible: false,
+    _options: {
+      dialogOptions: 'dontDisplay'
+    }
+  }], {
+    synchronousExecution: true
+  });
+  for (const layerId of allLayerIds) {
+    await batchPlay([{
+      _obj: 'select',
+      _target: [{
+        _ref: 'layer',
+        _id: layerId
+      }],
+      selectionModifier: {
+        _enum: 'selectionModifierType',
+        _value: 'addToSelection'
+      },
+      makeVisible: false,
+      _options: {
+        dialogOptions: 'dontDisplay'
+      }
+    }], {
+      synchronousExecution: true
+    });
+  }
+  await batchPlay([{
+    _obj: 'align',
+    _target: [{
+      _ref: 'layer',
+      _enum: 'ordinal',
+      _value: 'targetEnum'
+    }],
+    alignToCanvas: false,
+    using: {
+      _enum: 'alignDistributeSelector',
+      _value: 'ADSCentersH'
+    }
+  }, {
+    _obj: 'align',
+    _target: [{
+      _ref: 'layer',
+      _enum: 'ordinal',
+      _value: 'targetEnum'
+    }],
+    alignToCanvas: false,
+    using: {
+      _enum: 'alignDistributeSelector',
+      _value: 'ADSCentersV'
+    }
+  }], {
+    synchronousExecution: true
+  });
+  console.log('[transformAllLayers] ✓ All layers transformed and centered');
+
+  // Step 7: Clean up layer names (remove " copy" suffixes)
+  for (const layer of artboard.layers) {
+    const cleanName = layer.name.replace(/ copy\d*$/i, '').replace(/ copy$/i, '');
+    if (cleanName !== layer.name) {
+      console.log(`[transformAllLayers] Renaming "${layer.name}" → "${cleanName}"`);
+      await batchPlay([{
+        _obj: 'select',
+        _target: [{
+          _ref: 'layer',
+          _id: layer.id
+        }],
+        makeVisible: false,
+        _options: {
+          dialogOptions: 'dontDisplay'
+        }
+      }, {
+        _obj: 'set',
+        _target: [{
+          _ref: 'layer',
+          _enum: 'ordinal',
+          _value: 'targetEnum'
+        }],
+        to: {
+          _obj: 'layer',
+          name: cleanName
+        },
+        _options: {
+          dialogOptions: 'dontDisplay'
+        }
+      }], {
+        synchronousExecution: true
+      });
+    }
+  }
 };
 
 // ============================================================================
@@ -41109,6 +42608,19 @@ const createArtboardByDuplicationInternal = async ({
   const batchPlay = batchArtboardService_getBatchPlay();
   const app = batchArtboardService_getApp();
 
+  // Calculate size with bleed if required
+  const {
+    width: actualWidth,
+    height: actualHeight,
+    bleedPx
+  } = calculateSizeWithBleed(targetSize);
+  console.log('[createArtboardByDuplicationInternal] Bleed calculation:');
+  console.log('  - Original size:', targetSize.width, 'x', targetSize.height);
+  console.log('  - Requires bleed:', targetSize.requiresBleed);
+  console.log('  - Bleed value:', targetSize.bleed, targetSize.bleedUnit);
+  console.log('  - Bleed pixels:', bleedPx);
+  console.log('  - Final size:', actualWidth, 'x', actualHeight);
+
   // PHASE 1: Get source artboard info and duplicate it
   console.log('\n[createArtboardByDuplicationInternal] === PHASE 1: Get Source Artboard ===');
   const source = await getSourceArtboard(sourceArtboardName);
@@ -41152,11 +42664,11 @@ const createArtboardByDuplicationInternal = async ({
   console.log('  - Bounds:', JSON.stringify(newArtboard.bounds));
   console.log('  - Child layers:', newArtboard.childLayers.map(l => `"${l.name}" (${l.id})`));
 
-  // Calculate new artboard position
+  // Calculate new artboard position (use actual size with bleed)
   const newLeft = position?.x ?? source.bounds.right + 100;
   const newTop = position?.y ?? source.bounds.top;
-  const newRight = newLeft + targetSize.width;
-  const newBottom = newTop + targetSize.height;
+  const newRight = newLeft + actualWidth;
+  const newBottom = newTop + actualHeight;
   console.log('\n[createArtboardByDuplicationInternal] Calculated new artboard bounds:');
   console.log('  - Left:', newLeft, 'Top:', newTop);
   console.log('  - Right:', newRight, 'Bottom:', newBottom);
@@ -41196,19 +42708,20 @@ const createArtboardByDuplicationInternal = async ({
   });
   console.log('[createArtboardByDuplicationInternal] ✓ Artboard resized and renamed to:', targetSize.name || newArtboard.name);
 
-  // PHASE 4: Transform each layer
+  // PHASE 4: Transform ALL layers in the artboard
   console.log('\n[createArtboardByDuplicationInternal] === PHASE 4: Transform Layers ===');
   const sourceSize = {
     width: source.bounds.width,
     height: source.bounds.height
   };
   const targetSizeObj = {
-    width: targetSize.width,
-    height: targetSize.height
-  };
+    width: actualWidth,
+    height: actualHeight
+  }; // Use size WITH bleed
+
   console.log('[createArtboardByDuplicationInternal] Size calculations:');
   console.log('  - Source size:', JSON.stringify(sourceSize));
-  console.log('  - Target size:', JSON.stringify(targetSizeObj));
+  console.log('  - Target size (with bleed):', JSON.stringify(targetSizeObj));
 
   // Re-fetch the artboard to get fresh layer references after resize
   const doc = app.activeDocument;
@@ -41224,93 +42737,209 @@ const createArtboardByDuplicationInternal = async ({
         console.log(`[createArtboardByDuplicationInternal]   - "${l.name}" (id: ${l.id}, kind: ${l.kind})`);
       });
     }
+
+    // Transform ALL layers in the artboard (not just named ones)
+    await transformAllLayers(refreshedArtboard, newArtboard.id, sourceSize, targetSizeObj, batchPlay);
   }
 
-  // Use the ORIGINAL newArtboard.childLayers info we captured right after duplication
-  // since the refreshed artboard might have stale/incomplete layer refs
-  const artboardToSearch = refreshedArtboard || newArtboard.layer;
-  console.log(`[createArtboardByDuplicationInternal] Will transform layers in: "${artboardToSearch.name}" with ${artboardToSearch.layers?.length || 0} layers`);
-  for (let i = 0; i < layerNames.length; i++) {
-    const layerName = layerNames[i];
-    console.log(`\n[createArtboardByDuplicationInternal] --- Layer ${i + 1}/${layerNames.length}: "${layerName}" ---`);
+  // PHASE 5: Add guides and crop marks if bleed is required
+  if (targetSize.requiresBleed && bleedPx > 0) {
+    console.log('\n[createArtboardByDuplicationInternal] === PHASE 5: Add Bleed Guides & Crop Marks ===');
+    const artboardBounds = {
+      left: newLeft,
+      top: newTop,
+      right: newRight,
+      bottom: newBottom
+    };
 
-    // Search in the DOM (refreshed artboard after resize)
-    console.log(`[createArtboardByDuplicationInternal] Searching in refreshed artboard for "${layerName}"...`);
-    const layer = findLayerByName(artboardToSearch, layerName, true);
-    if (!layer) {
-      console.log(`[createArtboardByDuplicationInternal] ⚠ Skipping "${layerName}" - not found in artboard after resize`);
-      continue;
+    // Add trim guides using newGuideLayout (targets selected artboard)
+    try {
+      await addBleedGuides(bleedPx, newArtboard.id);
+    } catch (e) {
+      console.warn('[createArtboardByDuplicationInternal] ⚠ Could not add guides:', e.message);
     }
-    console.log(`[createArtboardByDuplicationInternal] ✓ Found: "${layer.name}" (id: ${layer.id})`);
-    const config = getLayerConfig(layerName);
-    console.log(`[createArtboardByDuplicationInternal] Layer config:`, JSON.stringify(config));
-    const scalePercent = calculateScalePercent(sourceSize, targetSizeObj, config.scaleMode);
-    console.log(`[createArtboardByDuplicationInternal] Scale: ${scalePercent.toFixed(2)}%`);
 
-    // Step 1: Select BOTH the artboard AND the layer (artboard as reference for alignment)
-    console.log(`[createArtboardByDuplicationInternal] Selecting artboard (${newArtboard.id}) + layer (${layer.id}) for alignment...`);
-    await batchPlay([{
-      _obj: 'select',
-      _target: [{
-        _ref: 'layer',
-        _id: newArtboard.id
-      }],
-      makeVisible: false,
-      _options: {
-        dialogOptions: 'dontDisplay'
-      }
-    }, {
-      _obj: 'select',
-      _target: [{
-        _ref: 'layer',
-        _id: layer.id
-      }],
-      selectionModifier: {
-        _enum: 'selectionModifierType',
-        _value: 'addToSelection'
-      },
-      makeVisible: false,
-      _options: {
-        dialogOptions: 'dontDisplay'
-      }
-    }], {
-      synchronousExecution: true
-    });
-
-    // Step 2: Align the layer to the artboard (centers horizontally and vertically)
-    console.log(`[createArtboardByDuplicationInternal] Aligning to artboard center...`);
-    await batchPlay([generateAlignCommand('horizontal'), generateAlignCommand('vertical')], {
-      synchronousExecution: true
-    });
-
-    // Step 3: Select just the layer and scale it
-    console.log(`[createArtboardByDuplicationInternal] Scaling layer by ${scalePercent.toFixed(2)}%...`);
-    await batchPlay([generateSelectLayerCommand(layer.name, layer.id), generateTransformCommand(scalePercent, scalePercent)], {
-      synchronousExecution: true
-    });
-    console.log(`[createArtboardByDuplicationInternal] ✓ Completed transformation for "${layer.name}"`);
-
-    // Step 4: Rename layer to remove " copy" suffix
-    const cleanName = layer.name.replace(/ copy\d*$/i, '').replace(/ copy$/i, '');
-    if (cleanName !== layer.name) {
-      console.log(`[createArtboardByDuplicationInternal] Renaming "${layer.name}" → "${cleanName}"`);
-      await batchPlay([generateRenameCommand(cleanName)], {
-        synchronousExecution: true
-      });
+    // Add crop marks using rectangle shapes
+    try {
+      await batchArtboardService_createCropMarks(artboardBounds, bleedPx);
+    } catch (e) {
+      console.warn('[createArtboardByDuplicationInternal] ⚠ Could not add crop marks:', e.message);
     }
   }
   console.log('\n[createArtboardByDuplicationInternal] === COMPLETE ===');
   console.log('─'.repeat(60));
   return {
     name: targetSize.name,
-    width: targetSize.width,
-    height: targetSize.height,
+    width: actualWidth,
+    height: actualHeight,
+    originalWidth: targetSize.width,
+    originalHeight: targetSize.height,
+    bleedPx,
+    requiresBleed: targetSize.requiresBleed || false,
     position: {
       x: newLeft,
       y: newTop
     }
   };
 };
+
+/**
+ * Check if a size matches a source artboard's dimensions
+ * @param {Object} sizeConfig - Size configuration { width, height }
+ * @param {Object} sourceBounds - Source artboard bounds { width, height }
+ * @returns {boolean} True if dimensions match exactly
+ */
+const sizeMatchesSource = (sizeConfig, sourceBounds) => {
+  // Check for exact dimension match (within 1px tolerance for floating point)
+  const widthMatch = Math.abs(sizeConfig.width - sourceBounds.width) < 1;
+  const heightMatch = Math.abs(sizeConfig.height - sourceBounds.height) < 1;
+  return widthMatch && heightMatch;
+};
+
+/**
+ * Layout tracker for dynamic artboard positioning
+ * Uses strict row-based layout to prevent overlaps:
+ * 1. Artboards in same row start at same Y position
+ * 2. New row starts below the TALLEST artboard in current row
+ * 3. Row breaks triggered by: width exceeded OR significant height difference
+ */
+class LayoutTracker {
+  constructor(startPosition, gap, maxRowWidth = 10000) {
+    this.startX = startPosition.x;
+    this.startY = startPosition.y;
+    this.gap = gap;
+    this.maxRowWidth = maxRowWidth;
+
+    // Track all placed artboards
+    this.placedArtboards = [];
+
+    // Current row tracking
+    this.currentX = startPosition.x;
+    this.currentRowY = startPosition.y;
+    this.currentRowMaxHeight = 0;
+
+    // Track the global maximum bottom (across ALL rows)
+    this.globalMaxBottom = startPosition.y;
+  }
+
+  /**
+   * Start a new row below all currently placed artboards
+   */
+  startNewRow() {
+    const newRowY = this.globalMaxBottom + this.gap;
+    console.log(`[LayoutTracker] Starting new row at y=${newRowY} (globalMaxBottom=${this.globalMaxBottom})`);
+    this.currentX = this.startX;
+    this.currentRowY = newRowY;
+    this.currentRowMaxHeight = 0;
+  }
+
+  /**
+   * Check if a new artboard would overlap with ANY existing artboard
+   * @param {number} x - Proposed X position
+   * @param {number} y - Proposed Y position
+   * @param {number} width - Artboard width
+   * @param {number} height - Artboard height
+   * @returns {boolean} True if overlap detected
+   */
+  wouldOverlap(x, y, width, height) {
+    const newRect = {
+      left: x,
+      top: y,
+      right: x + width,
+      bottom: y + height
+    };
+    for (const placed of this.placedArtboards) {
+      const placedRect = {
+        left: placed.x,
+        top: placed.y,
+        right: placed.x + placed.width,
+        bottom: placed.y + placed.height
+      };
+
+      // Check for intersection
+      const horizontalOverlap = newRect.left < placedRect.right && newRect.right > placedRect.left;
+      const verticalOverlap = newRect.top < placedRect.bottom && newRect.bottom > placedRect.top;
+      if (horizontalOverlap && verticalOverlap) {
+        console.log(`[LayoutTracker] Overlap detected with existing artboard at (${placed.x}, ${placed.y}) size ${placed.width}x${placed.height}`);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Find next valid position for an artboard
+   * @param {number} width - Artboard width
+   * @param {number} height - Artboard height
+   * @returns {Object} Position { x, y }
+   */
+  getNextPosition(width, height) {
+    console.log(`[LayoutTracker] Finding position for artboard ${width}x${height}`);
+    console.log(`[LayoutTracker] Current state: x=${this.currentX}, rowY=${this.currentRowY}, rowMaxHeight=${this.currentRowMaxHeight}, globalMaxBottom=${this.globalMaxBottom}`);
+
+    // Check if we need to wrap to next row due to width
+    const wouldExceedWidth = this.currentX > this.startX && this.currentX + width > this.startX + this.maxRowWidth;
+
+    // Check if height difference is significant (would cause visual issues)
+    // Either new is much taller than row, or row has something much taller than new
+    const heightDiff = Math.abs(height - this.currentRowMaxHeight);
+    const avgHeight = (height + this.currentRowMaxHeight) / 2;
+    const significantHeightDiff = this.currentRowMaxHeight > 0 && heightDiff > avgHeight * 0.5;
+    if (wouldExceedWidth) {
+      console.log(`[LayoutTracker] Wrapping to new row (exceeded maxRowWidth: ${this.currentX + width} > ${this.startX + this.maxRowWidth})`);
+      this.startNewRow();
+    } else if (significantHeightDiff && this.currentX > this.startX) {
+      // If significant height difference AND we already have items in this row
+      console.log(`[LayoutTracker] Starting new row due to height difference (new: ${height}px vs row max: ${this.currentRowMaxHeight}px, diff: ${heightDiff}px)`);
+      this.startNewRow();
+    }
+
+    // Proposed position
+    let position = {
+      x: this.currentX,
+      y: this.currentRowY
+    };
+
+    // Double-check for overlaps (safety net)
+    if (this.wouldOverlap(position.x, position.y, width, height)) {
+      console.log(`[LayoutTracker] Overlap detected at proposed position, forcing new row`);
+      this.startNewRow();
+      position = {
+        x: this.currentX,
+        y: this.currentRowY
+      };
+    }
+    console.log(`[LayoutTracker] Calculated position: (${position.x}, ${position.y})`);
+    return position;
+  }
+
+  /**
+   * Register a placed artboard
+   * @param {Object} artboard - Artboard info { position: { x, y }, width, height }
+   */
+  registerPlacement(artboard) {
+    const rect = {
+      x: artboard.position.x,
+      y: artboard.position.y,
+      width: artboard.width,
+      height: artboard.height
+    };
+    this.placedArtboards.push(rect);
+
+    // Update current X position for next artboard (place to the right)
+    this.currentX = rect.x + rect.width + this.gap;
+
+    // Track the max height in this row
+    this.currentRowMaxHeight = Math.max(this.currentRowMaxHeight, rect.height);
+
+    // Track the global maximum bottom edge (across ALL placed artboards)
+    const thisBottom = rect.y + rect.height;
+    this.globalMaxBottom = Math.max(this.globalMaxBottom, thisBottom);
+    console.log(`[LayoutTracker] Registered artboard at (${rect.x}, ${rect.y}) size ${rect.width}x${rect.height}`);
+    console.log(`[LayoutTracker] Row max height: ${this.currentRowMaxHeight}, global max bottom: ${this.globalMaxBottom}`);
+    console.log(`[LayoutTracker] Next X position: ${this.currentX}`);
+  }
+}
 
 /**
  * Generate multiple artboards using the batch duplication method
@@ -41327,11 +42956,13 @@ const generateArtboardsBatch = async (sizes, sourceConfig, options = {}, onProgr
   const core = batchArtboardService_getCore();
   const app = batchArtboardService_getApp();
   const gap = options.gap || 100;
+  const maxRowWidth = options.maxRowWidth || 10000;
 
   // Get layer names from options or use defaults
   const layerNames = [options.overlayLayerName || LAYER_NAMES.OVERLAY, options.textLayerName || LAYER_NAMES.TEXT, options.backgroundLayerName || LAYER_NAMES.BACKGROUND];
   console.log('[generateArtboardsBatch] Layer names to transform:', layerNames);
   const createdArtboards = [];
+  const skippedSizes = [];
   return await core.executeAsModal(async executionContext => {
     const doc = app.activeDocument;
 
@@ -41341,16 +42972,28 @@ const generateArtboardsBatch = async (sizes, sourceConfig, options = {}, onProgr
       name: 'Generate Artboards (Batch)'
     });
     try {
-      // Track position for placing artboards
-      let currentX = null;
-      let currentY = null;
-      for (let i = 0; i < sizes.length; i++) {
-        const sizeConfig = sizes[i];
-        if (onProgress) {
-          onProgress(i + 1, sizes.length, sizeConfig.name);
-        }
+      // First pass: Get all source artboard bounds and track which sizes to skip
+      const sourceBoundsCache = {};
+      const sourceSkipCounts = {}; // Track how many times each source's dimensions have been skipped
 
-        // Determine which source to use based on aspect ratio
+      for (const sourceType of ['landscape', 'portrait', 'square']) {
+        const source = sourceConfig[sourceType];
+        if (source?.artboard) {
+          try {
+            const sourceInfo = await getSourceArtboard(source.artboard);
+            sourceBoundsCache[sourceType] = sourceInfo.bounds;
+            sourceSkipCounts[sourceType] = 0;
+            console.log(`[generateArtboardsBatch] Source ${sourceType} bounds:`, sourceInfo.bounds.width, 'x', sourceInfo.bounds.height);
+          } catch (e) {
+            console.warn(`[generateArtboardsBatch] Could not get bounds for ${sourceType} source:`, e.message);
+          }
+        }
+      }
+
+      // Filter sizes: skip ones that match source dimensions (only skip one per source)
+      const sizesToGenerate = [];
+      for (const sizeConfig of sizes) {
+        // Determine which source would be used
         const aspectRatio = sizeConfig.width / sizeConfig.height;
         let sourceType;
         if (aspectRatio < 0.85) {
@@ -41360,38 +43003,96 @@ const generateArtboardsBatch = async (sizes, sourceConfig, options = {}, onProgr
         } else {
           sourceType = 'square';
         }
-        const source = sourceConfig[sourceType];
+        const sourceBounds = sourceBoundsCache[sourceType];
+
+        // Check if this size matches the source dimensions
+        if (sourceBounds && sizeMatchesSource(sizeConfig, sourceBounds)) {
+          // Only skip ONE size per source
+          if (sourceSkipCounts[sourceType] === 0) {
+            console.log(`[generateArtboardsBatch] Skipping "${sizeConfig.name}" - matches ${sourceType} source dimensions (${sizeConfig.width}x${sizeConfig.height})`);
+            skippedSizes.push({
+              ...sizeConfig,
+              reason: `Matches ${sourceType} source`
+            });
+            sourceSkipCounts[sourceType]++;
+            continue;
+          } else {
+            console.log(`[generateArtboardsBatch] NOT skipping "${sizeConfig.name}" - already skipped one ${sourceType} match`);
+          }
+        }
+
+        // Calculate actual size (with bleed if required)
+        let actualWidth = sizeConfig.width;
+        let actualHeight = sizeConfig.height;
+        if (sizeConfig.requiresBleed && sizeConfig.bleed) {
+          const bleedPx = batchArtboardService_unitsToPixels(sizeConfig.bleed, sizeConfig.bleedUnit || 'inches');
+          actualWidth += bleedPx * 2;
+          actualHeight += bleedPx * 2;
+        }
+        sizesToGenerate.push({
+          ...sizeConfig,
+          sourceType,
+          actualWidth,
+          actualHeight
+        });
+      }
+      console.log(`[generateArtboardsBatch] Sizes to generate: ${sizesToGenerate.length} (skipped: ${skippedSizes.length})`);
+      if (sizesToGenerate.length === 0) {
+        console.log('[generateArtboardsBatch] No sizes to generate after filtering');
+        return createdArtboards;
+      }
+
+      // Find starting position (to the right of all source artboards)
+      let maxRight = 0;
+      let minTop = Infinity;
+      for (const sourceType of ['landscape', 'portrait', 'square']) {
+        const bounds = sourceBoundsCache[sourceType];
+        if (bounds) {
+          maxRight = Math.max(maxRight, bounds.right);
+          minTop = Math.min(minTop, bounds.top);
+        }
+      }
+      const startPosition = {
+        x: maxRight + gap,
+        y: minTop === Infinity ? 0 : minTop
+      };
+      console.log(`[generateArtboardsBatch] Starting position: ${startPosition.x}, ${startPosition.y}`);
+
+      // Create layout tracker for dynamic positioning
+      const layoutTracker = new LayoutTracker(startPosition, gap, maxRowWidth);
+
+      // Generate artboards with dynamic positioning
+      for (let i = 0; i < sizesToGenerate.length; i++) {
+        const sizeConfig = sizesToGenerate[i];
+        if (onProgress) {
+          onProgress(i + 1, sizesToGenerate.length, sizeConfig.name);
+        }
+        const source = sourceConfig[sizeConfig.sourceType];
         if (!source || !source.artboard) {
-          console.warn(`[generateArtboardsBatch] No ${sourceType} source configured, skipping ${sizeConfig.name}`);
+          console.warn(`[generateArtboardsBatch] No ${sizeConfig.sourceType} source configured, skipping ${sizeConfig.name}`);
           continue;
         }
 
-        // Get source artboard to determine initial position
-        if (currentX === null) {
-          const sourceInfo = await getSourceArtboard(source.artboard);
-          currentX = sourceInfo.bounds.right + gap;
-          currentY = sourceInfo.bounds.top;
-        }
+        // Get next position from layout tracker (accounts for all previously placed artboards)
+        const position = layoutTracker.getNextPosition(sizeConfig.actualWidth, sizeConfig.actualHeight);
+        console.log(`[generateArtboardsBatch] Placing "${sizeConfig.name}" (${sizeConfig.actualWidth}x${sizeConfig.actualHeight}) at (${position.x}, ${position.y})`);
 
         // Create the artboard using internal function (already in modal context)
         const result = await createArtboardByDuplicationInternal({
           sourceArtboardName: source.artboard,
           targetSize: sizeConfig,
           layerNames,
-          position: {
-            x: currentX,
-            y: currentY
-          }
+          position
         });
-        createdArtboards.push(result);
 
-        // Update position for next artboard
-        currentX += sizeConfig.width + gap;
+        // Register the placed artboard so next one avoids it
+        layoutTracker.registerPlacement(result);
+        createdArtboards.push(result);
       }
     } finally {
       await executionContext.hostControl.resumeHistory(suspensionID);
     }
-    console.log(`[generateArtboardsBatch] ✓ Created ${createdArtboards.length} artboards`);
+    console.log(`[generateArtboardsBatch] ✓ Created ${createdArtboards.length} artboards (skipped ${skippedSizes.length})`);
     console.log('*'.repeat(60));
     return createdArtboards;
   }, {
@@ -41409,6 +43110,7 @@ const generateArtboardsBatch = async (sizes, sourceConfig, options = {}, onProgr
   LAYER_NAMES
 });
 ;// ./src/components/artboard-generator/hooks/useArtboardGenerator.js
+
 
 
 
@@ -41433,8 +43135,12 @@ const getLayerNamesFromOptions = options => [options.overlayLayerName || LAYER_N
 
 /**
  * Hook for managing artboard generator state and operations
+ * @param {Object} options - Hook options
+ * @param {string} options.taskId - Optional task ID to fetch sizes from
  */
-const useArtboardGenerator = () => {
+const useArtboardGenerator = ({
+  taskId
+} = {}) => {
   // Source configuration state
   const [sourceConfig, setSourceConfig] = (0,react.useState)(DEFAULT_SOURCE_CONFIG);
 
@@ -41448,6 +43154,9 @@ const useArtboardGenerator = () => {
   const [sizes, setSizes] = (0,react.useState)(DEFAULT_SIZES);
   const [sizesLoading, setSizesLoading] = (0,react.useState)(false);
   const [sizesError, setSizesError] = (0,react.useState)(null);
+  const [taskName, setTaskName] = (0,react.useState)('');
+  const [sizesCachedAt, setSizesCachedAt] = (0,react.useState)(null);
+  const [sizesFromCache, setSizesFromCache] = (0,react.useState)(false);
 
   // Generation state
   const [generating, setGenerating] = (0,react.useState)(false);
@@ -41458,6 +43167,59 @@ const useArtboardGenerator = () => {
   });
   const [generationError, setGenerationError] = (0,react.useState)(null);
   const [generatedArtboards, setGeneratedArtboards] = (0,react.useState)([]);
+
+  /**
+   * Fetch sizes from linked ClickUp task
+   * @param {Object} options - Load options
+   * @param {boolean} options.forceRefresh - Skip cache and fetch fresh data
+   */
+  const loadSizesFromTask = (0,react.useCallback)(async ({
+    forceRefresh = false
+  } = {}) => {
+    console.log('[loadSizesFromTask] Button clicked, taskId:', taskId, 'forceRefresh:', forceRefresh);
+    if (!taskId) {
+      console.log('[loadSizesFromTask] No taskId, showing error');
+      setSizesError('No task linked to this file');
+      return;
+    }
+    setSizesLoading(true);
+    setSizesError(null);
+    try {
+      console.log('[loadSizesFromTask] Calling fetchSizesByTaskId...');
+      const result = await fetchSizesByTaskId(taskId, {
+        forceRefresh
+      });
+      console.log('[loadSizesFromTask] Got result:', result);
+      setSizes(result.sizes);
+      setTaskName(result.taskName);
+      setSizesCachedAt(result.cachedAt);
+      setSizesFromCache(result.fromCache);
+    } catch (error) {
+      console.error('[loadSizesFromTask] Error:', error);
+      setSizesError(error.message);
+      setSizes([]);
+      setSizesCachedAt(null);
+      setSizesFromCache(false);
+    } finally {
+      setSizesLoading(false);
+    }
+  }, [taskId]);
+
+  /**
+   * Force refresh sizes from task (bypass cache)
+   */
+  const refreshSizesFromTask = (0,react.useCallback)(async () => {
+    return loadSizesFromTask({
+      forceRefresh: true
+    });
+  }, [loadSizesFromTask]);
+
+  /**
+   * Get human-readable cache age
+   */
+  const getCacheAge = (0,react.useCallback)(() => {
+    return getCacheAgeString(sizesCachedAt);
+  }, [sizesCachedAt]);
 
   /**
    * Fetch sizes from API endpoint
@@ -41507,8 +43269,26 @@ const useArtboardGenerator = () => {
     if (!hasSource) {
       errors.push('At least one source artboard must be configured');
     }
+
+    // Check if any sizes can be generated with current config
+    if (hasSource && sizes.length > 0) {
+      const neededOrientations = new Set();
+      sizes.forEach(size => {
+        const ratio = size.width / size.height;
+        if (ratio < 0.85) neededOrientations.add('portrait');else if (ratio > 1.15) neededOrientations.add('landscape');else neededOrientations.add('square');
+      });
+      const missingOrientations = [];
+      neededOrientations.forEach(orientation => {
+        if (!sourceConfig[orientation]?.artboard) {
+          missingOrientations.push(orientation);
+        }
+      });
+      if (missingOrientations.length > 0) {
+        errors.push(`Missing source for: ${missingOrientations.join(', ')}`);
+      }
+    }
     return errors;
-  }, [sourceConfig]);
+  }, [sourceConfig, sizes]);
 
   /**
    * Check if a specific size can be generated (has required source)
@@ -41667,8 +43447,14 @@ const useArtboardGenerator = () => {
     sizesLoading,
     sizesError,
     loadSizes,
+    loadSizesFromTask,
+    refreshSizesFromTask,
     loadDefaultSizes,
     clearSizes,
+    taskName,
+    sizesCachedAt,
+    sizesFromCache,
+    getCacheAge,
     // Generation
     generating,
     progress,
@@ -41679,88 +43465,12 @@ const useArtboardGenerator = () => {
     canGenerateSize,
     validateConfig,
     // Utilities
-    reset
+    reset,
+    taskId
   };
 };
 /* harmony default export */ const hooks_useArtboardGenerator = ((/* unused pure expression or super */ null && (useArtboardGenerator)));
-;// ./src/utils/storage.js
-/**
- * Storage utilities for persisting user preferences
- * Uses localStorage with fallback for UXP compatibility
- */
-
-const STORAGE_KEYS = {
-  MAIN_TAB: 'mysquad_active_tab',
-  GENERATOR_SUB_TAB: 'mysquad_generator_sub_tab'
-};
-
-/**
- * Get a value from localStorage
- * @param {string} key - Storage key
- * @param {*} defaultValue - Default value if not found
- * @returns {*} Stored value or default
- */
-const getStoredValue = (key, defaultValue) => {
-  try {
-    const stored = localStorage.getItem(key);
-    return stored !== null ? stored : defaultValue;
-  } catch (e) {
-    // localStorage may not be available in some UXP contexts
-    return defaultValue;
-  }
-};
-
-/**
- * Set a value in localStorage
- * @param {string} key - Storage key
- * @param {*} value - Value to store
- */
-const setStoredValue = (key, value) => {
-  try {
-    localStorage.setItem(key, value);
-  } catch (e) {
-    // Silently fail if localStorage not available
-  }
-};
-
-/**
- * Get the stored main tab
- * @param {string} defaultTab - Default tab id
- * @returns {string} Tab id
- */
-const getStoredMainTab = (defaultTab = 'task') => {
-  return getStoredValue(STORAGE_KEYS.MAIN_TAB, defaultTab);
-};
-
-/**
- * Set the stored main tab
- * @param {string} tabId - Tab id to store
- */
-const setStoredMainTab = tabId => {
-  setStoredValue(STORAGE_KEYS.MAIN_TAB, tabId);
-};
-
-/**
- * Get the stored generator sub-tab
- * @param {string} defaultTab - Default tab id
- * @returns {string} Tab id
- */
-const getStoredGeneratorSubTab = (defaultTab = 'sources') => {
-  return getStoredValue(STORAGE_KEYS.GENERATOR_SUB_TAB, defaultTab);
-};
-
-/**
- * Set the stored generator sub-tab
- * @param {string} tabId - Tab id to store
- */
-const setStoredGeneratorSubTab = tabId => {
-  setStoredValue(STORAGE_KEYS.GENERATOR_SUB_TAB, tabId);
-};
-
 ;// ./src/components/artboard-generator/components/ArtboardGeneratorTab.jsx
-
-
-
 
 
 
@@ -41771,16 +43481,11 @@ const setStoredGeneratorSubTab = tabId => {
 
 /**
  * Main artboard generator tab component
+ * Simplified UI with settings in collapsible panel and generate button in sizes section
  */
-const ArtboardGeneratorTab = () => {
-  const [activeSubTab, setActiveSubTab] = (0,react.useState)(() => getStoredGeneratorSubTab('sources'));
-
-  // Handle sub-tab change with persistence
-  const handleSubTabChange = tabId => {
-    setActiveSubTab(tabId);
-    setStoredGeneratorSubTab(tabId);
-  };
-
+const ArtboardGeneratorTab = ({
+  taskDetails
+}) => {
   // Document data
   const {
     artboards,
@@ -41789,7 +43494,10 @@ const ArtboardGeneratorTab = () => {
     refresh: refreshDoc
   } = usePhotoshopDocument();
 
-  // Generator state
+  // Get task ID from taskDetails
+  const taskId = taskDetails?.task_id;
+
+  // Generator state - pass taskId to hook
   const {
     sourceConfig,
     setSourceConfig,
@@ -41801,6 +43509,8 @@ const ArtboardGeneratorTab = () => {
     sizesLoading,
     sizesError,
     loadSizes,
+    loadSizesFromTask,
+    refreshSizesFromTask,
     loadDefaultSizes,
     clearSizes,
     generating,
@@ -41808,10 +43518,95 @@ const ArtboardGeneratorTab = () => {
     generationError,
     generate,
     generateSingle,
-    validateConfig
-  } = useArtboardGenerator();
+    validateConfig,
+    canGenerateSize,
+    taskName,
+    sizesFromCache,
+    getCacheAge
+  } = useArtboardGenerator({
+    taskId
+  });
+
+  // Track the last task ID we auto-loaded for
+  const lastAutoLoadedTaskId = (0,react.useRef)(null);
+
+  // Auto-load sizes from task when task is linked
+  (0,react.useEffect)(() => {
+    // Only auto-load if:
+    // 1. We have a task ID
+    // 2. We haven't already loaded for this task
+    // 3. We're not currently loading
+    if (taskId && taskId !== lastAutoLoadedTaskId.current && !sizesLoading) {
+      console.log('[ArtboardGeneratorTab] Auto-loading sizes for task:', taskId);
+      lastAutoLoadedTaskId.current = taskId;
+      loadSizesFromTask();
+    }
+  }, [taskId, sizesLoading, loadSizesFromTask]);
+
+  // Reset when task is unlinked
+  (0,react.useEffect)(() => {
+    if (!taskId) {
+      lastAutoLoadedTaskId.current = null;
+    }
+  }, [taskId]);
   const validationErrors = validateConfig();
-  const canGenerate = validationErrors.length === 0 && !generating && !docLoading;
+
+  // Count how many sizes can actually be generated
+  const generatableSizesCount = sizes.filter(size => canGenerateSize(size)).length;
+  const canGenerate = validationErrors.length === 0 && !generating && !docLoading && generatableSizesCount > 0;
+
+  // Debug logging
+  console.log('[ArtboardGeneratorTab] Button state debug:', {
+    canGenerate,
+    validationErrors,
+    validationErrorsCount: validationErrors.length,
+    generating,
+    docLoading,
+    sizesCount: sizes.length,
+    generatableSizesCount,
+    sourceConfig: {
+      landscape: sourceConfig.landscape?.artboard || 'not set',
+      portrait: sourceConfig.portrait?.artboard || 'not set',
+      square: sourceConfig.square?.artboard || 'not set'
+    },
+    sizes: sizes.map(s => ({
+      name: s.name,
+      width: s.width,
+      height: s.height,
+      ratio: (s.width / s.height).toFixed(2)
+    }))
+  });
+
+  // Ref for Generate All button - needed for UXP web component event handling
+  const generateButtonRef = (0,react.useRef)(null);
+
+  // Handle generate button click
+  const handleGenerate = (0,react.useCallback)(() => {
+    console.log('[ArtboardGeneratorTab] Generate button clicked, canGenerate:', canGenerate);
+    if (canGenerate) {
+      generate();
+    }
+  }, [canGenerate, generate]);
+
+  // Attach event listener to generate button (UXP web components need addEventListener)
+  (0,react.useEffect)(() => {
+    const button = generateButtonRef.current;
+    if (button) {
+      button.addEventListener('click', handleGenerate);
+      return () => {
+        button.removeEventListener('click', handleGenerate);
+      };
+    }
+  }, [handleGenerate]);
+
+  // Update disabled state on button (UXP needs direct property setting)
+  (0,react.useEffect)(() => {
+    const button = generateButtonRef.current;
+    if (button) {
+      button.disabled = !canGenerate;
+      console.log('[ArtboardGeneratorTab] Setting button disabled:', !canGenerate);
+    }
+  }, [canGenerate]);
   return /*#__PURE__*/react.createElement("div", {
     className: "artboard-generator-tab"
   }, /*#__PURE__*/react.createElement("div", {
@@ -41825,45 +43620,56 @@ const ArtboardGeneratorTab = () => {
     quiet: true,
     onClick: refreshDoc,
     disabled: docLoading
-  }, docLoading ? 'Refreshing...' : 'Refresh Document')), docLoading && /*#__PURE__*/react.createElement("sp-progress-bar", {
+  }, docLoading ? 'Refreshing...' : 'Refresh')), docLoading && /*#__PURE__*/react.createElement("sp-progress-bar", {
     indeterminate: true,
     size: "s",
     label: "Loading document..."
   }), !docLoading && artboards.length === 0 && /*#__PURE__*/react.createElement("sp-body", {
     size: "s",
     class: "warning-text"
-  }, "No artboards found in document. Create source artboards first.")), /*#__PURE__*/react.createElement(ui_SubTabNavigation, {
-    tabs: config.generatorSubTabs,
-    activeTab: activeSubTab,
-    onTabChange: handleSubTabChange
-  }), /*#__PURE__*/react.createElement("div", {
-    className: "generator-content"
-  }, activeSubTab === 'sources' && /*#__PURE__*/react.createElement(components_SourceConfigPanel, {
+  }, "No artboards found. Create source artboards first.")), /*#__PURE__*/react.createElement(components_ConfigurationStatus, {
+    sourceConfig: sourceConfig,
+    sizes: sizes,
+    options: options,
+    printSettings: printSettings
+  }), /*#__PURE__*/react.createElement(components_SourceConfigPanel, {
     artboards: artboards,
     layers: layers,
     sourceConfig: sourceConfig,
-    onConfigChange: setSourceConfig
-  }), activeSubTab === 'options' && /*#__PURE__*/react.createElement(components_GenerationOptionsPanel, {
-    options: options,
-    onOptionsChange: setOptions
-  }), activeSubTab === 'print' && /*#__PURE__*/react.createElement(components_PrintSettingsPanel, {
-    settings: printSettings,
-    onSettingsChange: setPrintSettings
-  })), /*#__PURE__*/react.createElement("div", {
+    onConfigChange: setSourceConfig,
+    sizes: sizes
+  }), /*#__PURE__*/react.createElement("div", {
     className: "sizes-section"
   }, /*#__PURE__*/react.createElement("div", {
+    className: "sizes-section-header"
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "sizes-title"
+  }, /*#__PURE__*/react.createElement("sp-label", {
+    size: "m"
+  }, "Sizes"), taskName && /*#__PURE__*/react.createElement("sp-body", {
+    size: "xs",
+    class: "task-name-badge"
+  }, "from: ", taskName), sizesFromCache && /*#__PURE__*/react.createElement("sp-body", {
+    size: "xs",
+    class: "cache-badge"
+  }, "(cached ", getCacheAge(), ")")), /*#__PURE__*/react.createElement("div", {
     className: "sizes-actions"
-  }, /*#__PURE__*/react.createElement("sp-button", {
+  }, taskId ? /*#__PURE__*/react.createElement("sp-action-button", {
     size: "s",
-    variant: "secondary",
+    quiet: true,
+    onClick: refreshSizesFromTask,
+    disabled: sizesLoading
+  }, sizesLoading ? 'Loading...' : 'Refresh') : /*#__PURE__*/react.createElement(react.Fragment, null, options.apiEndpoint && /*#__PURE__*/react.createElement("sp-action-button", {
+    size: "s",
+    quiet: true,
     onClick: loadSizes,
-    disabled: sizesLoading || !options.apiEndpoint
-  }, sizesLoading ? 'Loading...' : 'Fetch Sizes'), /*#__PURE__*/react.createElement("sp-button", {
+    disabled: sizesLoading
+  }, sizesLoading ? 'Loading...' : 'Fetch from API'), /*#__PURE__*/react.createElement("sp-action-button", {
     size: "s",
-    variant: "secondary",
+    quiet: true,
     onClick: loadDefaultSizes,
     disabled: sizesLoading
-  }, "Use Defaults")), sizesError && /*#__PURE__*/react.createElement("sp-body", {
+  }, "Load Defaults")))), sizesError && /*#__PURE__*/react.createElement("sp-body", {
     size: "s",
     class: "error-text"
   }, sizesError), /*#__PURE__*/react.createElement(components_SizesPreview, {
@@ -41872,8 +43678,8 @@ const ArtboardGeneratorTab = () => {
     onGenerateSingle: generateSingle,
     sourceConfig: sourceConfig,
     disabled: generating || docLoading
-  })), /*#__PURE__*/react.createElement("div", {
-    className: "generation-section"
+  }), sizes.length > 0 && /*#__PURE__*/react.createElement("div", {
+    className: "generation-section-inline"
   }, generating && /*#__PURE__*/react.createElement("div", {
     className: "generation-progress"
   }, /*#__PURE__*/react.createElement("sp-body", {
@@ -41885,24 +43691,342 @@ const ArtboardGeneratorTab = () => {
     size: "s",
     class: "error-text"
   }, generationError), validationErrors.length > 0 && !generating && /*#__PURE__*/react.createElement("div", {
-    className: "validation-warnings"
+    className: "validation-warnings-inline"
   }, validationErrors.map((error, index) => /*#__PURE__*/react.createElement("sp-body", {
     key: index,
     size: "xs",
     class: "warning-text"
   }, "\u2022 ", error))), /*#__PURE__*/react.createElement("sp-button", {
-    variant: "cta",
-    onClick: generate,
-    disabled: !canGenerate
-  }, generating ? 'Generating...' : 'Generate Artboards')));
+    ref: generateButtonRef,
+    variant: "cta"
+  }, generating ? 'Generating...' : `Generate All (${generatableSizesCount})`))), /*#__PURE__*/react.createElement(components_SettingsPanel, {
+    options: options,
+    onOptionsChange: setOptions,
+    printSettings: printSettings,
+    onPrintSettingsChange: setPrintSettings
+  }));
 };
 /* harmony default export */ const components_ArtboardGeneratorTab = (ArtboardGeneratorTab);
+;// ./src/components/artboard-generator/components/GenerationOptionsPanel.jsx
+
+
+/**
+ * Generation options panel for configuring layout and API settings
+ */
+const GenerationOptionsPanel = ({
+  options,
+  onOptionsChange
+}) => {
+  const handleChange = (field, value) => {
+    onOptionsChange({
+      ...options,
+      [field]: value
+    });
+  };
+  const handleNumberChange = (field, e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value)) {
+      handleChange(field, value);
+    }
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "generation-options-panel"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "panel-header"
+  }, /*#__PURE__*/React.createElement("sp-label", {
+    size: "l"
+  }, "Generation Options"), /*#__PURE__*/React.createElement("sp-body", {
+    size: "s",
+    class: "panel-description"
+  }, "Configure API endpoint and artboard layout settings.")), /*#__PURE__*/React.createElement("div", {
+    className: "options-section"
+  }, /*#__PURE__*/React.createElement("sp-label", {
+    size: "m"
+  }, "API Settings"), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Sizes API Endpoint"), /*#__PURE__*/React.createElement("sp-textfield", {
+    size: "s",
+    value: options.apiEndpoint || '',
+    placeholder: "https://api.example.com/sizes",
+    onInput: e => handleChange('apiEndpoint', e.target.value)
+  }), /*#__PURE__*/React.createElement("sp-body", {
+    size: "xs",
+    class: "field-hint"
+  }, "Enter the URL that returns artboard size configurations in JSON format."))), /*#__PURE__*/React.createElement("div", {
+    className: "options-section"
+  }, /*#__PURE__*/React.createElement("sp-label", {
+    size: "m"
+  }, "Layout Settings"), /*#__PURE__*/React.createElement("div", {
+    className: "form-row"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Columns"), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: options.columns || 4,
+    min: 1,
+    max: 10,
+    onInput: e => handleNumberChange('columns', e)
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Gap (px)"), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: options.gap || 100,
+    min: 0,
+    max: 500,
+    step: 10,
+    onInput: e => handleNumberChange('gap', e)
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "form-row"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Group Gap (px)"), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: options.groupGap || 300,
+    min: 0,
+    max: 1000,
+    step: 50,
+    onInput: e => handleNumberChange('groupGap', e)
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Start X (px)"), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: options.startX || 2500,
+    min: 0,
+    max: 10000,
+    step: 100,
+    onInput: e => handleNumberChange('startX', e)
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "options-section"
+  }, /*#__PURE__*/React.createElement("sp-label", {
+    size: "m"
+  }, "Generation Method"), /*#__PURE__*/React.createElement("sp-body", {
+    size: "xs",
+    class: "field-hint"
+  }, "Choose how artboards are generated from the source."), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-checkbox", {
+    checked: options.useBatchMethod !== false,
+    onChange: e => handleChange('useBatchMethod', e.target.checked)
+  }, "Use Batch Duplication Method"), /*#__PURE__*/React.createElement("sp-body", {
+    size: "xs",
+    class: "field-hint"
+  }, "Duplicates entire artboard then resizes and transforms layers. More reliable for complex artboards with many layers."))), /*#__PURE__*/React.createElement("div", {
+    className: "options-section"
+  }, /*#__PURE__*/React.createElement("sp-label", {
+    size: "m"
+  }, "Layer Names"), /*#__PURE__*/React.createElement("sp-body", {
+    size: "xs",
+    class: "field-hint"
+  }, "Names of layers to transform when using batch method. These should match layers in your source artboard."), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Overlay Layer"), /*#__PURE__*/React.createElement("sp-textfield", {
+    size: "s",
+    value: options.overlayLayerName || 'Overlay',
+    placeholder: "Overlay",
+    onInput: e => handleChange('overlayLayerName', e.target.value)
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Text Layer"), /*#__PURE__*/React.createElement("sp-textfield", {
+    size: "s",
+    value: options.textLayerName || 'TEXT',
+    placeholder: "TEXT",
+    onInput: e => handleChange('textLayerName', e.target.value)
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Background Layer"), /*#__PURE__*/React.createElement("sp-textfield", {
+    size: "s",
+    value: options.backgroundLayerName || 'BKG',
+    placeholder: "BKG",
+    onInput: e => handleChange('backgroundLayerName', e.target.value)
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "options-section"
+  }, /*#__PURE__*/React.createElement("sp-label", {
+    size: "m"
+  }, "Type Order"), /*#__PURE__*/React.createElement("sp-body", {
+    size: "xs",
+    class: "field-hint"
+  }, "Artboards will be grouped and sorted in this order."), /*#__PURE__*/React.createElement("div", {
+    className: "type-order-list"
+  }, (options.typeOrder || ['social', 'display', 'video', 'email', 'print', 'web', 'other']).map((type, index) => /*#__PURE__*/React.createElement("sp-badge", {
+    key: type,
+    size: "s",
+    variant: "neutral"
+  }, index + 1, ". ", type)))));
+};
+/* harmony default export */ const components_GenerationOptionsPanel = ((/* unused pure expression or super */ null && (GenerationOptionsPanel)));
+;// ./src/components/artboard-generator/components/PrintSettingsPanel.jsx
+
+
+/**
+ * Print settings panel for configuring bleed and crop marks
+ */
+const PrintSettingsPanel = ({
+  settings,
+  onSettingsChange
+}) => {
+  const handleChange = (field, value) => {
+    onSettingsChange({
+      ...settings,
+      [field]: value
+    });
+  };
+  const handleNumberChange = (field, e) => {
+    const value = parseFloat(e.target.value);
+    if (!isNaN(value)) {
+      handleChange(field, value);
+    }
+  };
+  const handleColorChange = (channel, e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value)) {
+      handleChange('cropMarkColor', {
+        ...settings.cropMarkColor,
+        [channel]: Math.max(0, Math.min(255, value))
+      });
+    }
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "print-settings-panel"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "panel-header"
+  }, /*#__PURE__*/React.createElement("sp-label", {
+    size: "l"
+  }, "Print Settings"), /*#__PURE__*/React.createElement("sp-body", {
+    size: "s",
+    class: "panel-description"
+  }, "Configure bleed and crop mark settings for print artboards.")), /*#__PURE__*/React.createElement("div", {
+    className: "options-section"
+  }, /*#__PURE__*/React.createElement("sp-label", {
+    size: "m"
+  }, "Bleed Settings"), /*#__PURE__*/React.createElement("div", {
+    className: "form-row"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Bleed Amount"), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: settings.bleed || 0.125,
+    min: 0,
+    max: 1,
+    step: 0.0625,
+    formatOptions: "{\"minimumFractionDigits\": 3}",
+    onInput: e => handleNumberChange('bleed', e)
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Bleed Unit"), /*#__PURE__*/React.createElement("sp-picker", {
+    size: "s",
+    value: settings.bleedUnit || 'inches',
+    onInput: e => handleChange('bleedUnit', e.target.value)
+  }, /*#__PURE__*/React.createElement("sp-menu", {
+    slot: "options"
+  }, /*#__PURE__*/React.createElement("sp-menu-item", {
+    value: "inches"
+  }, "Inches"), /*#__PURE__*/React.createElement("sp-menu-item", {
+    value: "mm"
+  }, "Millimeters"), /*#__PURE__*/React.createElement("sp-menu-item", {
+    value: "pixels"
+  }, "Pixels")))))), /*#__PURE__*/React.createElement("div", {
+    className: "options-section"
+  }, /*#__PURE__*/React.createElement("sp-label", {
+    size: "m"
+  }, "Crop Marks"), /*#__PURE__*/React.createElement("div", {
+    className: "form-row"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Mark Length"), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: settings.cropMarkLength || 0.25,
+    min: 0.1,
+    max: 1,
+    step: 0.0625,
+    formatOptions: "{\"minimumFractionDigits\": 3}",
+    onInput: e => handleNumberChange('cropMarkLength', e)
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Mark Weight (px)"), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: settings.cropMarkWeight || 1,
+    min: 0.5,
+    max: 5,
+    step: 0.5,
+    onInput: e => handleNumberChange('cropMarkWeight', e)
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Mark Offset"), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: settings.cropMarkOffset || 0.0625,
+    min: 0,
+    max: 0.5,
+    step: 0.0625,
+    formatOptions: "{\"minimumFractionDigits\": 4}",
+    onInput: e => handleNumberChange('cropMarkOffset', e)
+  }), /*#__PURE__*/React.createElement("sp-body", {
+    size: "xs",
+    class: "field-hint"
+  }, "Gap between trim edge and crop mark (in bleed unit).")), /*#__PURE__*/React.createElement("div", {
+    className: "form-field"
+  }, /*#__PURE__*/React.createElement("sp-field-label", {
+    size: "s"
+  }, "Mark Color (RGB)"), /*#__PURE__*/React.createElement("div", {
+    className: "color-inputs"
+  }, /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: settings.cropMarkColor?.r || 0,
+    min: 0,
+    max: 255,
+    placeholder: "R",
+    onInput: e => handleColorChange('r', e)
+  }), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: settings.cropMarkColor?.g || 0,
+    min: 0,
+    max: 255,
+    placeholder: "G",
+    onInput: e => handleColorChange('g', e)
+  }), /*#__PURE__*/React.createElement("sp-number-field", {
+    size: "s",
+    value: settings.cropMarkColor?.b || 0,
+    min: 0,
+    max: 255,
+    placeholder: "B",
+    onInput: e => handleColorChange('b', e)
+  })))));
+};
+/* harmony default export */ const components_PrintSettingsPanel = ((/* unused pure expression or super */ null && (PrintSettingsPanel)));
 ;// ./src/components/artboard-generator/index.js
 /**
  * Artboard Generator module exports
  */
 
 // Components
+
+
+
 
 
 
@@ -42548,7 +44672,9 @@ const App = () => {
     style: {
       marginTop: '16px'
     }
-  }, /*#__PURE__*/react.createElement(components_ActionsCard, null)))), activeTab === 'generator' && /*#__PURE__*/react.createElement(components_ArtboardGeneratorTab, null))), /*#__PURE__*/react.createElement(components_TaskSearchDialog, {
+  }, /*#__PURE__*/react.createElement(components_ActionsCard, null)))), activeTab === 'generator' && /*#__PURE__*/react.createElement(components_ArtboardGeneratorTab, {
+    taskDetails: taskDetails
+  }))), /*#__PURE__*/react.createElement(components_TaskSearchDialog, {
     open: isSearchMode,
     searchResults: searchResults,
     loading: searchLoading,

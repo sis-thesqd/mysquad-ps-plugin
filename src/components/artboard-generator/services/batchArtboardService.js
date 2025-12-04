@@ -30,6 +30,232 @@ export const DEFAULT_ARTBOARD_BACKGROUND = {
 };
 
 // ============================================================================
+// Unit Conversion
+// ============================================================================
+
+/**
+ * Convert units to pixels
+ * @param {number} value - The value to convert
+ * @param {string} unit - Unit type: inches, mm, pixels
+ * @param {number} resolution - Document PPI (default 300)
+ * @returns {number} Value in pixels
+ */
+export const unitsToPixels = (value, unit, resolution = 300) => {
+  switch (unit) {
+    case 'inches':
+      return value * resolution;
+    case 'mm':
+      return (value / 25.4) * resolution;
+    case 'pixels':
+    default:
+      return value;
+  }
+};
+
+/**
+ * Calculate artboard size with bleed if required
+ * @param {Object} sizeConfig - Size configuration { width, height, requiresBleed, bleed, bleedUnit }
+ * @returns {Object} { width, height, bleedPx } - Adjusted dimensions and bleed in pixels
+ */
+export const calculateSizeWithBleed = (sizeConfig) => {
+  let width = sizeConfig.width;
+  let height = sizeConfig.height;
+  let bleedPx = 0;
+
+  if (sizeConfig.requiresBleed && sizeConfig.bleed) {
+    bleedPx = unitsToPixels(sizeConfig.bleed, sizeConfig.bleedUnit || 'inches');
+    width += bleedPx * 2;  // Bleed on left and right
+    height += bleedPx * 2; // Bleed on top and bottom
+    console.log(`[calculateSizeWithBleed] Adding bleed: ${sizeConfig.bleed}${sizeConfig.bleedUnit} = ${bleedPx}px per side`);
+    console.log(`[calculateSizeWithBleed] Original: ${sizeConfig.width}x${sizeConfig.height} → With bleed: ${width}x${height}`);
+  }
+
+  return { width, height, bleedPx };
+};
+
+// ============================================================================
+// Crop Marks & Guides
+// ============================================================================
+
+/**
+ * Default crop mark settings
+ */
+export const DEFAULT_CROP_MARK_SETTINGS = {
+  length: 0.25,      // Length of crop marks in inches
+  weight: 1,         // Stroke weight in pixels
+  offset: 0.0625,    // Offset from trim edge in inches
+  color: { r: 0, g: 0, b: 0 }, // Black
+};
+
+/**
+ * Generate command to add margin guides using newGuideLayout
+ * This targets the selected artboard and sets guides at the bleed boundaries
+ * @param {number} bleedPx - Bleed amount in pixels (used as margin on all sides)
+ * @returns {Object} BatchPlay command
+ */
+export const generateGuideLayoutCommand = (bleedPx) => ({
+  _obj: 'newGuideLayout',
+  guideLayout: {
+    _obj: 'guideLayout',
+    '$GdCA': 0,      // Alpha
+    '$GdCB': 255,    // Blue
+    '$GdCG': 255,    // Green  
+    '$GdCR': 74,     // Red (cyan color)
+    marginTop: { _unit: 'pixelsUnit', _value: bleedPx },
+    marginBottom: { _unit: 'pixelsUnit', _value: bleedPx },
+    marginLeft: { _unit: 'pixelsUnit', _value: bleedPx },
+    marginRight: { _unit: 'pixelsUnit', _value: bleedPx },
+  },
+  guideTarget: {
+    _enum: 'guideTarget',
+    _value: 'guideTargetSelectedArtboards',
+  },
+  presetKind: {
+    _enum: 'presetKindType',
+    _value: 'presetKindCustom',
+  },
+  replace: true,
+  _options: { dialogOptions: 'dontDisplay' },
+});
+
+/**
+ * Generate command to create a rectangle shape (for crop marks)
+ * Uses thin rectangles to simulate lines
+ * @param {Object} bounds - Rectangle bounds { left, top, right, bottom }
+ * @param {Object} color - Color { r, g, b }
+ * @returns {Object} BatchPlay command
+ */
+export const generateCropMarkRectangle = (bounds, color = { r: 0, g: 0, b: 0 }) => ({
+  _obj: 'make',
+  _target: [{ _ref: 'contentLayer' }],
+  using: {
+    _obj: 'contentLayer',
+    shape: {
+      _obj: 'rectangle',
+      unitValueQuadVersion: 1,
+      top: { _unit: 'pixelsUnit', _value: bounds.top },
+      left: { _unit: 'pixelsUnit', _value: bounds.left },
+      bottom: { _unit: 'pixelsUnit', _value: bounds.bottom },
+      right: { _unit: 'pixelsUnit', _value: bounds.right },
+      topLeft: { _unit: 'pixelsUnit', _value: 0 },
+      topRight: { _unit: 'pixelsUnit', _value: 0 },
+      bottomLeft: { _unit: 'pixelsUnit', _value: 0 },
+      bottomRight: { _unit: 'pixelsUnit', _value: 0 },
+    },
+    strokeStyle: {
+      _obj: 'strokeStyle',
+      fillEnabled: true,
+      strokeEnabled: false,
+      strokeStyleVersion: 2,
+    },
+    type: {
+      _obj: 'solidColorLayer',
+      color: {
+        _obj: 'RGBColor',
+        red: color.r,
+        grain: color.g,  // Photoshop uses 'grain' for green
+        blue: color.b,
+      },
+    },
+  },
+  _options: { dialogOptions: 'dontDisplay' },
+});
+
+/**
+ * Add guides for bleed/trim boundaries using newGuideLayout
+ * This sets margin guides on the selected artboard at the bleed boundaries
+ * @param {number} bleedPx - Bleed amount in pixels
+ * @param {number} artboardId - ID of the artboard to add guides to
+ * @returns {Promise<void>}
+ */
+export const addBleedGuides = async (bleedPx, artboardId) => {
+  console.log('[addBleedGuides] Adding trim guides for bleed:', bleedPx, 'px');
+  const batchPlay = getBatchPlay();
+  
+  // First select the artboard
+  await batchPlay([
+    {
+      _obj: 'select',
+      _target: [{ _ref: 'layer', _id: artboardId }],
+      makeVisible: false,
+      _options: { dialogOptions: 'dontDisplay' },
+    },
+  ], { synchronousExecution: true });
+  
+  // Apply guide layout with margins matching the bleed
+  await batchPlay([
+    generateGuideLayoutCommand(bleedPx),
+  ], { synchronousExecution: true });
+  
+  console.log('[addBleedGuides] ✓ Added margin guides at', bleedPx, 'px from edges');
+};
+
+/**
+ * Create crop marks for a print artboard using thin rectangles
+ * @param {Object} artboardBounds - Artboard bounds { left, top, right, bottom }
+ * @param {number} bleedPx - Bleed amount in pixels
+ * @param {Object} settings - Crop mark settings
+ * @returns {Promise<void>}
+ */
+export const createCropMarks = async (artboardBounds, bleedPx, settings = DEFAULT_CROP_MARK_SETTINGS) => {
+  console.log('[createCropMarks] Creating crop marks');
+  const batchPlay = getBatchPlay();
+  
+  // Convert settings to pixels
+  const markLength = unitsToPixels(settings.length, 'inches');
+  const markOffset = unitsToPixels(settings.offset, 'inches');
+  const markWeight = settings.weight;
+  
+  // Calculate trim boundaries (where content ends, bleed begins)
+  const trimLeft = artboardBounds.left + bleedPx;
+  const trimTop = artboardBounds.top + bleedPx;
+  const trimRight = artboardBounds.right - bleedPx;
+  const trimBottom = artboardBounds.bottom - bleedPx;
+  
+  console.log('[createCropMarks] Mark length:', markLength, 'px, offset:', markOffset, 'px, weight:', markWeight, 'px');
+  console.log('[createCropMarks] Trim bounds:', { trimLeft, trimTop, trimRight, trimBottom });
+  
+  // Define crop mark rectangles (8 marks - 2 per corner)
+  // Each mark is a thin rectangle simulating a line
+  const marks = [
+    // Top-left corner - horizontal mark (left of trim)
+    { left: trimLeft - markOffset - markLength, top: trimTop - markWeight/2, right: trimLeft - markOffset, bottom: trimTop + markWeight/2 },
+    // Top-left corner - vertical mark (above trim)
+    { left: trimLeft - markWeight/2, top: trimTop - markOffset - markLength, right: trimLeft + markWeight/2, bottom: trimTop - markOffset },
+    
+    // Top-right corner - horizontal mark (right of trim)
+    { left: trimRight + markOffset, top: trimTop - markWeight/2, right: trimRight + markOffset + markLength, bottom: trimTop + markWeight/2 },
+    // Top-right corner - vertical mark (above trim)
+    { left: trimRight - markWeight/2, top: trimTop - markOffset - markLength, right: trimRight + markWeight/2, bottom: trimTop - markOffset },
+    
+    // Bottom-left corner - horizontal mark (left of trim)
+    { left: trimLeft - markOffset - markLength, top: trimBottom - markWeight/2, right: trimLeft - markOffset, bottom: trimBottom + markWeight/2 },
+    // Bottom-left corner - vertical mark (below trim)
+    { left: trimLeft - markWeight/2, top: trimBottom + markOffset, right: trimLeft + markWeight/2, bottom: trimBottom + markOffset + markLength },
+    
+    // Bottom-right corner - horizontal mark (right of trim)
+    { left: trimRight + markOffset, top: trimBottom - markWeight/2, right: trimRight + markOffset + markLength, bottom: trimBottom + markWeight/2 },
+    // Bottom-right corner - vertical mark (below trim)
+    { left: trimRight - markWeight/2, top: trimBottom + markOffset, right: trimRight + markWeight/2, bottom: trimBottom + markOffset + markLength },
+  ];
+  
+  // Create each crop mark
+  for (let i = 0; i < marks.length; i++) {
+    const mark = marks[i];
+    console.log(`[createCropMarks] Creating mark ${i + 1}/8...`);
+    await batchPlay([
+      generateCropMarkRectangle(mark, settings.color),
+    ], { synchronousExecution: true });
+  }
+  
+  // Select all crop mark layers and group them
+  console.log('[createCropMarks] Grouping crop marks...');
+  // Note: Grouping would require selecting multiple layers - skipping for simplicity
+  
+  console.log('[createCropMarks] ✓ Created 8 crop marks');
+};
+
+// ============================================================================
 // Utility Functions
 // ============================================================================
 
@@ -93,20 +319,194 @@ export const getLayerConfig = (layerName) => {
     [LAYER_NAMES.TEXT]: { scaleMode: 'contain', shouldAlign: true },
     [LAYER_NAMES.BACKGROUND]: { scaleMode: 'cover', shouldAlign: true },
   };
-  
+
   // Check for exact match first
   if (configs[layerName]) {
     return configs[layerName];
   }
-  
+
   // Check for partial match (case-insensitive)
   const lowerName = layerName.toLowerCase();
   if (lowerName.includes('overlay')) return configs[LAYER_NAMES.OVERLAY];
   if (lowerName.includes('text') || lowerName.includes('title')) return configs[LAYER_NAMES.TEXT];
   if (lowerName.includes('bkg') || lowerName.includes('background')) return configs[LAYER_NAMES.BACKGROUND];
-  
-  // Default config
-  return { scaleMode: 'relative', shouldAlign: true };
+
+  // Default config - use 'cover' for most layers to fill the artboard
+  return { scaleMode: 'cover', shouldAlign: true };
+};
+
+/**
+ * Transform all top-level layers in an artboard to fit the new size
+ * This handles any layer structure, not just specifically named layers
+ * @param {Object} artboard - The artboard layer object
+ * @param {number} artboardId - The artboard ID
+ * @param {Object} sourceSize - Source artboard dimensions { width, height }
+ * @param {Object} targetSize - Target artboard dimensions { width, height }
+ * @param {Object} batchPlay - The batchPlay function
+ * @returns {Promise<void>}
+ */
+const transformAllLayers = async (artboard, artboardId, sourceSize, targetSize, batchPlay) => {
+  if (!artboard || !artboard.layers || artboard.layers.length === 0) {
+    console.log('[transformAllLayers] No layers to transform');
+    return;
+  }
+
+  console.log(`[transformAllLayers] Transforming ${artboard.layers.length} top-level layers`);
+  console.log(`[transformAllLayers] Source: ${sourceSize.width}x${sourceSize.height} → Target: ${targetSize.width}x${targetSize.height}`);
+
+  // Calculate the scale factor based on artboard size change
+  // Use 'cover' mode to ensure content fills the artboard
+  const widthScale = targetSize.width / sourceSize.width;
+  const heightScale = targetSize.height / sourceSize.height;
+  const coverScale = Math.max(widthScale, heightScale);
+  const scalePercent = coverScale * 100;
+
+  console.log(`[transformAllLayers] Scale factor: ${coverScale.toFixed(4)} (${scalePercent.toFixed(2)}%)`);
+
+  // Select ALL top-level layers at once for batch transformation
+  const allLayerIds = artboard.layers.map(l => l.id);
+  console.log(`[transformAllLayers] Layer IDs to transform:`, allLayerIds);
+
+  if (allLayerIds.length === 0) {
+    return;
+  }
+
+  // Step 1: Select the artboard first (as alignment reference)
+  await batchPlay([
+    {
+      _obj: 'select',
+      _target: [{ _ref: 'layer', _id: artboardId }],
+      makeVisible: false,
+      _options: { dialogOptions: 'dontDisplay' },
+    },
+  ], { synchronousExecution: true });
+
+  // Step 2: Add all layers to selection
+  for (const layerId of allLayerIds) {
+    await batchPlay([
+      {
+        _obj: 'select',
+        _target: [{ _ref: 'layer', _id: layerId }],
+        selectionModifier: { _enum: 'selectionModifierType', _value: 'addToSelection' },
+        makeVisible: false,
+        _options: { dialogOptions: 'dontDisplay' },
+      },
+    ], { synchronousExecution: true });
+  }
+
+  // Step 3: Align all selected layers to artboard center
+  console.log('[transformAllLayers] Aligning all layers to artboard center...');
+  await batchPlay([
+    {
+      _obj: 'align',
+      _target: [{ _ref: 'layer', _enum: 'ordinal', _value: 'targetEnum' }],
+      alignToCanvas: false,
+      using: { _enum: 'alignDistributeSelector', _value: 'ADSCentersH' },
+    },
+    {
+      _obj: 'align',
+      _target: [{ _ref: 'layer', _enum: 'ordinal', _value: 'targetEnum' }],
+      alignToCanvas: false,
+      using: { _enum: 'alignDistributeSelector', _value: 'ADSCentersV' },
+    },
+  ], { synchronousExecution: true });
+
+  // Step 4: Select only the layers (not artboard) for scaling
+  await batchPlay([
+    {
+      _obj: 'select',
+      _target: [{ _ref: 'layer', _id: allLayerIds[0] }],
+      makeVisible: false,
+      _options: { dialogOptions: 'dontDisplay' },
+    },
+  ], { synchronousExecution: true });
+
+  for (let i = 1; i < allLayerIds.length; i++) {
+    await batchPlay([
+      {
+        _obj: 'select',
+        _target: [{ _ref: 'layer', _id: allLayerIds[i] }],
+        selectionModifier: { _enum: 'selectionModifierType', _value: 'addToSelection' },
+        makeVisible: false,
+        _options: { dialogOptions: 'dontDisplay' },
+      },
+    ], { synchronousExecution: true });
+  }
+
+  // Step 5: Scale all layers together
+  console.log(`[transformAllLayers] Scaling all layers by ${scalePercent.toFixed(2)}%...`);
+  await batchPlay([
+    {
+      _obj: 'transform',
+      _target: [{ _ref: 'layer', _enum: 'ordinal', _value: 'targetEnum' }],
+      freeTransformCenterState: { _enum: 'quadCenterState', _value: 'QCSAverage' },
+      width: { _unit: 'percentUnit', _value: scalePercent },
+      height: { _unit: 'percentUnit', _value: scalePercent },
+      linked: true,
+      interfaceIconFrameDimmed: { _enum: 'interpolationType', _value: 'bicubic' },
+    },
+  ], { synchronousExecution: true });
+
+  // Step 6: Re-center after scaling (scaling can shift position)
+  await batchPlay([
+    {
+      _obj: 'select',
+      _target: [{ _ref: 'layer', _id: artboardId }],
+      makeVisible: false,
+      _options: { dialogOptions: 'dontDisplay' },
+    },
+  ], { synchronousExecution: true });
+
+  for (const layerId of allLayerIds) {
+    await batchPlay([
+      {
+        _obj: 'select',
+        _target: [{ _ref: 'layer', _id: layerId }],
+        selectionModifier: { _enum: 'selectionModifierType', _value: 'addToSelection' },
+        makeVisible: false,
+        _options: { dialogOptions: 'dontDisplay' },
+      },
+    ], { synchronousExecution: true });
+  }
+
+  await batchPlay([
+    {
+      _obj: 'align',
+      _target: [{ _ref: 'layer', _enum: 'ordinal', _value: 'targetEnum' }],
+      alignToCanvas: false,
+      using: { _enum: 'alignDistributeSelector', _value: 'ADSCentersH' },
+    },
+    {
+      _obj: 'align',
+      _target: [{ _ref: 'layer', _enum: 'ordinal', _value: 'targetEnum' }],
+      alignToCanvas: false,
+      using: { _enum: 'alignDistributeSelector', _value: 'ADSCentersV' },
+    },
+  ], { synchronousExecution: true });
+
+  console.log('[transformAllLayers] ✓ All layers transformed and centered');
+
+  // Step 7: Clean up layer names (remove " copy" suffixes)
+  for (const layer of artboard.layers) {
+    const cleanName = layer.name.replace(/ copy\d*$/i, '').replace(/ copy$/i, '');
+    if (cleanName !== layer.name) {
+      console.log(`[transformAllLayers] Renaming "${layer.name}" → "${cleanName}"`);
+      await batchPlay([
+        {
+          _obj: 'select',
+          _target: [{ _ref: 'layer', _id: layer.id }],
+          makeVisible: false,
+          _options: { dialogOptions: 'dontDisplay' },
+        },
+        {
+          _obj: 'set',
+          _target: [{ _ref: 'layer', _enum: 'ordinal', _value: 'targetEnum' }],
+          to: { _obj: 'layer', name: cleanName },
+          _options: { dialogOptions: 'dontDisplay' },
+        },
+      ], { synchronousExecution: true });
+    }
+  }
 };
 
 // ============================================================================
@@ -749,6 +1149,15 @@ const createArtboardByDuplicationInternal = async ({
   const batchPlay = getBatchPlay();
   const app = getApp();
   
+  // Calculate size with bleed if required
+  const { width: actualWidth, height: actualHeight, bleedPx } = calculateSizeWithBleed(targetSize);
+  console.log('[createArtboardByDuplicationInternal] Bleed calculation:');
+  console.log('  - Original size:', targetSize.width, 'x', targetSize.height);
+  console.log('  - Requires bleed:', targetSize.requiresBleed);
+  console.log('  - Bleed value:', targetSize.bleed, targetSize.bleedUnit);
+  console.log('  - Bleed pixels:', bleedPx);
+  console.log('  - Final size:', actualWidth, 'x', actualHeight);
+  
   // PHASE 1: Get source artboard info and duplicate it
   console.log('\n[createArtboardByDuplicationInternal] === PHASE 1: Get Source Artboard ===');
   const source = await getSourceArtboard(sourceArtboardName);
@@ -791,11 +1200,11 @@ const createArtboardByDuplicationInternal = async ({
   console.log('  - Bounds:', JSON.stringify(newArtboard.bounds));
   console.log('  - Child layers:', newArtboard.childLayers.map((l) => `"${l.name}" (${l.id})`));
   
-  // Calculate new artboard position
+  // Calculate new artboard position (use actual size with bleed)
   const newLeft = position?.x ?? (source.bounds.right + 100);
   const newTop = position?.y ?? source.bounds.top;
-  const newRight = newLeft + targetSize.width;
-  const newBottom = newTop + targetSize.height;
+  const newRight = newLeft + actualWidth;
+  const newBottom = newTop + actualHeight;
   
   console.log('\n[createArtboardByDuplicationInternal] Calculated new artboard bounds:');
   console.log('  - Left:', newLeft, 'Top:', newTop);
@@ -833,19 +1242,19 @@ const createArtboardByDuplicationInternal = async ({
   
   console.log('[createArtboardByDuplicationInternal] ✓ Artboard resized and renamed to:', targetSize.name || newArtboard.name);
   
-  // PHASE 4: Transform each layer
+  // PHASE 4: Transform ALL layers in the artboard
   console.log('\n[createArtboardByDuplicationInternal] === PHASE 4: Transform Layers ===');
   const sourceSize = { width: source.bounds.width, height: source.bounds.height };
-  const targetSizeObj = { width: targetSize.width, height: targetSize.height };
-  
+  const targetSizeObj = { width: actualWidth, height: actualHeight }; // Use size WITH bleed
+
   console.log('[createArtboardByDuplicationInternal] Size calculations:');
   console.log('  - Source size:', JSON.stringify(sourceSize));
-  console.log('  - Target size:', JSON.stringify(targetSizeObj));
-  
+  console.log('  - Target size (with bleed):', JSON.stringify(targetSizeObj));
+
   // Re-fetch the artboard to get fresh layer references after resize
   const doc = app.activeDocument;
   const refreshedArtboard = doc.layers.find((l) => l.id === newArtboard.id);
-  
+
   if (!refreshedArtboard) {
     console.error('[createArtboardByDuplicationInternal] ✗ ERROR: Could not find refreshed artboard with id:', newArtboard.id);
     console.log('[createArtboardByDuplicationInternal] Available layers:', doc.layers.map((l) => `"${l.name}" (${l.id})`));
@@ -857,89 +1266,205 @@ const createArtboardByDuplicationInternal = async ({
         console.log(`[createArtboardByDuplicationInternal]   - "${l.name}" (id: ${l.id}, kind: ${l.kind})`);
       });
     }
+
+    // Transform ALL layers in the artboard (not just named ones)
+    await transformAllLayers(refreshedArtboard, newArtboard.id, sourceSize, targetSizeObj, batchPlay);
   }
   
-  // Use the ORIGINAL newArtboard.childLayers info we captured right after duplication
-  // since the refreshed artboard might have stale/incomplete layer refs
-  const artboardToSearch = refreshedArtboard || newArtboard.layer;
-  
-  console.log(`[createArtboardByDuplicationInternal] Will transform layers in: "${artboardToSearch.name}" with ${artboardToSearch.layers?.length || 0} layers`);
-  
-  for (let i = 0; i < layerNames.length; i++) {
-    const layerName = layerNames[i];
-    console.log(`\n[createArtboardByDuplicationInternal] --- Layer ${i + 1}/${layerNames.length}: "${layerName}" ---`);
+  // PHASE 5: Add guides and crop marks if bleed is required
+  if (targetSize.requiresBleed && bleedPx > 0) {
+    console.log('\n[createArtboardByDuplicationInternal] === PHASE 5: Add Bleed Guides & Crop Marks ===');
     
-    // Search in the DOM (refreshed artboard after resize)
-    console.log(`[createArtboardByDuplicationInternal] Searching in refreshed artboard for "${layerName}"...`);
-    const layer = findLayerByName(artboardToSearch, layerName, true);
+    const artboardBounds = {
+      left: newLeft,
+      top: newTop,
+      right: newRight,
+      bottom: newBottom,
+    };
     
-    if (!layer) {
-      console.log(`[createArtboardByDuplicationInternal] ⚠ Skipping "${layerName}" - not found in artboard after resize`);
-      continue;
+    // Add trim guides using newGuideLayout (targets selected artboard)
+    try {
+      await addBleedGuides(bleedPx, newArtboard.id);
+    } catch (e) {
+      console.warn('[createArtboardByDuplicationInternal] ⚠ Could not add guides:', e.message);
     }
     
-    console.log(`[createArtboardByDuplicationInternal] ✓ Found: "${layer.name}" (id: ${layer.id})`);
-    
-    const config = getLayerConfig(layerName);
-    console.log(`[createArtboardByDuplicationInternal] Layer config:`, JSON.stringify(config));
-    
-    const scalePercent = calculateScalePercent(sourceSize, targetSizeObj, config.scaleMode);
-    console.log(`[createArtboardByDuplicationInternal] Scale: ${scalePercent.toFixed(2)}%`);
-    
-    // Step 1: Select BOTH the artboard AND the layer (artboard as reference for alignment)
-    console.log(`[createArtboardByDuplicationInternal] Selecting artboard (${newArtboard.id}) + layer (${layer.id}) for alignment...`);
-    await batchPlay([
-      {
-        _obj: 'select',
-        _target: [{ _ref: 'layer', _id: newArtboard.id }],
-        makeVisible: false,
-        _options: { dialogOptions: 'dontDisplay' },
-      },
-      {
-        _obj: 'select',
-        _target: [{ _ref: 'layer', _id: layer.id }],
-        selectionModifier: { _enum: 'selectionModifierType', _value: 'addToSelection' },
-        makeVisible: false,
-        _options: { dialogOptions: 'dontDisplay' },
-      },
-    ], { synchronousExecution: true });
-    
-    // Step 2: Align the layer to the artboard (centers horizontally and vertically)
-    console.log(`[createArtboardByDuplicationInternal] Aligning to artboard center...`);
-    await batchPlay([
-      generateAlignCommand('horizontal'),
-      generateAlignCommand('vertical'),
-    ], { synchronousExecution: true });
-    
-    // Step 3: Select just the layer and scale it
-    console.log(`[createArtboardByDuplicationInternal] Scaling layer by ${scalePercent.toFixed(2)}%...`);
-    await batchPlay([
-      generateSelectLayerCommand(layer.name, layer.id),
-      generateTransformCommand(scalePercent, scalePercent),
-    ], { synchronousExecution: true });
-    
-    console.log(`[createArtboardByDuplicationInternal] ✓ Completed transformation for "${layer.name}"`);
-    
-    // Step 4: Rename layer to remove " copy" suffix
-    const cleanName = layer.name.replace(/ copy\d*$/i, '').replace(/ copy$/i, '');
-    if (cleanName !== layer.name) {
-      console.log(`[createArtboardByDuplicationInternal] Renaming "${layer.name}" → "${cleanName}"`);
-      await batchPlay([
-        generateRenameCommand(cleanName),
-      ], { synchronousExecution: true });
+    // Add crop marks using rectangle shapes
+    try {
+      await createCropMarks(artboardBounds, bleedPx);
+    } catch (e) {
+      console.warn('[createArtboardByDuplicationInternal] ⚠ Could not add crop marks:', e.message);
     }
   }
-  
+
   console.log('\n[createArtboardByDuplicationInternal] === COMPLETE ===');
   console.log('─'.repeat(60));
   
   return {
     name: targetSize.name,
-    width: targetSize.width,
-    height: targetSize.height,
+    width: actualWidth,
+    height: actualHeight,
+    originalWidth: targetSize.width,
+    originalHeight: targetSize.height,
+    bleedPx,
+    requiresBleed: targetSize.requiresBleed || false,
     position: { x: newLeft, y: newTop },
   };
 };
+
+/**
+ * Check if a size matches a source artboard's dimensions
+ * @param {Object} sizeConfig - Size configuration { width, height }
+ * @param {Object} sourceBounds - Source artboard bounds { width, height }
+ * @returns {boolean} True if dimensions match exactly
+ */
+const sizeMatchesSource = (sizeConfig, sourceBounds) => {
+  // Check for exact dimension match (within 1px tolerance for floating point)
+  const widthMatch = Math.abs(sizeConfig.width - sourceBounds.width) < 1;
+  const heightMatch = Math.abs(sizeConfig.height - sourceBounds.height) < 1;
+  return widthMatch && heightMatch;
+};
+
+/**
+ * Layout tracker for dynamic artboard positioning
+ * Uses strict row-based layout to prevent overlaps:
+ * 1. Artboards in same row start at same Y position
+ * 2. New row starts below the TALLEST artboard in current row
+ * 3. Row breaks triggered by: width exceeded OR significant height difference
+ */
+class LayoutTracker {
+  constructor(startPosition, gap, maxRowWidth = 10000) {
+    this.startX = startPosition.x;
+    this.startY = startPosition.y;
+    this.gap = gap;
+    this.maxRowWidth = maxRowWidth;
+
+    // Track all placed artboards
+    this.placedArtboards = [];
+
+    // Current row tracking
+    this.currentX = startPosition.x;
+    this.currentRowY = startPosition.y;
+    this.currentRowMaxHeight = 0;
+
+    // Track the global maximum bottom (across ALL rows)
+    this.globalMaxBottom = startPosition.y;
+  }
+
+  /**
+   * Start a new row below all currently placed artboards
+   */
+  startNewRow() {
+    const newRowY = this.globalMaxBottom + this.gap;
+    console.log(`[LayoutTracker] Starting new row at y=${newRowY} (globalMaxBottom=${this.globalMaxBottom})`);
+    this.currentX = this.startX;
+    this.currentRowY = newRowY;
+    this.currentRowMaxHeight = 0;
+  }
+
+  /**
+   * Check if a new artboard would overlap with ANY existing artboard
+   * @param {number} x - Proposed X position
+   * @param {number} y - Proposed Y position
+   * @param {number} width - Artboard width
+   * @param {number} height - Artboard height
+   * @returns {boolean} True if overlap detected
+   */
+  wouldOverlap(x, y, width, height) {
+    const newRect = { left: x, top: y, right: x + width, bottom: y + height };
+
+    for (const placed of this.placedArtboards) {
+      const placedRect = {
+        left: placed.x,
+        top: placed.y,
+        right: placed.x + placed.width,
+        bottom: placed.y + placed.height,
+      };
+
+      // Check for intersection
+      const horizontalOverlap = newRect.left < placedRect.right && newRect.right > placedRect.left;
+      const verticalOverlap = newRect.top < placedRect.bottom && newRect.bottom > placedRect.top;
+
+      if (horizontalOverlap && verticalOverlap) {
+        console.log(`[LayoutTracker] Overlap detected with existing artboard at (${placed.x}, ${placed.y}) size ${placed.width}x${placed.height}`);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Find next valid position for an artboard
+   * @param {number} width - Artboard width
+   * @param {number} height - Artboard height
+   * @returns {Object} Position { x, y }
+   */
+  getNextPosition(width, height) {
+    console.log(`[LayoutTracker] Finding position for artboard ${width}x${height}`);
+    console.log(`[LayoutTracker] Current state: x=${this.currentX}, rowY=${this.currentRowY}, rowMaxHeight=${this.currentRowMaxHeight}, globalMaxBottom=${this.globalMaxBottom}`);
+
+    // Check if we need to wrap to next row due to width
+    const wouldExceedWidth = this.currentX > this.startX && this.currentX + width > this.startX + this.maxRowWidth;
+
+    // Check if height difference is significant (would cause visual issues)
+    // Either new is much taller than row, or row has something much taller than new
+    const heightDiff = Math.abs(height - this.currentRowMaxHeight);
+    const avgHeight = (height + this.currentRowMaxHeight) / 2;
+    const significantHeightDiff = this.currentRowMaxHeight > 0 && heightDiff > avgHeight * 0.5;
+
+    if (wouldExceedWidth) {
+      console.log(`[LayoutTracker] Wrapping to new row (exceeded maxRowWidth: ${this.currentX + width} > ${this.startX + this.maxRowWidth})`);
+      this.startNewRow();
+    } else if (significantHeightDiff && this.currentX > this.startX) {
+      // If significant height difference AND we already have items in this row
+      console.log(`[LayoutTracker] Starting new row due to height difference (new: ${height}px vs row max: ${this.currentRowMaxHeight}px, diff: ${heightDiff}px)`);
+      this.startNewRow();
+    }
+
+    // Proposed position
+    let position = { x: this.currentX, y: this.currentRowY };
+
+    // Double-check for overlaps (safety net)
+    if (this.wouldOverlap(position.x, position.y, width, height)) {
+      console.log(`[LayoutTracker] Overlap detected at proposed position, forcing new row`);
+      this.startNewRow();
+      position = { x: this.currentX, y: this.currentRowY };
+    }
+
+    console.log(`[LayoutTracker] Calculated position: (${position.x}, ${position.y})`);
+
+    return position;
+  }
+
+  /**
+   * Register a placed artboard
+   * @param {Object} artboard - Artboard info { position: { x, y }, width, height }
+   */
+  registerPlacement(artboard) {
+    const rect = {
+      x: artboard.position.x,
+      y: artboard.position.y,
+      width: artboard.width,
+      height: artboard.height,
+    };
+
+    this.placedArtboards.push(rect);
+
+    // Update current X position for next artboard (place to the right)
+    this.currentX = rect.x + rect.width + this.gap;
+
+    // Track the max height in this row
+    this.currentRowMaxHeight = Math.max(this.currentRowMaxHeight, rect.height);
+
+    // Track the global maximum bottom edge (across ALL placed artboards)
+    const thisBottom = rect.y + rect.height;
+    this.globalMaxBottom = Math.max(this.globalMaxBottom, thisBottom);
+
+    console.log(`[LayoutTracker] Registered artboard at (${rect.x}, ${rect.y}) size ${rect.width}x${rect.height}`);
+    console.log(`[LayoutTracker] Row max height: ${this.currentRowMaxHeight}, global max bottom: ${this.globalMaxBottom}`);
+    console.log(`[LayoutTracker] Next X position: ${this.currentX}`);
+  }
+}
 
 /**
  * Generate multiple artboards using the batch duplication method
@@ -953,45 +1478,58 @@ export const generateArtboardsBatch = async (sizes, sourceConfig, options = {}, 
   console.log('*'.repeat(60));
   console.log('[generateArtboardsBatch] Starting batch generation');
   console.log(`[generateArtboardsBatch] Sizes: ${sizes.length}`);
-  
+
   const core = getCore();
   const app = getApp();
   const gap = options.gap || 100;
-  
+  const maxRowWidth = options.maxRowWidth || 10000;
+
   // Get layer names from options or use defaults
   const layerNames = [
     options.overlayLayerName || LAYER_NAMES.OVERLAY,
     options.textLayerName || LAYER_NAMES.TEXT,
     options.backgroundLayerName || LAYER_NAMES.BACKGROUND,
   ];
-  
+
   console.log('[generateArtboardsBatch] Layer names to transform:', layerNames);
-  
+
   const createdArtboards = [];
-  
+  const skippedSizes = [];
+
   return await core.executeAsModal(
     async (executionContext) => {
       const doc = app.activeDocument;
-      
+
       // Suspend history for single undo
       const suspensionID = await executionContext.hostControl.suspendHistory({
         documentID: doc.id,
         name: 'Generate Artboards (Batch)',
       });
-      
+
       try {
-        // Track position for placing artboards
-        let currentX = null;
-        let currentY = null;
-        
-        for (let i = 0; i < sizes.length; i++) {
-          const sizeConfig = sizes[i];
-          
-          if (onProgress) {
-            onProgress(i + 1, sizes.length, sizeConfig.name);
+        // First pass: Get all source artboard bounds and track which sizes to skip
+        const sourceBoundsCache = {};
+        const sourceSkipCounts = {}; // Track how many times each source's dimensions have been skipped
+
+        for (const sourceType of ['landscape', 'portrait', 'square']) {
+          const source = sourceConfig[sourceType];
+          if (source?.artboard) {
+            try {
+              const sourceInfo = await getSourceArtboard(source.artboard);
+              sourceBoundsCache[sourceType] = sourceInfo.bounds;
+              sourceSkipCounts[sourceType] = 0;
+              console.log(`[generateArtboardsBatch] Source ${sourceType} bounds:`, sourceInfo.bounds.width, 'x', sourceInfo.bounds.height);
+            } catch (e) {
+              console.warn(`[generateArtboardsBatch] Could not get bounds for ${sourceType} source:`, e.message);
+            }
           }
-          
-          // Determine which source to use based on aspect ratio
+        }
+
+        // Filter sizes: skip ones that match source dimensions (only skip one per source)
+        const sizesToGenerate = [];
+
+        for (const sizeConfig of sizes) {
+          // Determine which source would be used
           const aspectRatio = sizeConfig.width / sizeConfig.height;
           let sourceType;
           if (aspectRatio < 0.85) {
@@ -1001,40 +1539,107 @@ export const generateArtboardsBatch = async (sizes, sourceConfig, options = {}, 
           } else {
             sourceType = 'square';
           }
-          
-          const source = sourceConfig[sourceType];
+
+          const sourceBounds = sourceBoundsCache[sourceType];
+
+          // Check if this size matches the source dimensions
+          if (sourceBounds && sizeMatchesSource(sizeConfig, sourceBounds)) {
+            // Only skip ONE size per source
+            if (sourceSkipCounts[sourceType] === 0) {
+              console.log(`[generateArtboardsBatch] Skipping "${sizeConfig.name}" - matches ${sourceType} source dimensions (${sizeConfig.width}x${sizeConfig.height})`);
+              skippedSizes.push({ ...sizeConfig, reason: `Matches ${sourceType} source` });
+              sourceSkipCounts[sourceType]++;
+              continue;
+            } else {
+              console.log(`[generateArtboardsBatch] NOT skipping "${sizeConfig.name}" - already skipped one ${sourceType} match`);
+            }
+          }
+
+          // Calculate actual size (with bleed if required)
+          let actualWidth = sizeConfig.width;
+          let actualHeight = sizeConfig.height;
+
+          if (sizeConfig.requiresBleed && sizeConfig.bleed) {
+            const bleedPx = unitsToPixels(sizeConfig.bleed, sizeConfig.bleedUnit || 'inches');
+            actualWidth += bleedPx * 2;
+            actualHeight += bleedPx * 2;
+          }
+
+          sizesToGenerate.push({
+            ...sizeConfig,
+            sourceType,
+            actualWidth,
+            actualHeight,
+          });
+        }
+
+        console.log(`[generateArtboardsBatch] Sizes to generate: ${sizesToGenerate.length} (skipped: ${skippedSizes.length})`);
+
+        if (sizesToGenerate.length === 0) {
+          console.log('[generateArtboardsBatch] No sizes to generate after filtering');
+          return createdArtboards;
+        }
+
+        // Find starting position (to the right of all source artboards)
+        let maxRight = 0;
+        let minTop = Infinity;
+
+        for (const sourceType of ['landscape', 'portrait', 'square']) {
+          const bounds = sourceBoundsCache[sourceType];
+          if (bounds) {
+            maxRight = Math.max(maxRight, bounds.right);
+            minTop = Math.min(minTop, bounds.top);
+          }
+        }
+
+        const startPosition = {
+          x: maxRight + gap,
+          y: minTop === Infinity ? 0 : minTop,
+        };
+
+        console.log(`[generateArtboardsBatch] Starting position: ${startPosition.x}, ${startPosition.y}`);
+
+        // Create layout tracker for dynamic positioning
+        const layoutTracker = new LayoutTracker(startPosition, gap, maxRowWidth);
+
+        // Generate artboards with dynamic positioning
+        for (let i = 0; i < sizesToGenerate.length; i++) {
+          const sizeConfig = sizesToGenerate[i];
+
+          if (onProgress) {
+            onProgress(i + 1, sizesToGenerate.length, sizeConfig.name);
+          }
+
+          const source = sourceConfig[sizeConfig.sourceType];
           if (!source || !source.artboard) {
-            console.warn(`[generateArtboardsBatch] No ${sourceType} source configured, skipping ${sizeConfig.name}`);
+            console.warn(`[generateArtboardsBatch] No ${sizeConfig.sourceType} source configured, skipping ${sizeConfig.name}`);
             continue;
           }
-          
-          // Get source artboard to determine initial position
-          if (currentX === null) {
-            const sourceInfo = await getSourceArtboard(source.artboard);
-            currentX = sourceInfo.bounds.right + gap;
-            currentY = sourceInfo.bounds.top;
-          }
-          
+
+          // Get next position from layout tracker (accounts for all previously placed artboards)
+          const position = layoutTracker.getNextPosition(sizeConfig.actualWidth, sizeConfig.actualHeight);
+          console.log(`[generateArtboardsBatch] Placing "${sizeConfig.name}" (${sizeConfig.actualWidth}x${sizeConfig.actualHeight}) at (${position.x}, ${position.y})`);
+
           // Create the artboard using internal function (already in modal context)
           const result = await createArtboardByDuplicationInternal({
             sourceArtboardName: source.artboard,
             targetSize: sizeConfig,
             layerNames,
-            position: { x: currentX, y: currentY },
+            position,
           });
-          
+
+          // Register the placed artboard so next one avoids it
+          layoutTracker.registerPlacement(result);
+
           createdArtboards.push(result);
-          
-          // Update position for next artboard
-          currentX += sizeConfig.width + gap;
         }
       } finally {
         await executionContext.hostControl.resumeHistory(suspensionID);
       }
-      
-      console.log(`[generateArtboardsBatch] ✓ Created ${createdArtboards.length} artboards`);
+
+      console.log(`[generateArtboardsBatch] ✓ Created ${createdArtboards.length} artboards (skipped ${skippedSizes.length})`);
       console.log('*'.repeat(60));
-      
+
       return createdArtboards;
     },
     { commandName: 'Generate Artboards (Batch)' }
