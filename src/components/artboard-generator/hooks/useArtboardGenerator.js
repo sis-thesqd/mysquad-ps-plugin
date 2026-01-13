@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { fetchSizes, fetchSizesByTaskId, clearSizesCache } from '../api/sizesApi';
 import { generateArtboards, DEFAULT_PRINT_SETTINGS, DEFAULT_LAYOUT_OPTIONS } from '../services/artboardGenerator';
 import { DEFAULT_SIZES, DEFAULT_SOURCE_CONFIG } from '../../../config';
-import { getCachedTaskSizes, getCacheAgeString } from '../../../utils/storage';
+import { getCachedTaskSizes, getCacheAgeString, getCachedGeneratorConfig, setCachedGeneratorConfig, clearCachedGeneratorConfig } from '../../../utils/storage';
 import {
   createArtboardByDuplication,
   generateArtboardsBatch,
@@ -35,28 +35,174 @@ const getLayerNamesFromOptions = (options) => [
  * @param {string} options.taskId - Optional task ID to fetch sizes from
  */
 export const useArtboardGenerator = ({ taskId } = {}) => {
-  // Source configuration state
-  const [sourceConfig, setSourceConfig] = useState(DEFAULT_SOURCE_CONFIG);
-  
-  // Generation options state
-  const [options, setOptions] = useState(DEFAULT_OPTIONS);
-  
-  // Print settings state
-  const [printSettings, setPrintSettings] = useState(DEFAULT_PRINT_SETTINGS);
-  
-  // Sizes state - initialize with defaults
-  const [sizes, setSizes] = useState(DEFAULT_SIZES);
+  // Track previous taskId to detect changes
+  const prevTaskIdRef = useRef(null);
+
+  // Source configuration state - initialize from cache if available
+  const [sourceConfig, setSourceConfigState] = useState(() => {
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId);
+      if (cached?.sourceConfig) {
+        console.log('[useArtboardGenerator] Loaded cached sourceConfig for task:', taskId);
+        return cached.sourceConfig;
+      }
+    }
+    return DEFAULT_SOURCE_CONFIG;
+  });
+
+  // Generation options state - initialize from cache if available
+  const [options, setOptionsState] = useState(() => {
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId);
+      if (cached?.options) {
+        console.log('[useArtboardGenerator] Loaded cached options for task:', taskId);
+        return { ...DEFAULT_OPTIONS, ...cached.options };
+      }
+    }
+    return DEFAULT_OPTIONS;
+  });
+
+  // Print settings state - initialize from cache if available
+  const [printSettings, setPrintSettingsState] = useState(() => {
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId);
+      if (cached?.printSettings) {
+        console.log('[useArtboardGenerator] Loaded cached printSettings for task:', taskId);
+        return cached.printSettings;
+      }
+    }
+    return DEFAULT_PRINT_SETTINGS;
+  });
+
+  // Sizes state - initialize from task sizes cache if available, otherwise empty
+  const [sizes, setSizes] = useState(() => {
+    if (taskId) {
+      const cached = getCachedTaskSizes(taskId);
+      if (cached?.sizes) {
+        console.log('[useArtboardGenerator] Loaded cached sizes for task:', taskId);
+        return cached.sizes;
+      }
+    }
+    // Return empty array - user must load sizes from task or API
+    // return DEFAULT_SIZES; // Commented out - don't use defaults
+    return [];
+  });
   const [sizesLoading, setSizesLoading] = useState(false);
   const [sizesError, setSizesError] = useState(null);
-  const [taskName, setTaskName] = useState('');
-  const [sizesCachedAt, setSizesCachedAt] = useState(null);
-  const [sizesFromCache, setSizesFromCache] = useState(false);
-  
+  const [taskName, setTaskName] = useState(() => {
+    if (taskId) {
+      const cached = getCachedTaskSizes(taskId);
+      if (cached?.taskName) {
+        return cached.taskName;
+      }
+    }
+    return '';
+  });
+  const [sizesCachedAt, setSizesCachedAt] = useState(() => {
+    if (taskId) {
+      const cached = getCachedTaskSizes(taskId);
+      if (cached?.cachedAt) {
+        return cached.cachedAt;
+      }
+    }
+    return null;
+  });
+  const [sizesFromCache, setSizesFromCache] = useState(() => {
+    if (taskId) {
+      const cached = getCachedTaskSizes(taskId);
+      return !!cached;
+    }
+    return false;
+  });
+
   // Generation state
   const [generating, setGenerating] = useState(false);
   const [progress, setProgress] = useState({ current: 0, total: 0, name: '' });
   const [generationError, setGenerationError] = useState(null);
   const [generatedArtboards, setGeneratedArtboards] = useState([]);
+
+  // Load cached config and sizes when taskId changes
+  useEffect(() => {
+    if (taskId && taskId !== prevTaskIdRef.current) {
+      console.log('[useArtboardGenerator] TaskId changed from', prevTaskIdRef.current, 'to', taskId);
+
+      // Load generator config (sourceConfig, options, printSettings)
+      const cachedConfig = getCachedGeneratorConfig(taskId);
+      if (cachedConfig) {
+        console.log('[useArtboardGenerator] Found cached config for task:', taskId, cachedConfig);
+        if (cachedConfig.sourceConfig) {
+          setSourceConfigState(cachedConfig.sourceConfig);
+        }
+        if (cachedConfig.options) {
+          setOptionsState(prev => ({ ...prev, ...cachedConfig.options }));
+        }
+        if (cachedConfig.printSettings) {
+          setPrintSettingsState(cachedConfig.printSettings);
+        }
+      } else {
+        // Reset to defaults for new task without cache
+        console.log('[useArtboardGenerator] No cached config for task, using defaults');
+        setSourceConfigState(DEFAULT_SOURCE_CONFIG);
+        setOptionsState(DEFAULT_OPTIONS);
+        setPrintSettingsState(DEFAULT_PRINT_SETTINGS);
+      }
+
+      // Load cached sizes for this task
+      const cachedSizes = getCachedTaskSizes(taskId);
+      if (cachedSizes) {
+        console.log('[useArtboardGenerator] Found cached sizes for task:', taskId, cachedSizes);
+        setSizes(cachedSizes.sizes || []);
+        setTaskName(cachedSizes.taskName || '');
+        setSizesCachedAt(cachedSizes.cachedAt || null);
+        setSizesFromCache(true);
+      } else {
+        // Reset sizes for new task without cache - empty until loaded
+        console.log('[useArtboardGenerator] No cached sizes for task, starting empty');
+        setSizes([]);
+        setTaskName('');
+        setSizesCachedAt(null);
+        setSizesFromCache(false);
+      }
+
+      prevTaskIdRef.current = taskId;
+    }
+  }, [taskId]);
+
+  // Wrapper for setSourceConfig that also persists to storage
+  const setSourceConfig = useCallback((newConfig) => {
+    setSourceConfigState(newConfig);
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId) || {};
+      setCachedGeneratorConfig(taskId, {
+        ...cached,
+        sourceConfig: typeof newConfig === 'function' ? newConfig(sourceConfig) : newConfig,
+      });
+    }
+  }, [taskId, sourceConfig]);
+
+  // Wrapper for setOptions that also persists to storage
+  const setOptions = useCallback((newOptions) => {
+    setOptionsState(newOptions);
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId) || {};
+      setCachedGeneratorConfig(taskId, {
+        ...cached,
+        options: typeof newOptions === 'function' ? newOptions(options) : newOptions,
+      });
+    }
+  }, [taskId, options]);
+
+  // Wrapper for setPrintSettings that also persists to storage
+  const setPrintSettings = useCallback((newSettings) => {
+    setPrintSettingsState(newSettings);
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId) || {};
+      setCachedGeneratorConfig(taskId, {
+        ...cached,
+        printSettings: typeof newSettings === 'function' ? newSettings(printSettings) : newSettings,
+      });
+    }
+  }, [taskId, printSettings]);
 
   /**
    * Fetch sizes from linked ClickUp task
@@ -327,14 +473,18 @@ export const useArtboardGenerator = ({ taskId } = {}) => {
    * Reset all state to defaults
    */
   const reset = useCallback(() => {
-    setSourceConfig(DEFAULT_SOURCE_CONFIG);
-    setOptions(DEFAULT_OPTIONS);
-    setPrintSettings(DEFAULT_PRINT_SETTINGS);
+    setSourceConfigState(DEFAULT_SOURCE_CONFIG);
+    setOptionsState(DEFAULT_OPTIONS);
+    setPrintSettingsState(DEFAULT_PRINT_SETTINGS);
     setSizes([]);
     setSizesError(null);
     setGenerationError(null);
     setGeneratedArtboards([]);
-  }, []);
+    // Also clear cached config for this task
+    if (taskId) {
+      clearCachedGeneratorConfig(taskId);
+    }
+  }, [taskId]);
 
   return {
     // Source configuration

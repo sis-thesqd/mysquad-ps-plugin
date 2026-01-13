@@ -8,7 +8,8 @@
     "build": "webpack --mode=production",
     "build:dev": "webpack --mode=development",
     "dev": "webpack --mode=development --watch",
-    "clean": "rimraf bundle.js index.html"
+    "clean": "rimraf bundle.js index.html",
+    "package": "npm run build && cd .. && zip -r mysquad-ps-plugin/com.thesqd.mysquadps.spectrum_PS_v3.ccx mysquad-ps-plugin/bundle.js mysquad-ps-plugin/index.html mysquad-ps-plugin/manifest.json mysquad-ps-plugin/icons -x '*.DS_Store'"
   },
   "dependencies": {
     "@spectrum-web-components/action-menu": "^0.37.0",

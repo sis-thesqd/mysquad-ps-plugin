@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import SourceConfigPanel from './SourceConfigPanel';
 import SizesPreview from './SizesPreview';
 import ConfigurationStatus from './ConfigurationStatus';
@@ -91,8 +91,10 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
     sizes: sizes.map(s => ({ name: s.name, width: s.width, height: s.height, ratio: (s.width / s.height).toFixed(2) })),
   });
 
-  // Ref for Generate All button - needed for UXP web component event handling
+  // Refs for buttons - needed for UXP web component event handling
   const generateButtonRef = useRef(null);
+  const refreshSizesButtonRef = useRef(null);
+  const loadSizesButtonRef = useRef(null);
 
   // Handle generate button click
   const handleGenerate = useCallback(() => {
@@ -101,6 +103,22 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
       generate();
     }
   }, [canGenerate, generate]);
+
+  // Handle refresh sizes button click
+  const handleRefreshSizes = useCallback(() => {
+    console.log('[ArtboardGeneratorTab] Refresh sizes button clicked, sizesLoading:', sizesLoading);
+    if (!sizesLoading) {
+      refreshSizesFromTask();
+    }
+  }, [sizesLoading, refreshSizesFromTask]);
+
+  // Handle load sizes button click (for initial load)
+  const handleLoadSizes = useCallback(() => {
+    console.log('[ArtboardGeneratorTab] Load sizes button clicked, sizesLoading:', sizesLoading);
+    if (!sizesLoading) {
+      loadSizesFromTask();
+    }
+  }, [sizesLoading, loadSizesFromTask]);
 
   // Attach event listener to generate button (UXP web components need addEventListener)
   useEffect(() => {
@@ -113,7 +131,18 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
     }
   }, [handleGenerate]);
 
-  // Update disabled state on button (UXP needs direct property setting)
+  // Attach event listener to refresh sizes button
+  useEffect(() => {
+    const button = refreshSizesButtonRef.current;
+    if (button) {
+      button.addEventListener('click', handleRefreshSizes);
+      return () => {
+        button.removeEventListener('click', handleRefreshSizes);
+      };
+    }
+  }, [handleRefreshSizes]);
+
+  // Update disabled state on generate button (UXP needs direct property setting)
   useEffect(() => {
     const button = generateButtonRef.current;
     if (button) {
@@ -121,6 +150,33 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
       console.log('[ArtboardGeneratorTab] Setting button disabled:', !canGenerate);
     }
   }, [canGenerate]);
+
+  // Update disabled state on refresh sizes button
+  useEffect(() => {
+    const button = refreshSizesButtonRef.current;
+    if (button) {
+      button.disabled = sizesLoading;
+    }
+  }, [sizesLoading]);
+
+  // Attach event listener to load sizes button
+  useEffect(() => {
+    const button = loadSizesButtonRef.current;
+    if (button) {
+      button.addEventListener('click', handleLoadSizes);
+      return () => {
+        button.removeEventListener('click', handleLoadSizes);
+      };
+    }
+  }, [handleLoadSizes]);
+
+  // Update disabled state on load sizes button
+  useEffect(() => {
+    const button = loadSizesButtonRef.current;
+    if (button) {
+      button.disabled = sizesLoading;
+    }
+  }, [sizesLoading]);
 
   return (
     <div className="artboard-generator-tab">
@@ -180,10 +236,9 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
           <div className="sizes-actions">
             {taskId ? (
               <sp-action-button
+                ref={refreshSizesButtonRef}
                 size="s"
                 quiet
-                onClick={refreshSizesFromTask}
-                disabled={sizesLoading}
               >
                 {sizesLoading ? 'Loading...' : 'Refresh'}
               </sp-action-button>
@@ -218,13 +273,41 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
           </sp-body>
         )}
 
-        <SizesPreview
-          sizes={sizes}
-          onClear={clearSizes}
-          onGenerateSingle={generateSingle}
-          sourceConfig={sourceConfig}
-          disabled={generating || docLoading}
-        />
+        {/* Show empty state with Load Sizes button when no sizes */}
+        {sizes.length === 0 && !sizesLoading && (
+          <div className="sizes-empty-state">
+            <sp-body size="s">No sizes loaded yet.</sp-body>
+            {taskId ? (
+              <sp-button
+                ref={loadSizesButtonRef}
+                variant="primary"
+                size="m"
+              >
+                {sizesLoading ? 'Loading...' : 'Load Sizes from Task'}
+              </sp-button>
+            ) : (
+              <sp-body size="xs" class="warning-text">
+                Open a file linked to a task to load sizes.
+              </sp-body>
+            )}
+          </div>
+        )}
+
+        {sizesLoading && sizes.length === 0 && (
+          <div className="sizes-loading-state">
+            <sp-progress-bar indeterminate size="s" label="Loading sizes..."></sp-progress-bar>
+          </div>
+        )}
+
+        {sizes.length > 0 && (
+          <SizesPreview
+            sizes={sizes}
+            onClear={clearSizes}
+            onGenerateSingle={generateSingle}
+            sourceConfig={sourceConfig}
+            disabled={generating || docLoading}
+          />
+        )}
 
         {/* Generation Section - now inside sizes */}
         {sizes.length > 0 && (

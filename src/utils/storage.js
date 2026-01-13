@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   MAIN_TAB: 'mysquad_active_tab',
   GENERATOR_SUB_TAB: 'mysquad_generator_sub_tab',
   TASK_SIZES_CACHE: 'mysquad_task_sizes_cache',
+  GENERATOR_CONFIG_CACHE: 'mysquad_generator_config_cache',
 };
 
 // Cache duration in milliseconds (15 minutes)
@@ -164,6 +165,70 @@ export const getCacheAgeString = (cachedAt) => {
   const hours = Math.floor(minutes / 60);
   if (hours === 1) return '1 hour ago';
   return `${hours} hours ago`;
+};
+
+/**
+ * Get cached generator configuration for a task
+ * @param {string} taskId - The task ID to get config for
+ * @returns {Object|null} Cached config with sourceConfig, options, printSettings, or null if not found
+ */
+export const getCachedGeneratorConfig = (taskId) => {
+  try {
+    const cacheJson = localStorage.getItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE);
+    if (!cacheJson) return null;
+
+    const cache = JSON.parse(cacheJson);
+    const taskCache = cache[taskId];
+
+    if (!taskCache) return null;
+
+    return taskCache;
+  } catch (e) {
+    console.error('[getCachedGeneratorConfig] Error reading cache:', e);
+    return null;
+  }
+};
+
+/**
+ * Set cached generator configuration for a task
+ * @param {string} taskId - The task ID to cache for
+ * @param {Object} config - Object with sourceConfig, options, printSettings
+ */
+export const setCachedGeneratorConfig = (taskId, config) => {
+  try {
+    let cache = {};
+    const existingJson = localStorage.getItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE);
+    if (existingJson) {
+      cache = JSON.parse(existingJson);
+    }
+
+    cache[taskId] = {
+      ...config,
+      cachedAt: Date.now(),
+    };
+
+    localStorage.setItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE, JSON.stringify(cache));
+  } catch (e) {
+    console.error('[setCachedGeneratorConfig] Error writing cache:', e);
+  }
+};
+
+/**
+ * Clear cached generator configuration for a specific task
+ * @param {string} taskId - The task ID to clear config for
+ */
+export const clearCachedGeneratorConfig = (taskId) => {
+  try {
+    const existingJson = localStorage.getItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE);
+    if (!existingJson) return;
+
+    const cache = JSON.parse(existingJson);
+    delete cache[taskId];
+
+    localStorage.setItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE, JSON.stringify(cache));
+  } catch (e) {
+    console.error('[clearCachedGeneratorConfig] Error clearing cache:', e);
+  }
 };
 
 export { STORAGE_KEYS, CACHE_DURATION_MS };

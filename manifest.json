@@ -1,7 +1,7 @@
 {
   "id": "com.thesqd.mysquadps.spectrum",
   "name": "mySquad.ps",
-  "version": "0.0.1",
+  "version": "3.0.0",
   "main": "index.html",
   "host": {
     "app": "PS",

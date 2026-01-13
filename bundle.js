@@ -4080,6 +4080,103 @@ sp-picker sp-popover {
   padding-top: 12px;
   border-top: 1px solid var(--spectrum-global-color-gray-200, #3a3a3a);
 }
+
+/* ==========================================================================
+   Sizes Empty State
+   ========================================================================== */
+
+.sizes-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  margin-top: 8px;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px dashed var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.sizes-empty-state sp-body {
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  margin-bottom: 16px;
+}
+
+.sizes-empty-state sp-button {
+  margin-top: 8px;
+}
+
+.sizes-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   Collapsible Sizes Toggle
+   ========================================================================== */
+
+.sizes-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-radius: 4px;
+  color: var(--spectrum-global-color-gray-700, #d4d4d4);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.sizes-toggle:hover {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+}
+
+.sizes-toggle-expanded {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
+}
+
+.sizes-toggle .toggle-icon {
+  font-size: 10px;
+  margin-right: 8px;
+  transition: transform 0.2s ease;
+}
+
+.sizes-toggle .toggle-icon-expanded {
+  transform: rotate(90deg);
+}
+
+.sizes-toggle-label {
+  font-weight: 500;
+  margin-right: 12px;
+}
+
+.sizes-toggle-summary {
+  flex: 1;
+  text-align: left;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  font-size: 11px;
+}
+
+.sizes-toggle .sizes-clear-btn {
+  margin-left: auto;
+}
+
+.sizes-expanded-content {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  padding: 12px;
+}
 `, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
@@ -40338,7 +40435,20 @@ const SizesPreview = ({
   disabled
 }) => {
   const [filterText, setFilterText] = (0,react.useState)('');
+  const [isExpanded, setIsExpanded] = (0,react.useState)(false); // Collapsed by default
   const filterRef = (0,react.useRef)(null);
+  const toggleRef = (0,react.useRef)(null);
+
+  // Handle toggle button click with ref-based event handling for UXP
+  (0,react.useEffect)(() => {
+    const button = toggleRef.current;
+    if (!button) return;
+    const handleClick = () => {
+      setIsExpanded(prev => !prev);
+    };
+    button.addEventListener('click', handleClick);
+    return () => button.removeEventListener('click', handleClick);
+  }, []);
 
   // Handle filter input change with ref-based event handling for UXP
   (0,react.useEffect)(() => {
@@ -40409,15 +40519,27 @@ const SizesPreview = ({
   }
   return /*#__PURE__*/react.createElement("div", {
     className: "sizes-preview"
-  }, /*#__PURE__*/react.createElement("div", {
-    className: "sizes-header"
-  }, /*#__PURE__*/react.createElement("sp-label", {
-    size: "m"
-  }, "Sizes (", sizes.length, " total)"), /*#__PURE__*/react.createElement("sp-action-button", {
+  }, /*#__PURE__*/react.createElement("button", {
+    ref: toggleRef,
+    className: `sizes-toggle ${isExpanded ? 'sizes-toggle-expanded' : ''}`,
+    type: "button"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: `toggle-icon ${isExpanded ? 'toggle-icon-expanded' : ''}`
+  }, "\u25B6"), /*#__PURE__*/react.createElement("span", {
+    className: "sizes-toggle-label"
+  }, sizes.length, " sizes loaded"), /*#__PURE__*/react.createElement("span", {
+    className: "sizes-toggle-summary"
+  }, "\u25AD ", orientationCounts.landscape, " \xA0 \u25AF ", orientationCounts.portrait, " \xA0 \u25A1 ", orientationCounts.square), /*#__PURE__*/react.createElement("sp-action-button", {
     size: "s",
     quiet: true,
-    onClick: onClear
-  }, "Clear")), /*#__PURE__*/react.createElement("div", {
+    onClick: e => {
+      e.stopPropagation();
+      onClear();
+    },
+    class: "sizes-clear-btn"
+  }, "Clear")), isExpanded && /*#__PURE__*/react.createElement("div", {
+    className: "sizes-expanded-content"
+  }, /*#__PURE__*/react.createElement("div", {
     className: "sizes-filter"
   }, /*#__PURE__*/react.createElement("sp-textfield", {
     ref: filterRef,
@@ -40432,18 +40554,7 @@ const SizesPreview = ({
   })), filterText && /*#__PURE__*/react.createElement("sp-body", {
     size: "xs",
     class: "filter-count"
-  }, matchCount, " of ", sizes.length, " sizes")), /*#__PURE__*/react.createElement("div", {
-    className: "orientation-summary"
-  }, /*#__PURE__*/react.createElement("span", {
-    className: "orientation-chip",
-    title: "Landscape sizes"
-  }, "\u25AD ", orientationCounts.landscape), /*#__PURE__*/react.createElement("span", {
-    className: "orientation-chip",
-    title: "Portrait sizes"
-  }, "\u25AF ", orientationCounts.portrait), /*#__PURE__*/react.createElement("span", {
-    className: "orientation-chip",
-    title: "Square sizes"
-  }, "\u25A1 ", orientationCounts.square)), filterText && matchCount === 0 && /*#__PURE__*/react.createElement("div", {
+  }, matchCount, " of ", sizes.length, " sizes")), filterText && matchCount === 0 && /*#__PURE__*/react.createElement("div", {
     className: "no-matches"
   }, /*#__PURE__*/react.createElement("sp-body", {
     size: "s"
@@ -40466,7 +40577,7 @@ const SizesPreview = ({
       disabled: disabled,
       sourceConfig: sourceConfig || {}
     }))));
-  })));
+  }))));
 };
 /* harmony default export */ const components_SizesPreview = (SizesPreview);
 ;// ./src/components/artboard-generator/components/ConfigurationStatus.jsx
@@ -40974,7 +41085,8 @@ const usePhotoshopDocument = () => {
 const STORAGE_KEYS = {
   MAIN_TAB: 'mysquad_active_tab',
   GENERATOR_SUB_TAB: 'mysquad_generator_sub_tab',
-  TASK_SIZES_CACHE: 'mysquad_task_sizes_cache'
+  TASK_SIZES_CACHE: 'mysquad_task_sizes_cache',
+  GENERATOR_CONFIG_CACHE: 'mysquad_generator_config_cache'
 };
 
 // Cache duration in milliseconds (15 minutes)
@@ -41122,6 +41234,63 @@ const getCacheAgeString = cachedAt => {
   const hours = Math.floor(minutes / 60);
   if (hours === 1) return '1 hour ago';
   return `${hours} hours ago`;
+};
+
+/**
+ * Get cached generator configuration for a task
+ * @param {string} taskId - The task ID to get config for
+ * @returns {Object|null} Cached config with sourceConfig, options, printSettings, or null if not found
+ */
+const getCachedGeneratorConfig = taskId => {
+  try {
+    const cacheJson = localStorage.getItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE);
+    if (!cacheJson) return null;
+    const cache = JSON.parse(cacheJson);
+    const taskCache = cache[taskId];
+    if (!taskCache) return null;
+    return taskCache;
+  } catch (e) {
+    console.error('[getCachedGeneratorConfig] Error reading cache:', e);
+    return null;
+  }
+};
+
+/**
+ * Set cached generator configuration for a task
+ * @param {string} taskId - The task ID to cache for
+ * @param {Object} config - Object with sourceConfig, options, printSettings
+ */
+const setCachedGeneratorConfig = (taskId, config) => {
+  try {
+    let cache = {};
+    const existingJson = localStorage.getItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE);
+    if (existingJson) {
+      cache = JSON.parse(existingJson);
+    }
+    cache[taskId] = {
+      ...config,
+      cachedAt: Date.now()
+    };
+    localStorage.setItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE, JSON.stringify(cache));
+  } catch (e) {
+    console.error('[setCachedGeneratorConfig] Error writing cache:', e);
+  }
+};
+
+/**
+ * Clear cached generator configuration for a specific task
+ * @param {string} taskId - The task ID to clear config for
+ */
+const clearCachedGeneratorConfig = taskId => {
+  try {
+    const existingJson = localStorage.getItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE);
+    if (!existingJson) return;
+    const cache = JSON.parse(existingJson);
+    delete cache[taskId];
+    localStorage.setItem(STORAGE_KEYS.GENERATOR_CONFIG_CACHE, JSON.stringify(cache));
+  } catch (e) {
+    console.error('[clearCachedGeneratorConfig] Error clearing cache:', e);
+  }
 };
 
 ;// ./src/components/artboard-generator/api/sizesApi.js
@@ -42010,7 +42179,7 @@ const generateDuplicateCommand = () => ({
 });
 
 /**
- * Generate edit artboard command to resize
+ * Generate edit artboard command to resize AND reposition
  * @param {Object} bounds - New artboard bounds { left, top, right, bottom }
  * @param {string} presetName - Artboard preset name (optional)
  * @param {Object} backgroundColor - Background color (optional)
@@ -42037,6 +42206,7 @@ const generateEditArtboardCommand = (bounds, presetName = 'Custom', backgroundCo
     color: backgroundColor,
     guideIDs: []
   },
+  // changeSizes: 1 = resize operation
   changeSizes: 1
 });
 
@@ -42674,13 +42844,21 @@ const createArtboardByDuplicationInternal = async ({
   console.log('  - Right:', newRight, 'Bottom:', newBottom);
   console.log('  - Width:', targetSize.width, 'Height:', targetSize.height);
 
-  // PHASE 3: Select, resize, and rename the new artboard
-  console.log('\n[createArtboardByDuplicationInternal] === PHASE 3: Resize & Rename Artboard ===');
+  // PHASE 3: Select, resize/move, and rename the new artboard
+  // We use editArtboardEvent with target bounds to both resize AND reposition in one step
+  console.log('\n[createArtboardByDuplicationInternal] === PHASE 3: Resize, Move & Rename Artboard ===');
   console.log('[createArtboardByDuplicationInternal] Selecting new artboard (id:', newArtboard.id, ')...');
   console.log('[createArtboardByDuplicationInternal] New name:', targetSize.name || 'unnamed');
-  const resizeAndRenameCommands = [
-  // Select the artboard by ID
-  {
+
+  // Calculate how much to move the artboard from its current position
+  const currentBounds = newArtboard.bounds;
+  const moveX = newLeft - currentBounds.left;
+  const moveY = newTop - currentBounds.top;
+  console.log('[createArtboardByDuplicationInternal] Move offset: x=', moveX, 'y=', moveY);
+  console.log('[createArtboardByDuplicationInternal] From:', currentBounds.left, currentBounds.top, 'To:', newLeft, newTop);
+
+  // Select the artboard first
+  await batchPlay([{
     _obj: 'select',
     _target: [{
       _ref: 'layer',
@@ -42690,23 +42868,93 @@ const createArtboardByDuplicationInternal = async ({
     _options: {
       dialogOptions: 'dontDisplay'
     }
-  },
-  // Resize the artboard
-  generateEditArtboardCommand({
-    left: newLeft,
-    top: newTop,
-    right: newRight,
-    bottom: newBottom
-  })];
-
-  // Add rename command if a name is provided
-  if (targetSize.name) {
-    resizeAndRenameCommands.push(generateRenameCommand(targetSize.name));
-  }
-  await batchPlay(resizeAndRenameCommands, {
+  }], {
     synchronousExecution: true
   });
-  console.log('[createArtboardByDuplicationInternal] ✓ Artboard resized and renamed to:', targetSize.name || newArtboard.name);
+
+  // STEP 1: Resize the artboard at its current position first
+  // editArtboardEvent resizes from center, so we resize first then move
+  const resizedLeft = currentBounds.left;
+  const resizedTop = currentBounds.top;
+  const resizedRight = currentBounds.left + actualWidth;
+  const resizedBottom = currentBounds.top + actualHeight;
+  console.log('[createArtboardByDuplicationInternal] STEP 1: Resizing artboard at current position');
+  console.log('[createArtboardByDuplicationInternal] Resize bounds:', {
+    left: resizedLeft,
+    top: resizedTop,
+    right: resizedRight,
+    bottom: resizedBottom
+  });
+  await batchPlay([{
+    _obj: 'editArtboardEvent',
+    _target: [{
+      _ref: 'layer',
+      _enum: 'ordinal',
+      _value: 'targetEnum'
+    }],
+    artboard: {
+      _obj: 'artboard',
+      artboardBackgroundType: 1,
+      artboardPresetName: 'Custom',
+      artboardRect: {
+        _obj: 'classFloatRect',
+        left: resizedLeft,
+        top: resizedTop,
+        right: resizedRight,
+        bottom: resizedBottom
+      },
+      color: DEFAULT_ARTBOARD_BACKGROUND,
+      guideIDs: []
+    },
+    _options: {
+      dialogOptions: 'dontDisplay'
+    }
+  }], {
+    synchronousExecution: true
+  });
+  console.log('[createArtboardByDuplicationInternal] ✓ Artboard resized');
+
+  // STEP 2: Move the artboard to target position using translate
+  // This moves the artboard and all its contents together
+  console.log('[createArtboardByDuplicationInternal] STEP 2: Moving artboard to target position');
+  console.log('[createArtboardByDuplicationInternal] Move delta: x=', moveX, 'y=', moveY);
+  if (moveX !== 0 || moveY !== 0) {
+    await batchPlay([{
+      _obj: 'move',
+      _target: [{
+        _ref: 'layer',
+        _enum: 'ordinal',
+        _value: 'targetEnum'
+      }],
+      to: {
+        _obj: 'offset',
+        horizontal: {
+          _unit: 'pixelsUnit',
+          _value: moveX
+        },
+        vertical: {
+          _unit: 'pixelsUnit',
+          _value: moveY
+        }
+      },
+      _options: {
+        dialogOptions: 'dontDisplay'
+      }
+    }], {
+      synchronousExecution: true
+    });
+    console.log('[createArtboardByDuplicationInternal] ✓ Artboard moved to target position');
+  } else {
+    console.log('[createArtboardByDuplicationInternal] No move needed (delta is 0)');
+  }
+
+  // Rename if a name is provided
+  if (targetSize.name) {
+    await batchPlay([generateRenameCommand(targetSize.name)], {
+      synchronousExecution: true
+    });
+  }
+  console.log('[createArtboardByDuplicationInternal] ✓ Artboard resized, moved and renamed to:', targetSize.name || newArtboard.name);
 
   // PHASE 4: Transform ALL layers in the artboard
   console.log('\n[createArtboardByDuplicationInternal] === PHASE 4: Transform Layers ===');
@@ -42742,9 +42990,108 @@ const createArtboardByDuplicationInternal = async ({
     await transformAllLayers(refreshedArtboard, newArtboard.id, sourceSize, targetSizeObj, batchPlay);
   }
 
-  // PHASE 5: Add guides and crop marks if bleed is required
+  // PHASE 5: Hide TEXT layer for "Background Only" artboards
+  const artboardName = (targetSize.name || '').toLowerCase();
+  const isBackgroundOnly = artboardName.includes('background') || artboardName.includes('bkg only') || artboardName.includes('background only');
+  if (isBackgroundOnly && refreshedArtboard) {
+    console.log('\n[createArtboardByDuplicationInternal] === PHASE 5: Hide TEXT Layer (Background Only) ===');
+    console.log('[createArtboardByDuplicationInternal] Artboard name matches background-only pattern:', targetSize.name);
+
+    // Find the TEXT layer in the artboard
+    const textLayer = refreshedArtboard.layers?.find(l => {
+      const layerName = l.name.toLowerCase();
+      return layerName === 'text' || layerName.includes('text');
+    });
+    if (textLayer) {
+      console.log(`[createArtboardByDuplicationInternal] Found TEXT layer: "${textLayer.name}" (id: ${textLayer.id})`);
+      try {
+        await batchPlay([{
+          _obj: 'hide',
+          null: [{
+            _ref: 'layer',
+            _id: textLayer.id
+          }],
+          _options: {
+            dialogOptions: 'dontDisplay'
+          }
+        }], {
+          synchronousExecution: true
+        });
+        console.log('[createArtboardByDuplicationInternal] ✓ TEXT layer hidden');
+      } catch (e) {
+        console.warn('[createArtboardByDuplicationInternal] ⚠ Could not hide TEXT layer:', e.message);
+      }
+    } else {
+      console.log('[createArtboardByDuplicationInternal] No TEXT layer found to hide');
+    }
+  }
+
+  // PHASE 5b: Hide Overlay and BKG layers for "Transparent" or "PNG" artboards
+  const isTransparent = artboardName.includes('transparent') || artboardName.includes('png');
+  if (isTransparent && refreshedArtboard) {
+    console.log('\n[createArtboardByDuplicationInternal] === PHASE 5b: Hide Overlay & BKG Layers (Transparent/PNG) ===');
+    console.log('[createArtboardByDuplicationInternal] Artboard name matches transparent/png pattern:', targetSize.name);
+
+    // Find and hide the Overlay layer
+    const overlayLayer = refreshedArtboard.layers?.find(l => {
+      const layerName = l.name.toLowerCase();
+      return layerName === 'overlay' || layerName.includes('overlay') || layerName === 'adjust';
+    });
+    if (overlayLayer) {
+      console.log(`[createArtboardByDuplicationInternal] Found Overlay layer: "${overlayLayer.name}" (id: ${overlayLayer.id})`);
+      try {
+        await batchPlay([{
+          _obj: 'hide',
+          null: [{
+            _ref: 'layer',
+            _id: overlayLayer.id
+          }],
+          _options: {
+            dialogOptions: 'dontDisplay'
+          }
+        }], {
+          synchronousExecution: true
+        });
+        console.log('[createArtboardByDuplicationInternal] ✓ Overlay layer hidden');
+      } catch (e) {
+        console.warn('[createArtboardByDuplicationInternal] ⚠ Could not hide Overlay layer:', e.message);
+      }
+    } else {
+      console.log('[createArtboardByDuplicationInternal] No Overlay layer found to hide');
+    }
+
+    // Find and hide the BKG layer
+    const bkgLayer = refreshedArtboard.layers?.find(l => {
+      const layerName = l.name.toLowerCase();
+      return layerName === 'bkg' || layerName === 'background' || layerName.includes('bkg');
+    });
+    if (bkgLayer) {
+      console.log(`[createArtboardByDuplicationInternal] Found BKG layer: "${bkgLayer.name}" (id: ${bkgLayer.id})`);
+      try {
+        await batchPlay([{
+          _obj: 'hide',
+          null: [{
+            _ref: 'layer',
+            _id: bkgLayer.id
+          }],
+          _options: {
+            dialogOptions: 'dontDisplay'
+          }
+        }], {
+          synchronousExecution: true
+        });
+        console.log('[createArtboardByDuplicationInternal] ✓ BKG layer hidden');
+      } catch (e) {
+        console.warn('[createArtboardByDuplicationInternal] ⚠ Could not hide BKG layer:', e.message);
+      }
+    } else {
+      console.log('[createArtboardByDuplicationInternal] No BKG layer found to hide');
+    }
+  }
+
+  // PHASE 6: Add guides and crop marks if bleed is required
   if (targetSize.requiresBleed && bleedPx > 0) {
-    console.log('\n[createArtboardByDuplicationInternal] === PHASE 5: Add Bleed Guides & Crop Marks ===');
+    console.log('\n[createArtboardByDuplicationInternal] === PHASE 6: Add Bleed Guides & Crop Marks ===');
     const artboardBounds = {
       left: newLeft,
       top: newTop,
@@ -43141,22 +43488,88 @@ const getLayerNamesFromOptions = options => [options.overlayLayerName || LAYER_N
 const useArtboardGenerator = ({
   taskId
 } = {}) => {
-  // Source configuration state
-  const [sourceConfig, setSourceConfig] = (0,react.useState)(DEFAULT_SOURCE_CONFIG);
+  // Track previous taskId to detect changes
+  const prevTaskIdRef = (0,react.useRef)(null);
 
-  // Generation options state
-  const [options, setOptions] = (0,react.useState)(DEFAULT_OPTIONS);
+  // Source configuration state - initialize from cache if available
+  const [sourceConfig, setSourceConfigState] = (0,react.useState)(() => {
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId);
+      if (cached?.sourceConfig) {
+        console.log('[useArtboardGenerator] Loaded cached sourceConfig for task:', taskId);
+        return cached.sourceConfig;
+      }
+    }
+    return DEFAULT_SOURCE_CONFIG;
+  });
 
-  // Print settings state
-  const [printSettings, setPrintSettings] = (0,react.useState)(DEFAULT_PRINT_SETTINGS);
+  // Generation options state - initialize from cache if available
+  const [options, setOptionsState] = (0,react.useState)(() => {
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId);
+      if (cached?.options) {
+        console.log('[useArtboardGenerator] Loaded cached options for task:', taskId);
+        return {
+          ...DEFAULT_OPTIONS,
+          ...cached.options
+        };
+      }
+    }
+    return DEFAULT_OPTIONS;
+  });
 
-  // Sizes state - initialize with defaults
-  const [sizes, setSizes] = (0,react.useState)(DEFAULT_SIZES);
+  // Print settings state - initialize from cache if available
+  const [printSettings, setPrintSettingsState] = (0,react.useState)(() => {
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId);
+      if (cached?.printSettings) {
+        console.log('[useArtboardGenerator] Loaded cached printSettings for task:', taskId);
+        return cached.printSettings;
+      }
+    }
+    return DEFAULT_PRINT_SETTINGS;
+  });
+
+  // Sizes state - initialize from task sizes cache if available, otherwise empty
+  const [sizes, setSizes] = (0,react.useState)(() => {
+    if (taskId) {
+      const cached = getCachedTaskSizes(taskId);
+      if (cached?.sizes) {
+        console.log('[useArtboardGenerator] Loaded cached sizes for task:', taskId);
+        return cached.sizes;
+      }
+    }
+    // Return empty array - user must load sizes from task or API
+    // return DEFAULT_SIZES; // Commented out - don't use defaults
+    return [];
+  });
   const [sizesLoading, setSizesLoading] = (0,react.useState)(false);
   const [sizesError, setSizesError] = (0,react.useState)(null);
-  const [taskName, setTaskName] = (0,react.useState)('');
-  const [sizesCachedAt, setSizesCachedAt] = (0,react.useState)(null);
-  const [sizesFromCache, setSizesFromCache] = (0,react.useState)(false);
+  const [taskName, setTaskName] = (0,react.useState)(() => {
+    if (taskId) {
+      const cached = getCachedTaskSizes(taskId);
+      if (cached?.taskName) {
+        return cached.taskName;
+      }
+    }
+    return '';
+  });
+  const [sizesCachedAt, setSizesCachedAt] = (0,react.useState)(() => {
+    if (taskId) {
+      const cached = getCachedTaskSizes(taskId);
+      if (cached?.cachedAt) {
+        return cached.cachedAt;
+      }
+    }
+    return null;
+  });
+  const [sizesFromCache, setSizesFromCache] = (0,react.useState)(() => {
+    if (taskId) {
+      const cached = getCachedTaskSizes(taskId);
+      return !!cached;
+    }
+    return false;
+  });
 
   // Generation state
   const [generating, setGenerating] = (0,react.useState)(false);
@@ -43167,6 +43580,91 @@ const useArtboardGenerator = ({
   });
   const [generationError, setGenerationError] = (0,react.useState)(null);
   const [generatedArtboards, setGeneratedArtboards] = (0,react.useState)([]);
+
+  // Load cached config and sizes when taskId changes
+  (0,react.useEffect)(() => {
+    if (taskId && taskId !== prevTaskIdRef.current) {
+      console.log('[useArtboardGenerator] TaskId changed from', prevTaskIdRef.current, 'to', taskId);
+
+      // Load generator config (sourceConfig, options, printSettings)
+      const cachedConfig = getCachedGeneratorConfig(taskId);
+      if (cachedConfig) {
+        console.log('[useArtboardGenerator] Found cached config for task:', taskId, cachedConfig);
+        if (cachedConfig.sourceConfig) {
+          setSourceConfigState(cachedConfig.sourceConfig);
+        }
+        if (cachedConfig.options) {
+          setOptionsState(prev => ({
+            ...prev,
+            ...cachedConfig.options
+          }));
+        }
+        if (cachedConfig.printSettings) {
+          setPrintSettingsState(cachedConfig.printSettings);
+        }
+      } else {
+        // Reset to defaults for new task without cache
+        console.log('[useArtboardGenerator] No cached config for task, using defaults');
+        setSourceConfigState(DEFAULT_SOURCE_CONFIG);
+        setOptionsState(DEFAULT_OPTIONS);
+        setPrintSettingsState(DEFAULT_PRINT_SETTINGS);
+      }
+
+      // Load cached sizes for this task
+      const cachedSizes = getCachedTaskSizes(taskId);
+      if (cachedSizes) {
+        console.log('[useArtboardGenerator] Found cached sizes for task:', taskId, cachedSizes);
+        setSizes(cachedSizes.sizes || []);
+        setTaskName(cachedSizes.taskName || '');
+        setSizesCachedAt(cachedSizes.cachedAt || null);
+        setSizesFromCache(true);
+      } else {
+        // Reset sizes for new task without cache - empty until loaded
+        console.log('[useArtboardGenerator] No cached sizes for task, starting empty');
+        setSizes([]);
+        setTaskName('');
+        setSizesCachedAt(null);
+        setSizesFromCache(false);
+      }
+      prevTaskIdRef.current = taskId;
+    }
+  }, [taskId]);
+
+  // Wrapper for setSourceConfig that also persists to storage
+  const setSourceConfig = (0,react.useCallback)(newConfig => {
+    setSourceConfigState(newConfig);
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId) || {};
+      setCachedGeneratorConfig(taskId, {
+        ...cached,
+        sourceConfig: typeof newConfig === 'function' ? newConfig(sourceConfig) : newConfig
+      });
+    }
+  }, [taskId, sourceConfig]);
+
+  // Wrapper for setOptions that also persists to storage
+  const setOptions = (0,react.useCallback)(newOptions => {
+    setOptionsState(newOptions);
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId) || {};
+      setCachedGeneratorConfig(taskId, {
+        ...cached,
+        options: typeof newOptions === 'function' ? newOptions(options) : newOptions
+      });
+    }
+  }, [taskId, options]);
+
+  // Wrapper for setPrintSettings that also persists to storage
+  const setPrintSettings = (0,react.useCallback)(newSettings => {
+    setPrintSettingsState(newSettings);
+    if (taskId) {
+      const cached = getCachedGeneratorConfig(taskId) || {};
+      setCachedGeneratorConfig(taskId, {
+        ...cached,
+        printSettings: typeof newSettings === 'function' ? newSettings(printSettings) : newSettings
+      });
+    }
+  }, [taskId, printSettings]);
 
   /**
    * Fetch sizes from linked ClickUp task
@@ -43424,14 +43922,18 @@ const useArtboardGenerator = ({
    * Reset all state to defaults
    */
   const reset = (0,react.useCallback)(() => {
-    setSourceConfig(DEFAULT_SOURCE_CONFIG);
-    setOptions(DEFAULT_OPTIONS);
-    setPrintSettings(DEFAULT_PRINT_SETTINGS);
+    setSourceConfigState(DEFAULT_SOURCE_CONFIG);
+    setOptionsState(DEFAULT_OPTIONS);
+    setPrintSettingsState(DEFAULT_PRINT_SETTINGS);
     setSizes([]);
     setSizesError(null);
     setGenerationError(null);
     setGeneratedArtboards([]);
-  }, []);
+    // Also clear cached config for this task
+    if (taskId) {
+      clearCachedGeneratorConfig(taskId);
+    }
+  }, [taskId]);
   return {
     // Source configuration
     sourceConfig,
@@ -43577,8 +44079,10 @@ const ArtboardGeneratorTab = ({
     }))
   });
 
-  // Ref for Generate All button - needed for UXP web component event handling
+  // Refs for buttons - needed for UXP web component event handling
   const generateButtonRef = (0,react.useRef)(null);
+  const refreshSizesButtonRef = (0,react.useRef)(null);
+  const loadSizesButtonRef = (0,react.useRef)(null);
 
   // Handle generate button click
   const handleGenerate = (0,react.useCallback)(() => {
@@ -43587,6 +44091,22 @@ const ArtboardGeneratorTab = ({
       generate();
     }
   }, [canGenerate, generate]);
+
+  // Handle refresh sizes button click
+  const handleRefreshSizes = (0,react.useCallback)(() => {
+    console.log('[ArtboardGeneratorTab] Refresh sizes button clicked, sizesLoading:', sizesLoading);
+    if (!sizesLoading) {
+      refreshSizesFromTask();
+    }
+  }, [sizesLoading, refreshSizesFromTask]);
+
+  // Handle load sizes button click (for initial load)
+  const handleLoadSizes = (0,react.useCallback)(() => {
+    console.log('[ArtboardGeneratorTab] Load sizes button clicked, sizesLoading:', sizesLoading);
+    if (!sizesLoading) {
+      loadSizesFromTask();
+    }
+  }, [sizesLoading, loadSizesFromTask]);
 
   // Attach event listener to generate button (UXP web components need addEventListener)
   (0,react.useEffect)(() => {
@@ -43599,7 +44119,18 @@ const ArtboardGeneratorTab = ({
     }
   }, [handleGenerate]);
 
-  // Update disabled state on button (UXP needs direct property setting)
+  // Attach event listener to refresh sizes button
+  (0,react.useEffect)(() => {
+    const button = refreshSizesButtonRef.current;
+    if (button) {
+      button.addEventListener('click', handleRefreshSizes);
+      return () => {
+        button.removeEventListener('click', handleRefreshSizes);
+      };
+    }
+  }, [handleRefreshSizes]);
+
+  // Update disabled state on generate button (UXP needs direct property setting)
   (0,react.useEffect)(() => {
     const button = generateButtonRef.current;
     if (button) {
@@ -43607,6 +44138,33 @@ const ArtboardGeneratorTab = ({
       console.log('[ArtboardGeneratorTab] Setting button disabled:', !canGenerate);
     }
   }, [canGenerate]);
+
+  // Update disabled state on refresh sizes button
+  (0,react.useEffect)(() => {
+    const button = refreshSizesButtonRef.current;
+    if (button) {
+      button.disabled = sizesLoading;
+    }
+  }, [sizesLoading]);
+
+  // Attach event listener to load sizes button
+  (0,react.useEffect)(() => {
+    const button = loadSizesButtonRef.current;
+    if (button) {
+      button.addEventListener('click', handleLoadSizes);
+      return () => {
+        button.removeEventListener('click', handleLoadSizes);
+      };
+    }
+  }, [handleLoadSizes]);
+
+  // Update disabled state on load sizes button
+  (0,react.useEffect)(() => {
+    const button = loadSizesButtonRef.current;
+    if (button) {
+      button.disabled = sizesLoading;
+    }
+  }, [sizesLoading]);
   return /*#__PURE__*/react.createElement("div", {
     className: "artboard-generator-tab"
   }, /*#__PURE__*/react.createElement("div", {
@@ -43655,10 +44213,9 @@ const ArtboardGeneratorTab = ({
   }, "(cached ", getCacheAge(), ")")), /*#__PURE__*/react.createElement("div", {
     className: "sizes-actions"
   }, taskId ? /*#__PURE__*/react.createElement("sp-action-button", {
+    ref: refreshSizesButtonRef,
     size: "s",
-    quiet: true,
-    onClick: refreshSizesFromTask,
-    disabled: sizesLoading
+    quiet: true
   }, sizesLoading ? 'Loading...' : 'Refresh') : /*#__PURE__*/react.createElement(react.Fragment, null, options.apiEndpoint && /*#__PURE__*/react.createElement("sp-action-button", {
     size: "s",
     quiet: true,
@@ -43672,7 +44229,24 @@ const ArtboardGeneratorTab = ({
   }, "Load Defaults")))), sizesError && /*#__PURE__*/react.createElement("sp-body", {
     size: "s",
     class: "error-text"
-  }, sizesError), /*#__PURE__*/react.createElement(components_SizesPreview, {
+  }, sizesError), sizes.length === 0 && !sizesLoading && /*#__PURE__*/react.createElement("div", {
+    className: "sizes-empty-state"
+  }, /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, "No sizes loaded yet."), taskId ? /*#__PURE__*/react.createElement("sp-button", {
+    ref: loadSizesButtonRef,
+    variant: "primary",
+    size: "m"
+  }, sizesLoading ? 'Loading...' : 'Load Sizes from Task') : /*#__PURE__*/react.createElement("sp-body", {
+    size: "xs",
+    class: "warning-text"
+  }, "Open a file linked to a task to load sizes.")), sizesLoading && sizes.length === 0 && /*#__PURE__*/react.createElement("div", {
+    className: "sizes-loading-state"
+  }, /*#__PURE__*/react.createElement("sp-progress-bar", {
+    indeterminate: true,
+    size: "s",
+    label: "Loading sizes..."
+  })), sizes.length > 0 && /*#__PURE__*/react.createElement(components_SizesPreview, {
     sizes: sizes,
     onClear: clearSizes,
     onGenerateSingle: generateSingle,

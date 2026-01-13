@@ -531,7 +531,7 @@ export const generateDuplicateCommand = () => ({
 });
 
 /**
- * Generate edit artboard command to resize
+ * Generate edit artboard command to resize AND reposition
  * @param {Object} bounds - New artboard bounds { left, top, right, bottom }
  * @param {string} presetName - Artboard preset name (optional)
  * @param {Object} backgroundColor - Background color (optional)
@@ -560,6 +560,7 @@ export const generateEditArtboardCommand = (bounds, presetName = 'Custom', backg
     color: backgroundColor,
     guideIDs: [],
   },
+  // changeSizes: 1 = resize operation
   changeSizes: 1,
 });
 
@@ -1211,36 +1212,96 @@ const createArtboardByDuplicationInternal = async ({
   console.log('  - Right:', newRight, 'Bottom:', newBottom);
   console.log('  - Width:', targetSize.width, 'Height:', targetSize.height);
   
-  // PHASE 3: Select, resize, and rename the new artboard
-  console.log('\n[createArtboardByDuplicationInternal] === PHASE 3: Resize & Rename Artboard ===');
+  // PHASE 3: Select, resize/move, and rename the new artboard
+  // We use editArtboardEvent with target bounds to both resize AND reposition in one step
+  console.log('\n[createArtboardByDuplicationInternal] === PHASE 3: Resize, Move & Rename Artboard ===');
   console.log('[createArtboardByDuplicationInternal] Selecting new artboard (id:', newArtboard.id, ')...');
   console.log('[createArtboardByDuplicationInternal] New name:', targetSize.name || 'unnamed');
-  
-  const resizeAndRenameCommands = [
-    // Select the artboard by ID
+
+  // Calculate how much to move the artboard from its current position
+  const currentBounds = newArtboard.bounds;
+  const moveX = newLeft - currentBounds.left;
+  const moveY = newTop - currentBounds.top;
+
+  console.log('[createArtboardByDuplicationInternal] Move offset: x=', moveX, 'y=', moveY);
+  console.log('[createArtboardByDuplicationInternal] From:', currentBounds.left, currentBounds.top, 'To:', newLeft, newTop);
+
+  // Select the artboard first
+  await batchPlay([
     {
       _obj: 'select',
       _target: [{ _ref: 'layer', _id: newArtboard.id }],
       makeVisible: false,
       _options: { dialogOptions: 'dontDisplay' },
     },
-    // Resize the artboard
-    generateEditArtboardCommand({
-      left: newLeft,
-      top: newTop,
-      right: newRight,
-      bottom: newBottom,
-    }),
-  ];
-  
-  // Add rename command if a name is provided
-  if (targetSize.name) {
-    resizeAndRenameCommands.push(generateRenameCommand(targetSize.name));
+  ], { synchronousExecution: true });
+
+  // STEP 1: Resize the artboard at its current position first
+  // editArtboardEvent resizes from center, so we resize first then move
+  const resizedLeft = currentBounds.left;
+  const resizedTop = currentBounds.top;
+  const resizedRight = currentBounds.left + actualWidth;
+  const resizedBottom = currentBounds.top + actualHeight;
+
+  console.log('[createArtboardByDuplicationInternal] STEP 1: Resizing artboard at current position');
+  console.log('[createArtboardByDuplicationInternal] Resize bounds:', {
+    left: resizedLeft, top: resizedTop, right: resizedRight, bottom: resizedBottom
+  });
+
+  await batchPlay([
+    {
+      _obj: 'editArtboardEvent',
+      _target: [{ _ref: 'layer', _enum: 'ordinal', _value: 'targetEnum' }],
+      artboard: {
+        _obj: 'artboard',
+        artboardBackgroundType: 1,
+        artboardPresetName: 'Custom',
+        artboardRect: {
+          _obj: 'classFloatRect',
+          left: resizedLeft,
+          top: resizedTop,
+          right: resizedRight,
+          bottom: resizedBottom,
+        },
+        color: DEFAULT_ARTBOARD_BACKGROUND,
+        guideIDs: [],
+      },
+      _options: { dialogOptions: 'dontDisplay' },
+    },
+  ], { synchronousExecution: true });
+  console.log('[createArtboardByDuplicationInternal] ✓ Artboard resized');
+
+  // STEP 2: Move the artboard to target position using translate
+  // This moves the artboard and all its contents together
+  console.log('[createArtboardByDuplicationInternal] STEP 2: Moving artboard to target position');
+  console.log('[createArtboardByDuplicationInternal] Move delta: x=', moveX, 'y=', moveY);
+
+  if (moveX !== 0 || moveY !== 0) {
+    await batchPlay([
+      {
+        _obj: 'move',
+        _target: [{ _ref: 'layer', _enum: 'ordinal', _value: 'targetEnum' }],
+        to: {
+          _obj: 'offset',
+          horizontal: { _unit: 'pixelsUnit', _value: moveX },
+          vertical: { _unit: 'pixelsUnit', _value: moveY },
+        },
+        _options: { dialogOptions: 'dontDisplay' },
+      },
+    ], { synchronousExecution: true });
+    console.log('[createArtboardByDuplicationInternal] ✓ Artboard moved to target position');
+  } else {
+    console.log('[createArtboardByDuplicationInternal] No move needed (delta is 0)');
   }
-  
-  await batchPlay(resizeAndRenameCommands, { synchronousExecution: true });
-  
-  console.log('[createArtboardByDuplicationInternal] ✓ Artboard resized and renamed to:', targetSize.name || newArtboard.name);
+
+  // Rename if a name is provided
+  if (targetSize.name) {
+    await batchPlay([
+      generateRenameCommand(targetSize.name),
+    ], { synchronousExecution: true });
+  }
+
+  console.log('[createArtboardByDuplicationInternal] ✓ Artboard resized, moved and renamed to:', targetSize.name || newArtboard.name);
   
   // PHASE 4: Transform ALL layers in the artboard
   console.log('\n[createArtboardByDuplicationInternal] === PHASE 4: Transform Layers ===');
@@ -1271,9 +1332,100 @@ const createArtboardByDuplicationInternal = async ({
     await transformAllLayers(refreshedArtboard, newArtboard.id, sourceSize, targetSizeObj, batchPlay);
   }
   
-  // PHASE 5: Add guides and crop marks if bleed is required
+  // PHASE 5: Hide TEXT layer for "Background Only" artboards
+  const artboardName = (targetSize.name || '').toLowerCase();
+  const isBackgroundOnly = artboardName.includes('background') ||
+                           artboardName.includes('bkg only') ||
+                           artboardName.includes('background only');
+
+  if (isBackgroundOnly && refreshedArtboard) {
+    console.log('\n[createArtboardByDuplicationInternal] === PHASE 5: Hide TEXT Layer (Background Only) ===');
+    console.log('[createArtboardByDuplicationInternal] Artboard name matches background-only pattern:', targetSize.name);
+
+    // Find the TEXT layer in the artboard
+    const textLayer = refreshedArtboard.layers?.find(l => {
+      const layerName = l.name.toLowerCase();
+      return layerName === 'text' || layerName.includes('text');
+    });
+
+    if (textLayer) {
+      console.log(`[createArtboardByDuplicationInternal] Found TEXT layer: "${textLayer.name}" (id: ${textLayer.id})`);
+      try {
+        await batchPlay([
+          {
+            _obj: 'hide',
+            null: [{ _ref: 'layer', _id: textLayer.id }],
+            _options: { dialogOptions: 'dontDisplay' },
+          },
+        ], { synchronousExecution: true });
+        console.log('[createArtboardByDuplicationInternal] ✓ TEXT layer hidden');
+      } catch (e) {
+        console.warn('[createArtboardByDuplicationInternal] ⚠ Could not hide TEXT layer:', e.message);
+      }
+    } else {
+      console.log('[createArtboardByDuplicationInternal] No TEXT layer found to hide');
+    }
+  }
+
+  // PHASE 5b: Hide Overlay and BKG layers for "Transparent" or "PNG" artboards
+  const isTransparent = artboardName.includes('transparent') || artboardName.includes('png');
+
+  if (isTransparent && refreshedArtboard) {
+    console.log('\n[createArtboardByDuplicationInternal] === PHASE 5b: Hide Overlay & BKG Layers (Transparent/PNG) ===');
+    console.log('[createArtboardByDuplicationInternal] Artboard name matches transparent/png pattern:', targetSize.name);
+
+    // Find and hide the Overlay layer
+    const overlayLayer = refreshedArtboard.layers?.find(l => {
+      const layerName = l.name.toLowerCase();
+      return layerName === 'overlay' || layerName.includes('overlay') || layerName === 'adjust';
+    });
+
+    if (overlayLayer) {
+      console.log(`[createArtboardByDuplicationInternal] Found Overlay layer: "${overlayLayer.name}" (id: ${overlayLayer.id})`);
+      try {
+        await batchPlay([
+          {
+            _obj: 'hide',
+            null: [{ _ref: 'layer', _id: overlayLayer.id }],
+            _options: { dialogOptions: 'dontDisplay' },
+          },
+        ], { synchronousExecution: true });
+        console.log('[createArtboardByDuplicationInternal] ✓ Overlay layer hidden');
+      } catch (e) {
+        console.warn('[createArtboardByDuplicationInternal] ⚠ Could not hide Overlay layer:', e.message);
+      }
+    } else {
+      console.log('[createArtboardByDuplicationInternal] No Overlay layer found to hide');
+    }
+
+    // Find and hide the BKG layer
+    const bkgLayer = refreshedArtboard.layers?.find(l => {
+      const layerName = l.name.toLowerCase();
+      return layerName === 'bkg' || layerName === 'background' || layerName.includes('bkg');
+    });
+
+    if (bkgLayer) {
+      console.log(`[createArtboardByDuplicationInternal] Found BKG layer: "${bkgLayer.name}" (id: ${bkgLayer.id})`);
+      try {
+        await batchPlay([
+          {
+            _obj: 'hide',
+            null: [{ _ref: 'layer', _id: bkgLayer.id }],
+            _options: { dialogOptions: 'dontDisplay' },
+          },
+        ], { synchronousExecution: true });
+        console.log('[createArtboardByDuplicationInternal] ✓ BKG layer hidden');
+      } catch (e) {
+        console.warn('[createArtboardByDuplicationInternal] ⚠ Could not hide BKG layer:', e.message);
+      }
+    } else {
+      console.log('[createArtboardByDuplicationInternal] No BKG layer found to hide');
+    }
+  }
+
+  // PHASE 6: Add guides and crop marks if bleed is required
   if (targetSize.requiresBleed && bleedPx > 0) {
-    console.log('\n[createArtboardByDuplicationInternal] === PHASE 5: Add Bleed Guides & Crop Marks ===');
+    console.log('\n[createArtboardByDuplicationInternal] === PHASE 6: Add Bleed Guides & Crop Marks ===');
     
     const artboardBounds = {
       left: newLeft,

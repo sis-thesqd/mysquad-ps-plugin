@@ -1442,3 +1442,100 @@ sp-picker sp-popover {
   padding-top: 12px;
   border-top: 1px solid var(--spectrum-global-color-gray-200, #3a3a3a);
 }
+
+/* ==========================================================================
+   Sizes Empty State
+   ========================================================================== */
+
+.sizes-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  margin-top: 8px;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px dashed var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.sizes-empty-state sp-body {
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  margin-bottom: 16px;
+}
+
+.sizes-empty-state sp-button {
+  margin-top: 8px;
+}
+
+.sizes-loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   Collapsible Sizes Toggle
+   ========================================================================== */
+
+.sizes-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-radius: 4px;
+  color: var(--spectrum-global-color-gray-700, #d4d4d4);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.sizes-toggle:hover {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+}
+
+.sizes-toggle-expanded {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
+}
+
+.sizes-toggle .toggle-icon {
+  font-size: 10px;
+  margin-right: 8px;
+  transition: transform 0.2s ease;
+}
+
+.sizes-toggle .toggle-icon-expanded {
+  transform: rotate(90deg);
+}
+
+.sizes-toggle-label {
+  font-weight: 500;
+  margin-right: 12px;
+}
+
+.sizes-toggle-summary {
+  flex: 1;
+  text-align: left;
+  color: var(--spectrum-global-color-gray-500, #8e8e8e);
+  font-size: 11px;
+}
+
+.sizes-toggle .sizes-clear-btn {
+  margin-left: auto;
+}
+
+.sizes-expanded-content {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border: 1px solid var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  padding: 12px;
+}
