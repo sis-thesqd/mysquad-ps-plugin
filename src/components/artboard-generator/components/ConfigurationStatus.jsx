@@ -22,8 +22,9 @@ const getNeededOrientations = (sizes) => {
 };
 
 /**
- * Configuration status summary component
+ * Configuration status summary component with traffic light indicators
  * Shows progress of source configuration at a glance
+ * 🟢 = Ready, 🟡 = Warning/Partial, 🔴 = Error/Missing
  */
 const ConfigurationStatus = ({ sourceConfig, sizes, options, printSettings }) => {
   const status = useMemo(() => {
@@ -44,12 +45,21 @@ const ConfigurationStatus = ({ sourceConfig, sizes, options, printSettings }) =>
       }
     });
 
+    // Calculate layer assignment status
+    const layerCounts = SOURCE_TYPES.map(source => {
+      if (!sourceConfig[source.id]?.artboard) return 0;
+      const layers = sourceConfig[source.id]?.layers || {};
+      return Object.values(layers).filter(v => v !== null && v !== '').length;
+    });
+    const totalLayersAssigned = layerCounts.reduce((sum, count) => sum + count, 0);
+
     return {
       configured,
       missing,
       total: configured.length + missing.length,
       isComplete: missing.length === 0 && configured.length > 0,
       neededOrientations,
+      totalLayersAssigned,
     };
   }, [sourceConfig, sizes]);
 
@@ -66,49 +76,65 @@ const ConfigurationStatus = ({ sourceConfig, sizes, options, printSettings }) =>
     return `${printSettings.bleed}" bleed`;
   }, [printSettings]);
 
+  // Traffic light status indicators
+  const sourcesLight = status.isComplete ? '🟢' : (status.configured.length > 0 ? '🟡' : '🔴');
+  const sizesLight = sizes.length > 0 ? '🟢' : '🔴';
+  const layersLight = status.totalLayersAssigned > 0 ? '🟢' : '🟡';
+
   // Don't show if no sizes loaded
   if (sizes.length === 0) {
     return (
       <div className="config-status config-status-empty">
-        <sp-icon name="ui:InfoMedium" size="s"></sp-icon>
-        <sp-body size="s">Load sizes to see configuration requirements</sp-body>
+        <div className="config-status-compact">
+          <div className="status-item">
+            <span className="traffic-light">🔴</span>
+            <sp-body size="s">Sources: Not configured</sp-body>
+          </div>
+          <div className="status-item">
+            <span className="traffic-light">🔴</span>
+            <sp-body size="s">Sizes: None loaded</sp-body>
+          </div>
+          <div className="status-item">
+            <span className="traffic-light">🟡</span>
+            <sp-body size="s">Layers: Auto-detect ready</sp-body>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className={`config-status ${status.isComplete ? 'config-status-complete' : 'config-status-incomplete'}`}>
-      <div className="config-status-main">
-        <div className="config-status-sources">
-          {status.isComplete ? (
-            <>
-              <span className="status-icon status-icon-success">✓</span>
-              <sp-body size="s">
-                {status.configured.length} of {status.total} sources configured
-              </sp-body>
-            </>
-          ) : (
-            <>
-              <span className="status-icon status-icon-warning">!</span>
-              <sp-body size="s">
-                {status.configured.length} of {status.total} sources configured
-                {status.missing.length > 0 && (
-                  <span className="missing-sources">
-                    — need {status.missing.map(s => s.label.split(' ')[0]).join(', ')}
-                  </span>
-                )}
-              </sp-body>
-            </>
-          )}
+      <div className="config-status-compact">
+        {/* Sources status */}
+        <div className="status-item">
+          <span className="traffic-light">{sourcesLight}</span>
+          <sp-body size="s">
+            Sources: {status.isComplete ? 'Ready' : `${status.configured.length}/${status.total}`}
+            {status.missing.length > 0 && (
+              <span className="missing-hint">
+                {' '}(need {status.missing.map(s => s.label.split(' ')[0]).join(', ')})
+              </span>
+            )}
+          </sp-body>
         </div>
 
-        <div className="config-status-badges">
-          <span className="config-badge" title="Layout options">
-            {optionsSummary}
-          </span>
-          <span className="config-badge" title="Print settings">
-            {printSummary}
-          </span>
+        {/* Sizes status */}
+        <div className="status-item">
+          <span className="traffic-light">{sizesLight}</span>
+          <sp-body size="s">
+            Sizes: {sizes.length} loaded
+          </sp-body>
+        </div>
+
+        {/* Layers status */}
+        <div className="status-item">
+          <span className="traffic-light">{layersLight}</span>
+          <sp-body size="s">
+            Layers: {status.totalLayersAssigned > 0
+              ? `${status.totalLayersAssigned} assigned`
+              : 'Auto-detected'}
+          </sp-body>
         </div>
       </div>
     </div>

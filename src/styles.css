@@ -1539,3 +1539,483 @@ sp-picker sp-popover {
   border-radius: 0 0 4px 4px;
   padding: 12px;
 }
+
+/* ==========================================================================
+   Quick Generate Panel (Smart Mode)
+   ========================================================================== */
+
+.quick-generate-panel {
+  background: linear-gradient(135deg, rgba(45, 157, 120, 0.15) 0%, rgba(38, 128, 235, 0.1) 100%);
+  border: 1px solid var(--spectrum-global-color-green-500, #2d9d78);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.quick-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(45, 157, 120, 0.3);
+}
+
+.quick-icon-success {
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+}
+
+.quick-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.checklist-item-complete .checklist-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--spectrum-global-color-green-500, #2d9d78);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checklist-details {
+  margin-top: 4px;
+  padding-left: 4px;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+  font-size: 11px;
+}
+
+.source-detail {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.quick-actions sp-button[variant="cta"] {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(45, 157, 120, 0.3);
+}
+
+.quick-actions sp-button[variant="secondary"] {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--spectrum-global-color-gray-400, #6e6e6e);
+}
+
+/* ==========================================================================
+   Traffic Light Status & At-a-Glance Bar
+   ========================================================================== */
+
+.config-status-compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.traffic-light {
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.missing-hint {
+  color: var(--spectrum-global-color-orange-400, #da7b11);
+  font-size: 10px;
+}
+
+.config-status {
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   Inline Validation Warnings
+   ========================================================================== */
+
+.inline-warning {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: rgba(230, 134, 25, 0.1);
+  border-left: 3px solid var(--spectrum-global-color-orange-500, #e68619);
+  border-radius: 4px;
+  animation: slideIn 0.3s ease;
+}
+
+.inline-warning sp-body {
+  color: var(--spectrum-global-color-orange-400, #da7b11);
+  line-height: 1.5;
+}
+
+.size-examples {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ==========================================================================
+   Enhanced Empty States
+   ========================================================================== */
+
+.sizes-empty-state {
+  background: linear-gradient(135deg, rgba(38, 128, 235, 0.05) 0%, rgba(45, 157, 120, 0.05) 100%);
+  border: 2px dashed var(--spectrum-global-color-gray-400, #6e6e6e);
+  border-radius: 8px;
+  padding: 40px 24px;
+  margin-top: 16px;
+  gap: 12px;
+}
+
+.sizes-empty-state .empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.7;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.sizes-empty-state sp-label {
+  margin-bottom: 8px;
+  color: var(--spectrum-global-color-gray-700, #d4d4d4);
+}
+
+.sizes-empty-state sp-body {
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.empty-state-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  text-align: left;
+  width: 100%;
+  max-width: 300px;
+}
+
+.empty-state-steps sp-body {
+  padding-left: 12px;
+  border-left: 2px solid var(--spectrum-global-color-gray-400, #6e6e6e);
+}
+
+.empty-state-inline {
+  padding: 12px 16px;
+  background: rgba(230, 134, 25, 0.1);
+  border: 1px solid var(--spectrum-global-color-orange-500, #e68619);
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.empty-state-inline sp-body {
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Document Error Alerts
+   ========================================================================== */
+
+.document-errors {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.error-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(227, 72, 80, 0.15);
+  border: 1px solid var(--spectrum-global-color-red-500, #e34850);
+  border-radius: 6px;
+}
+
+.error-icon {
+  color: var(--spectrum-global-color-red-500, #e34850);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Undo Reminder
+   ========================================================================== */
+
+.undo-reminder {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-top: 16px;
+  background: rgba(45, 157, 120, 0.15);
+  border: 1px solid var(--spectrum-global-color-green-500, #2d9d78);
+  border-radius: 6px;
+  animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.undo-icon {
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+  flex-shrink: 0;
+}
+
+.undo-reminder sp-body {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.undo-reminder strong {
+  color: var(--spectrum-global-color-green-400, #33ab84);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Improved Visual Hierarchy & Spacing
+   ========================================================================== */
+
+.artboard-generator-tab {
+  gap: 20px;
+}
+
+.generator-header {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.source-config-panel {
+  background: var(--spectrum-global-color-gray-75, #252525);
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+.sizes-section {
+  background: var(--spectrum-global-color-gray-75, #252525);
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+.sizes-section-header {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+/* ==========================================================================
+   Enhanced Sizes Toggle
+   ========================================================================== */
+
+.sizes-toggle {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  border: 1px solid var(--spectrum-global-color-gray-400, #6e6e6e);
+  padding: 12px 14px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.sizes-toggle:hover {
+  background: var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-color: var(--spectrum-global-color-blue-400, #378ef0);
+}
+
+.sizes-toggle-label {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.sizes-toggle-summary {
+  font-size: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   Orientation Labels Enhancement
+   ========================================================================== */
+
+.group-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  text-transform: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+}
+
+/* ==========================================================================
+   Collapsible Source Sections
+   ========================================================================== */
+
+.source-section {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.source-section:hover {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+}
+
+.source-section-configured {
+  border-left: 4px solid var(--spectrum-global-color-green-500, #2d9d78);
+  background: rgba(45, 157, 120, 0.08);
+}
+
+.source-section-incomplete {
+  border-left: 4px solid var(--spectrum-global-color-orange-500, #e68619);
+  background: rgba(230, 134, 25, 0.08);
+}
+
+/* ==========================================================================
+   Settings Panel Enhancement
+   ========================================================================== */
+
+.settings-panel {
+  background: var(--spectrum-global-color-gray-75, #252525);
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  margin-top: 20px;
+}
+
+.settings-toggle {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  border: 1px solid var(--spectrum-global-color-gray-400, #6e6e6e);
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   Button Enhancements
+   ========================================================================== */
+
+.generation-section-inline sp-button[variant="cta"] {
+  padding: 14px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(38, 128, 235, 0.3);
+  transition: all 0.2s ease;
+}
+
+.generation-section-inline sp-button[variant="cta"]:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(38, 128, 235, 0.4);
+  transform: translateY(-1px);
+}
+
+.generation-section-inline sp-button[variant="cta"]:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Better Typography
+   ========================================================================== */
+
+sp-label[size="l"] {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+sp-label[size="m"] {
+  font-weight: 600;
+}
+
+sp-body[size="s"] {
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Improved Scrollbars (WebKit)
+   ========================================================================== */
+
+.sizes-groups::-webkit-scrollbar,
+.sizes-expanded-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sizes-groups::-webkit-scrollbar-track,
+.sizes-expanded-content::-webkit-scrollbar-track {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border-radius: 4px;
+}
+
+.sizes-groups::-webkit-scrollbar-thumb,
+.sizes-expanded-content::-webkit-scrollbar-thumb {
+  background: var(--spectrum-global-color-gray-400, #6e6e6e);
+  border-radius: 4px;
+}
+
+.sizes-groups::-webkit-scrollbar-thumb:hover,
+.sizes-expanded-content::-webkit-scrollbar-thumb:hover {
+  background: var(--spectrum-global-color-gray-500, #999);
+}

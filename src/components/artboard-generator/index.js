@@ -11,6 +11,7 @@ export { default as SizesPreview } from './components/SizesPreview';
 export { default as ConfigurationStatus } from './components/ConfigurationStatus';
 export { default as SettingsPanel } from './components/SettingsPanel';
 export { default as SizeButton } from './components/SizeButton';
+export { default as QuickGeneratePanel } from './components/QuickGeneratePanel';
 
 // Hooks
 export { usePhotoshopDocument } from './hooks/usePhotoshopDocument';

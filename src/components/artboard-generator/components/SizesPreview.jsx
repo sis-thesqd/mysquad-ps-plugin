@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { groupByType } from '../services/artboardGenerator';
+import { ASPECT_RATIO_THRESHOLDS } from '../../../config';
 import SizeButton from './SizeButton';
 
 /**
@@ -8,9 +9,17 @@ import SizeButton from './SizeButton';
  */
 const SizesPreview = ({ sizes, onClear, onGenerateSingle, sourceConfig, disabled }) => {
   const [filterText, setFilterText] = useState('');
-  const [isExpanded, setIsExpanded] = useState(false); // Collapsed by default
+  // Expanded by default, auto-collapse only if >20 sizes
+  const [isExpanded, setIsExpanded] = useState(true);
   const filterRef = useRef(null);
   const toggleRef = useRef(null);
+
+  // Auto-collapse if more than 20 sizes
+  useEffect(() => {
+    if (sizes && sizes.length > 20) {
+      setIsExpanded(false);
+    }
+  }, [sizes]);
 
   // Handle toggle button click with ref-based event handling for UXP
   useEffect(() => {
@@ -38,6 +47,28 @@ const SizesPreview = ({ sizes, onClear, onGenerateSingle, sourceConfig, disabled
     return () => input.removeEventListener('input', handleInput);
   }, []);
 
+  // Group sizes by orientation (landscape/portrait/square)
+  const groupByOrientation = (sizesToGroup) => {
+    const groups = {
+      landscape: [],
+      portrait: [],
+      square: [],
+    };
+
+    sizesToGroup.forEach(size => {
+      const ratio = size.width / size.height;
+      if (ratio < ASPECT_RATIO_THRESHOLDS.PORTRAIT_MAX) {
+        groups.portrait.push(size);
+      } else if (ratio > ASPECT_RATIO_THRESHOLDS.SQUARE_MAX) {
+        groups.landscape.push(size);
+      } else {
+        groups.square.push(size);
+      }
+    });
+
+    return groups;
+  };
+
   // Filter and group sizes
   const { filteredSizes, groupedSizes, matchCount } = useMemo(() => {
     if (!sizes || sizes.length === 0) {
@@ -55,19 +86,15 @@ const SizesPreview = ({ sizes, onClear, onGenerateSingle, sourceConfig, disabled
 
     return {
       filteredSizes: filtered,
-      groupedSizes: groupByType(filtered),
+      groupedSizes: groupByOrientation(filtered),
       matchCount: filtered.length
     };
   }, [sizes, filterText]);
 
-  const typeLabels = {
-    social: 'Social Media',
-    display: 'Display Ads',
-    video: 'Video',
-    email: 'Email',
-    print: 'Print',
-    web: 'Web',
-    other: 'Other',
+  const orientationLabels = {
+    landscape: '▭ Landscape',
+    portrait: '▯ Portrait',
+    square: '□ Square',
   };
 
   // Get orientation counts for info display
@@ -151,16 +178,18 @@ const SizesPreview = ({ sizes, onClear, onGenerateSingle, sourceConfig, disabled
           )}
 
           <div className="sizes-groups">
-            {Object.entries(groupedSizes).map(([type, typeSizes]) => {
-              if (!typeSizes || typeSizes.length === 0) return null;
+            {/* Show groups in order: landscape, portrait, square */}
+            {['landscape', 'portrait', 'square'].map(orientation => {
+              const orientationSizes = groupedSizes[orientation];
+              if (!orientationSizes || orientationSizes.length === 0) return null;
 
               return (
-                <div key={type} className="size-group">
+                <div key={orientation} className="size-group">
                   <sp-label size="s" class="group-label">
-                    {typeLabels[type] || type} ({typeSizes.length})
+                    {orientationLabels[orientation]} ({orientationSizes.length})
                   </sp-label>
                   <div className="size-buttons">
-                    {typeSizes.map((size, index) => (
+                    {orientationSizes.map((size, index) => (
                       <SizeButton
                         key={`${size.name}-${index}`}
                         size={size}

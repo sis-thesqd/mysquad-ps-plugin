@@ -3,6 +3,7 @@ import SourceConfigPanel from './SourceConfigPanel';
 import SizesPreview from './SizesPreview';
 import ConfigurationStatus from './ConfigurationStatus';
 import SettingsPanel from './SettingsPanel';
+import QuickGeneratePanel from './QuickGeneratePanel';
 import { usePhotoshopDocument } from '../hooks/usePhotoshopDocument';
 import { useArtboardGenerator } from '../hooks/useArtboardGenerator';
 
@@ -48,6 +49,12 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
   // Track the last task ID we auto-loaded for
   const lastAutoLoadedTaskId = useRef(null);
 
+  // Track whether to show quick mode or customized mode
+  const [showQuickMode, setShowQuickMode] = useState(true);
+
+  // Track if generation just completed (for undo reminder)
+  const [showUndoReminder, setShowUndoReminder] = useState(false);
+
   // Auto-load sizes from task when task is linked
   useEffect(() => {
     // Only auto-load if:
@@ -68,11 +75,37 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
     }
   }, [taskId]);
 
+  // Show undo reminder when generation completes
+  const prevGenerating = useRef(generating);
+  useEffect(() => {
+    // If was generating and now stopped (completed or errored)
+    if (prevGenerating.current && !generating && !generationError) {
+      setShowUndoReminder(true);
+      // Hide reminder after 10 seconds
+      const timer = setTimeout(() => {
+        setShowUndoReminder(false);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+    prevGenerating.current = generating;
+  }, [generating, generationError]);
+
+  // Fail-fast validation checks for document state
+  const documentErrors = [];
+  if (!docLoading) {
+    if (artboards.length === 0) {
+      documentErrors.push('No artboards in document - create source artboards first');
+    }
+    if (layers.length === 0) {
+      documentErrors.push('No layers detected in document');
+    }
+  }
+
   const validationErrors = validateConfig();
 
   // Count how many sizes can actually be generated
   const generatableSizesCount = sizes.filter(size => canGenerateSize(size)).length;
-  const canGenerate = validationErrors.length === 0 && !generating && !docLoading && generatableSizesCount > 0;
+  const canGenerate = documentErrors.length === 0 && validationErrors.length === 0 && !generating && !docLoading && generatableSizesCount > 0;
 
   // Debug logging
   console.log('[ArtboardGeneratorTab] Button state debug:', {
@@ -194,28 +227,62 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
         )}
 
         {!docLoading && artboards.length === 0 && (
-          <sp-body size="s" class="warning-text">
-            No artboards found. Create source artboards first.
-          </sp-body>
+          <div className="empty-state-inline">
+            <sp-body size="s" class="warning-text">
+              ⚠️ No artboards found in document
+            </sp-body>
+            <sp-body size="xs" class="hint-text">
+              Create at least one artboard in Photoshop to use as a source template
+            </sp-body>
+          </div>
+        )}
+
+        {/* Fail-fast document errors */}
+        {documentErrors.length > 0 && (
+          <div className="document-errors">
+            {documentErrors.map((error, index) => (
+              <div key={index} className="error-item">
+                <sp-icon name="ui:AlertMedium" size="s" class="error-icon"></sp-icon>
+                <sp-body size="s" class="error-text">{error}</sp-body>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
-      {/* Configuration Status Summary */}
-      <ConfigurationStatus
-        sourceConfig={sourceConfig}
-        sizes={sizes}
-        options={options}
-        printSettings={printSettings}
-      />
+      {/* Quick Generate Mode - shown when fully auto-configured */}
+      {showQuickMode && validationErrors.length === 0 && sizes.length > 0 && (
+        <QuickGeneratePanel
+          sourceConfig={sourceConfig}
+          sizes={sizes}
+          onGenerate={handleGenerate}
+          onCustomize={() => setShowQuickMode(false)}
+          generating={generating}
+          generatableSizesCount={generatableSizesCount}
+          canGenerate={canGenerate}
+        />
+      )}
 
-      {/* Source Configuration */}
-      <SourceConfigPanel
-        artboards={artboards}
-        layers={layers}
-        sourceConfig={sourceConfig}
-        onConfigChange={setSourceConfig}
-        sizes={sizes}
-      />
+      {/* Configuration Status Summary - shown when not in quick mode or has errors */}
+      {(!showQuickMode || validationErrors.length > 0 || sizes.length === 0) && (
+        <ConfigurationStatus
+          sourceConfig={sourceConfig}
+          sizes={sizes}
+          options={options}
+          printSettings={printSettings}
+        />
+      )}
+
+      {/* Source Configuration - shown when not in quick mode */}
+      {!showQuickMode && (
+        <SourceConfigPanel
+          artboards={artboards}
+          layers={layers}
+          sourceConfig={sourceConfig}
+          onConfigChange={setSourceConfig}
+          sizes={sizes}
+        />
+      )}
 
       {/* Sizes Section with Generate Button */}
       <div className="sizes-section">
@@ -276,19 +343,32 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
         {/* Show empty state with Load Sizes button when no sizes */}
         {sizes.length === 0 && !sizesLoading && (
           <div className="sizes-empty-state">
-            <sp-body size="s">No sizes loaded yet.</sp-body>
+            <div className="empty-state-icon">📐</div>
+            <sp-label size="m">Get Started</sp-label>
             {taskId ? (
-              <sp-button
-                ref={loadSizesButtonRef}
-                variant="primary"
-                size="m"
-              >
-                {sizesLoading ? 'Loading...' : 'Load Sizes from Task'}
-              </sp-button>
+              <>
+                <sp-body size="s">Load artboard sizes from your ClickUp task to begin</sp-body>
+                <sp-button
+                  ref={loadSizesButtonRef}
+                  variant="primary"
+                  size="l"
+                >
+                  {sizesLoading ? 'Loading...' : 'Load Sizes from Task'}
+                </sp-button>
+                <sp-body size="xs" class="hint-text">
+                  Sizes will be automatically cached for 15 minutes
+                </sp-body>
+              </>
             ) : (
-              <sp-body size="xs" class="warning-text">
-                Open a file linked to a task to load sizes.
-              </sp-body>
+              <>
+                <sp-body size="s">To use the artboard generator:</sp-body>
+                <div className="empty-state-steps">
+                  <sp-body size="xs">1. Open a Photoshop file linked to a ClickUp task</sp-body>
+                  <sp-body size="xs">2. Load sizes from the task</sp-body>
+                  <sp-body size="xs">3. Select source artboards (or let auto-detect)</sp-body>
+                  <sp-body size="xs">4. Click Generate</sp-body>
+                </div>
+              </>
             )}
           </div>
         )}
@@ -309,8 +389,8 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
           />
         )}
 
-        {/* Generation Section - now inside sizes */}
-        {sizes.length > 0 && (
+        {/* Generation Section - only shown when not in quick mode */}
+        {sizes.length > 0 && !showQuickMode && (
           <div className="generation-section-inline">
             {generating && (
               <div className="generation-progress">
@@ -349,6 +429,36 @@ const ArtboardGeneratorTab = ({ taskDetails }) => {
                 : `Generate All (${generatableSizesCount})`
               }
             </sp-button>
+          </div>
+        )}
+
+        {/* Progress indicator for quick mode */}
+        {sizes.length > 0 && showQuickMode && generating && (
+          <div className="generation-progress">
+            <sp-body size="s">
+              Generating: {progress.name} ({progress.current}/{progress.total})
+            </sp-body>
+            <sp-progress-bar
+              value={(progress.current / progress.total) * 100}
+              size="s"
+            ></sp-progress-bar>
+          </div>
+        )}
+
+        {/* Undo reminder after generation */}
+        {showUndoReminder && (
+          <div className="undo-reminder">
+            <sp-icon name="ui:Undo" size="s" class="undo-icon"></sp-icon>
+            <sp-body size="s" class="success-text">
+              ✓ Generation complete! Use <strong>Cmd+Z</strong> (Mac) or <strong>Ctrl+Z</strong> (Win) to undo all changes if needed.
+            </sp-body>
+            <sp-action-button
+              size="xs"
+              quiet
+              onClick={() => setShowUndoReminder(false)}
+            >
+              ✕
+            </sp-action-button>
           </div>
         )}
       </div>

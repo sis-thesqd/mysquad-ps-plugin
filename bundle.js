@@ -4177,6 +4177,486 @@ sp-picker sp-popover {
   border-radius: 0 0 4px 4px;
   padding: 12px;
 }
+
+/* ==========================================================================
+   Quick Generate Panel (Smart Mode)
+   ========================================================================== */
+
+.quick-generate-panel {
+  background: linear-gradient(135deg, rgba(45, 157, 120, 0.15) 0%, rgba(38, 128, 235, 0.1) 100%);
+  border: 1px solid var(--spectrum-global-color-green-500, #2d9d78);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.quick-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(45, 157, 120, 0.3);
+}
+
+.quick-icon-success {
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+}
+
+.quick-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.checklist-item-complete .checklist-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--spectrum-global-color-green-500, #2d9d78);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checklist-details {
+  margin-top: 4px;
+  padding-left: 4px;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+  font-size: 11px;
+}
+
+.source-detail {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.quick-actions sp-button[variant="cta"] {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(45, 157, 120, 0.3);
+}
+
+.quick-actions sp-button[variant="secondary"] {
+  width: 100%;
+  background: transparent;
+  border: 1px dashed var(--spectrum-global-color-gray-400, #6e6e6e);
+}
+
+/* ==========================================================================
+   Traffic Light Status & At-a-Glance Bar
+   ========================================================================== */
+
+.config-status-compact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.traffic-light {
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.missing-hint {
+  color: var(--spectrum-global-color-orange-400, #da7b11);
+  font-size: 10px;
+}
+
+.config-status {
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   Inline Validation Warnings
+   ========================================================================== */
+
+.inline-warning {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: rgba(230, 134, 25, 0.1);
+  border-left: 3px solid var(--spectrum-global-color-orange-500, #e68619);
+  border-radius: 4px;
+  animation: slideIn 0.3s ease;
+}
+
+.inline-warning sp-body {
+  color: var(--spectrum-global-color-orange-400, #da7b11);
+  line-height: 1.5;
+}
+
+.size-examples {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ==========================================================================
+   Enhanced Empty States
+   ========================================================================== */
+
+.sizes-empty-state {
+  background: linear-gradient(135deg, rgba(38, 128, 235, 0.05) 0%, rgba(45, 157, 120, 0.05) 100%);
+  border: 2px dashed var(--spectrum-global-color-gray-400, #6e6e6e);
+  border-radius: 8px;
+  padding: 40px 24px;
+  margin-top: 16px;
+  gap: 12px;
+}
+
+.sizes-empty-state .empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.7;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.sizes-empty-state sp-label {
+  margin-bottom: 8px;
+  color: var(--spectrum-global-color-gray-700, #d4d4d4);
+}
+
+.sizes-empty-state sp-body {
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.empty-state-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  text-align: left;
+  width: 100%;
+  max-width: 300px;
+}
+
+.empty-state-steps sp-body {
+  padding-left: 12px;
+  border-left: 2px solid var(--spectrum-global-color-gray-400, #6e6e6e);
+}
+
+.empty-state-inline {
+  padding: 12px 16px;
+  background: rgba(230, 134, 25, 0.1);
+  border: 1px solid var(--spectrum-global-color-orange-500, #e68619);
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.empty-state-inline sp-body {
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Document Error Alerts
+   ========================================================================== */
+
+.document-errors {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.error-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(227, 72, 80, 0.15);
+  border: 1px solid var(--spectrum-global-color-red-500, #e34850);
+  border-radius: 6px;
+}
+
+.error-icon {
+  color: var(--spectrum-global-color-red-500, #e34850);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Undo Reminder
+   ========================================================================== */
+
+.undo-reminder {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-top: 16px;
+  background: rgba(45, 157, 120, 0.15);
+  border: 1px solid var(--spectrum-global-color-green-500, #2d9d78);
+  border-radius: 6px;
+  animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.undo-icon {
+  color: var(--spectrum-global-color-green-500, #2d9d78);
+  flex-shrink: 0;
+}
+
+.undo-reminder sp-body {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.undo-reminder strong {
+  color: var(--spectrum-global-color-green-400, #33ab84);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Improved Visual Hierarchy & Spacing
+   ========================================================================== */
+
+.artboard-generator-tab {
+  gap: 20px;
+}
+
+.generator-header {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.source-config-panel {
+  background: var(--spectrum-global-color-gray-75, #252525);
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+.sizes-section {
+  background: var(--spectrum-global-color-gray-75, #252525);
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+.sizes-section-header {
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+}
+
+/* ==========================================================================
+   Enhanced Sizes Toggle
+   ========================================================================== */
+
+.sizes-toggle {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  border: 1px solid var(--spectrum-global-color-gray-400, #6e6e6e);
+  padding: 12px 14px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.sizes-toggle:hover {
+  background: var(--spectrum-global-color-gray-300, #4a4a4a);
+  border-color: var(--spectrum-global-color-blue-400, #378ef0);
+}
+
+.sizes-toggle-label {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.sizes-toggle-summary {
+  font-size: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+/* ==========================================================================
+   Orientation Labels Enhancement
+   ========================================================================== */
+
+.group-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  text-transform: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--spectrum-global-color-gray-600, #b3b3b3);
+}
+
+/* ==========================================================================
+   Collapsible Source Sections
+   ========================================================================== */
+
+.source-section {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  padding: 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.source-section:hover {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+}
+
+.source-section-configured {
+  border-left: 4px solid var(--spectrum-global-color-green-500, #2d9d78);
+  background: rgba(45, 157, 120, 0.08);
+}
+
+.source-section-incomplete {
+  border-left: 4px solid var(--spectrum-global-color-orange-500, #e68619);
+  background: rgba(230, 134, 25, 0.08);
+}
+
+/* ==========================================================================
+   Settings Panel Enhancement
+   ========================================================================== */
+
+.settings-panel {
+  background: var(--spectrum-global-color-gray-75, #252525);
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--spectrum-global-color-gray-200, #3e3e3e);
+  margin-top: 20px;
+}
+
+.settings-toggle {
+  background: var(--spectrum-global-color-gray-200, #3a3a3a);
+  border: 1px solid var(--spectrum-global-color-gray-400, #6e6e6e);
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   Button Enhancements
+   ========================================================================== */
+
+.generation-section-inline sp-button[variant="cta"] {
+  padding: 14px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(38, 128, 235, 0.3);
+  transition: all 0.2s ease;
+}
+
+.generation-section-inline sp-button[variant="cta"]:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(38, 128, 235, 0.4);
+  transform: translateY(-1px);
+}
+
+.generation-section-inline sp-button[variant="cta"]:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Better Typography
+   ========================================================================== */
+
+sp-label[size="l"] {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+sp-label[size="m"] {
+  font-weight: 600;
+}
+
+sp-body[size="s"] {
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Improved Scrollbars (WebKit)
+   ========================================================================== */
+
+.sizes-groups::-webkit-scrollbar,
+.sizes-expanded-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sizes-groups::-webkit-scrollbar-track,
+.sizes-expanded-content::-webkit-scrollbar-track {
+  background: var(--spectrum-global-color-gray-100, #2a2a2a);
+  border-radius: 4px;
+}
+
+.sizes-groups::-webkit-scrollbar-thumb,
+.sizes-expanded-content::-webkit-scrollbar-thumb {
+  background: var(--spectrum-global-color-gray-400, #6e6e6e);
+  border-radius: 4px;
+}
+
+.sizes-groups::-webkit-scrollbar-thumb:hover,
+.sizes-expanded-content::-webkit-scrollbar-thumb:hover {
+  background: var(--spectrum-global-color-gray-500, #999);
+}
 `, ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
@@ -17609,36 +18089,28 @@ const LAYER_ROLES = [{
   id: 'overlays',
   label: 'Overlays',
   required: false
-}, {
-  id: 'cornerTopLeft',
-  label: 'Corner: Top Left',
-  required: false
-}, {
-  id: 'cornerTopRight',
-  label: 'Corner: Top Right',
-  required: false
-}, {
-  id: 'cornerBottomLeft',
-  label: 'Corner: Bottom Left',
-  required: false
-}, {
-  id: 'cornerBottomRight',
-  label: 'Corner: Bottom Right',
-  required: false
-}];
+}
+// Corner pinning not yet supported
+// { id: 'cornerTopLeft', label: 'Corner: Top Left', required: false },
+// { id: 'cornerTopRight', label: 'Corner: Top Right', required: false },
+// { id: 'cornerBottomLeft', label: 'Corner: Bottom Left', required: false },
+// { id: 'cornerBottomRight', label: 'Corner: Bottom Right', required: false },
+];
 
 /**
  * Layer name patterns for auto-detection
  * Each role has an array of patterns (case-insensitive) to match against layer names
+ * STANDARDIZED: Only BKG, TEXT, and ADJUST patterns are used
  */
 const LAYER_NAME_PATTERNS = {
-  background: ['bkg', 'background', 'bg', 'back'],
-  title: ['text', 'title', 'headline', 'heading', 'copy', 'txt', 'main'],
-  overlays: ['adjust', 'overlay', 'overlays', 'effects', 'gradient', 'vignette'],
-  cornerTopLeft: ['corner-tl', 'corner_tl', 'top-left', 'top_left', 'tl', 'logo-tl'],
-  cornerTopRight: ['corner-tr', 'corner_tr', 'top-right', 'top_right', 'tr', 'logo-tr', 'logo'],
-  cornerBottomLeft: ['corner-bl', 'corner_bl', 'bottom-left', 'bottom_left', 'bl', 'logo-bl'],
-  cornerBottomRight: ['corner-br', 'corner_br', 'bottom-right', 'bottom_right', 'br', 'logo-br', 'cta', 'button']
+  background: ['bkg'],
+  title: ['text'],
+  overlays: ['adjust']
+  // Corner pinning not yet supported
+  // cornerTopLeft: [],
+  // cornerTopRight: [],
+  // cornerBottomLeft: [],
+  // cornerBottomRight: [],
 };
 
 /**
@@ -17684,11 +18156,12 @@ const DEFAULT_SOURCE_CONFIG = {
     layers: {
       background: null,
       title: null,
-      overlays: null,
-      cornerTopLeft: null,
-      cornerTopRight: null,
-      cornerBottomLeft: null,
-      cornerBottomRight: null
+      overlays: null
+      // Corner pinning not yet supported
+      // cornerTopLeft: null,
+      // cornerTopRight: null,
+      // cornerBottomLeft: null,
+      // cornerBottomRight: null,
     }
   },
   portrait: {
@@ -17696,11 +18169,12 @@ const DEFAULT_SOURCE_CONFIG = {
     layers: {
       background: null,
       title: null,
-      overlays: null,
-      cornerTopLeft: null,
-      cornerTopRight: null,
-      cornerBottomLeft: null,
-      cornerBottomRight: null
+      overlays: null
+      // Corner pinning not yet supported
+      // cornerTopLeft: null,
+      // cornerTopRight: null,
+      // cornerBottomLeft: null,
+      // cornerBottomRight: null,
     }
   },
   square: {
@@ -17708,11 +18182,12 @@ const DEFAULT_SOURCE_CONFIG = {
     layers: {
       background: null,
       title: null,
-      overlays: null,
-      cornerTopLeft: null,
-      cornerTopRight: null,
-      cornerBottomLeft: null,
-      cornerBottomRight: null
+      overlays: null
+      // Corner pinning not yet supported
+      // cornerTopLeft: null,
+      // cornerTopRight: null,
+      // cornerBottomLeft: null,
+      // cornerBottomRight: null,
     }
   }
 };
@@ -38728,7 +39203,78 @@ const SourceConfigPanel = ({
   const [expandedSources, setExpandedSources] = (0,react.useState)({});
   // Track auto-detection feedback messages
   const [detectionMessages, setDetectionMessages] = (0,react.useState)({});
+  // Track which artboards were auto-selected to avoid re-selecting
+  const [autoSelectedSources, setAutoSelectedSources] = (0,react.useState)({});
   const neededOrientations = (0,react.useMemo)(() => getNeededOrientations(sizes), [sizes]);
+
+  // Auto-select single artboards when only one matches each orientation
+  (0,react.useEffect)(() => {
+    if (!artboards || artboards.length === 0 || sizes.length === 0) return;
+    const updates = {};
+    let hasUpdates = false;
+    SOURCE_TYPES.forEach(sourceType => {
+      const orientation = sourceType.id;
+      // Skip if already configured or already auto-selected
+      if (sourceConfig[orientation]?.artboard || autoSelectedSources[orientation]) return;
+      // Skip if not needed
+      if (!neededOrientations.has(orientation)) return;
+
+      // Find artboards matching this orientation
+      const matchingArtboards = artboards.filter(ab => {
+        const ratio = ab.width / ab.height;
+        if (orientation === 'portrait') {
+          return ratio < ASPECT_RATIO_THRESHOLDS.PORTRAIT_MAX;
+        } else if (orientation === 'landscape') {
+          return ratio > ASPECT_RATIO_THRESHOLDS.SQUARE_MAX;
+        } else {
+          // square
+          return ratio >= ASPECT_RATIO_THRESHOLDS.PORTRAIT_MAX && ratio <= ASPECT_RATIO_THRESHOLDS.SQUARE_MAX;
+        }
+      });
+
+      // If exactly one matching artboard, auto-select it
+      if (matchingArtboards.length === 1) {
+        const artboardName = matchingArtboards[0].name;
+        const detectedLayers = autoDetectLayerRoles(layers, artboardName);
+        const detectedCount = countDetectedLayers(detectedLayers);
+        updates[orientation] = {
+          ...sourceConfig[orientation],
+          artboard: artboardName,
+          layers: {
+            ...sourceConfig[orientation]?.layers,
+            ...detectedLayers
+          }
+        };
+        hasUpdates = true;
+
+        // Show feedback message
+        setDetectionMessages(prev => ({
+          ...prev,
+          [orientation]: `Auto-selected "${artboardName}" (only ${orientation} source)${detectedCount > 0 ? ` + detected ${detectedCount} layer${detectedCount !== 1 ? 's' : ''}` : ''}`
+        }));
+
+        // Mark as auto-selected
+        setAutoSelectedSources(prev => ({
+          ...prev,
+          [orientation]: true
+        }));
+
+        // Clear message after 5 seconds
+        setTimeout(() => {
+          setDetectionMessages(prev => ({
+            ...prev,
+            [orientation]: null
+          }));
+        }, 5000);
+      }
+    });
+    if (hasUpdates) {
+      onConfigChange({
+        ...sourceConfig,
+        ...updates
+      });
+    }
+  }, [artboards, layers, sizes, sourceConfig, onConfigChange, neededOrientations, autoSelectedSources]);
   const toggleLayerRoles = (0,react.useCallback)(sourceId => {
     setExpandedSources(prev => ({
       ...prev,
@@ -38811,6 +39357,19 @@ const SourceConfigPanel = ({
     const isExpanded = expandedSources[source.id];
     const configuredLayerCount = getConfiguredLayerCount(source.id);
     const detectionMessage = detectionMessages[source.id];
+
+    // Count sizes that need this orientation
+    const sizesNeedingThis = sizes.filter(size => {
+      const ratio = size.width / size.height;
+      if (source.id === 'portrait') {
+        return ratio < ASPECT_RATIO_THRESHOLDS.PORTRAIT_MAX;
+      } else if (source.id === 'landscape') {
+        return ratio > ASPECT_RATIO_THRESHOLDS.SQUARE_MAX;
+      } else {
+        // square
+        return ratio >= ASPECT_RATIO_THRESHOLDS.PORTRAIT_MAX && ratio <= ASPECT_RATIO_THRESHOLDS.SQUARE_MAX;
+      }
+    });
     return /*#__PURE__*/react.createElement("div", {
       key: source.id,
       className: `source-section ${isConfigured ? 'source-section-configured' : 'source-section-incomplete'}`
@@ -38824,7 +39383,14 @@ const SourceConfigPanel = ({
       className: "source-status-badge source-status-configured"
     }, "\u2713"), !isConfigured && /*#__PURE__*/react.createElement("span", {
       className: "source-status-badge source-status-needed"
-    }, "Required")), /*#__PURE__*/react.createElement(components_ArtboardPicker, {
+    }, "Required")), !isConfigured && sizesNeedingThis.length > 0 && /*#__PURE__*/react.createElement("div", {
+      className: "inline-warning"
+    }, /*#__PURE__*/react.createElement("sp-body", {
+      size: "xs",
+      class: "warning-text"
+    }, "\u26A0\uFE0F ", source.label.split(' ')[0], " source needed for ", sizesNeedingThis.length, " size", sizesNeedingThis.length !== 1 ? 's' : '', sizesNeedingThis.length <= 3 && /*#__PURE__*/react.createElement("span", {
+      className: "size-examples"
+    }, ": ", sizesNeedingThis.map(s => s.name).join(', ')))), /*#__PURE__*/react.createElement(components_ArtboardPicker, {
       sourceId: source.id,
       value: sourceConfig[source.id]?.artboard || '',
       artboards: artboards,
@@ -40423,6 +40989,7 @@ const SizeButton = ({
 
 
 
+
 /**
  * Preview component showing loaded sizes as clickable buttons
  * with filtering and improved UX
@@ -40435,9 +41002,17 @@ const SizesPreview = ({
   disabled
 }) => {
   const [filterText, setFilterText] = (0,react.useState)('');
-  const [isExpanded, setIsExpanded] = (0,react.useState)(false); // Collapsed by default
+  // Expanded by default, auto-collapse only if >20 sizes
+  const [isExpanded, setIsExpanded] = (0,react.useState)(true);
   const filterRef = (0,react.useRef)(null);
   const toggleRef = (0,react.useRef)(null);
+
+  // Auto-collapse if more than 20 sizes
+  (0,react.useEffect)(() => {
+    if (sizes && sizes.length > 20) {
+      setIsExpanded(false);
+    }
+  }, [sizes]);
 
   // Handle toggle button click with ref-based event handling for UXP
   (0,react.useEffect)(() => {
@@ -40461,6 +41036,26 @@ const SizesPreview = ({
     return () => input.removeEventListener('input', handleInput);
   }, []);
 
+  // Group sizes by orientation (landscape/portrait/square)
+  const groupByOrientation = sizesToGroup => {
+    const groups = {
+      landscape: [],
+      portrait: [],
+      square: []
+    };
+    sizesToGroup.forEach(size => {
+      const ratio = size.width / size.height;
+      if (ratio < ASPECT_RATIO_THRESHOLDS.PORTRAIT_MAX) {
+        groups.portrait.push(size);
+      } else if (ratio > ASPECT_RATIO_THRESHOLDS.SQUARE_MAX) {
+        groups.landscape.push(size);
+      } else {
+        groups.square.push(size);
+      }
+    });
+    return groups;
+  };
+
   // Filter and group sizes
   const {
     filteredSizes,
@@ -40478,18 +41073,14 @@ const SizesPreview = ({
     const filtered = searchTerm ? sizes.filter(size => size.name.toLowerCase().includes(searchTerm) || size.type?.toLowerCase().includes(searchTerm) || `${size.width}x${size.height}`.includes(searchTerm)) : sizes;
     return {
       filteredSizes: filtered,
-      groupedSizes: groupByType(filtered),
+      groupedSizes: groupByOrientation(filtered),
       matchCount: filtered.length
     };
   }, [sizes, filterText]);
-  const typeLabels = {
-    social: 'Social Media',
-    display: 'Display Ads',
-    video: 'Video',
-    email: 'Email',
-    print: 'Print',
-    web: 'Web',
-    other: 'Other'
+  const orientationLabels = {
+    landscape: '▭ Landscape',
+    portrait: '▯ Portrait',
+    square: '□ Square'
   };
 
   // Get orientation counts for info display
@@ -40560,17 +41151,18 @@ const SizesPreview = ({
     size: "s"
   }, "No sizes match \"", filterText, "\"")), /*#__PURE__*/react.createElement("div", {
     className: "sizes-groups"
-  }, Object.entries(groupedSizes).map(([type, typeSizes]) => {
-    if (!typeSizes || typeSizes.length === 0) return null;
+  }, ['landscape', 'portrait', 'square'].map(orientation => {
+    const orientationSizes = groupedSizes[orientation];
+    if (!orientationSizes || orientationSizes.length === 0) return null;
     return /*#__PURE__*/react.createElement("div", {
-      key: type,
+      key: orientation,
       className: "size-group"
     }, /*#__PURE__*/react.createElement("sp-label", {
       size: "s",
       class: "group-label"
-    }, typeLabels[type] || type, " (", typeSizes.length, ")"), /*#__PURE__*/react.createElement("div", {
+    }, orientationLabels[orientation], " (", orientationSizes.length, ")"), /*#__PURE__*/react.createElement("div", {
       className: "size-buttons"
-    }, typeSizes.map((size, index) => /*#__PURE__*/react.createElement(components_SizeButton, {
+    }, orientationSizes.map((size, index) => /*#__PURE__*/react.createElement(components_SizeButton, {
       key: `${size.name}-${index}`,
       size: size,
       onGenerate: onGenerateSingle,
@@ -40605,8 +41197,9 @@ const ConfigurationStatus_getNeededOrientations = sizes => {
 };
 
 /**
- * Configuration status summary component
+ * Configuration status summary component with traffic light indicators
  * Shows progress of source configuration at a glance
+ * 🟢 = Ready, 🟡 = Warning/Partial, 🔴 = Error/Missing
  */
 const ConfigurationStatus = ({
   sourceConfig,
@@ -40629,12 +41222,21 @@ const ConfigurationStatus = ({
         }
       }
     });
+
+    // Calculate layer assignment status
+    const layerCounts = SOURCE_TYPES.map(source => {
+      if (!sourceConfig[source.id]?.artboard) return 0;
+      const layers = sourceConfig[source.id]?.layers || {};
+      return Object.values(layers).filter(v => v !== null && v !== '').length;
+    });
+    const totalLayersAssigned = layerCounts.reduce((sum, count) => sum + count, 0);
     return {
       configured,
       missing,
       total: configured.length + missing.length,
       isComplete: missing.length === 0 && configured.length > 0,
-      neededOrientations
+      neededOrientations,
+      totalLayersAssigned
     };
   }, [sourceConfig, sizes]);
   const optionsSummary = (0,react.useMemo)(() => {
@@ -40649,42 +41251,62 @@ const ConfigurationStatus = ({
     return `${printSettings.bleed}" bleed`;
   }, [printSettings]);
 
+  // Traffic light status indicators
+  const sourcesLight = status.isComplete ? '🟢' : status.configured.length > 0 ? '🟡' : '🔴';
+  const sizesLight = sizes.length > 0 ? '🟢' : '🔴';
+  const layersLight = status.totalLayersAssigned > 0 ? '🟢' : '🟡';
+
   // Don't show if no sizes loaded
   if (sizes.length === 0) {
     return /*#__PURE__*/react.createElement("div", {
       className: "config-status config-status-empty"
-    }, /*#__PURE__*/react.createElement("sp-icon", {
-      name: "ui:InfoMedium",
+    }, /*#__PURE__*/react.createElement("div", {
+      className: "config-status-compact"
+    }, /*#__PURE__*/react.createElement("div", {
+      className: "status-item"
+    }, /*#__PURE__*/react.createElement("span", {
+      className: "traffic-light"
+    }, "\uD83D\uDD34"), /*#__PURE__*/react.createElement("sp-body", {
       size: "s"
-    }), /*#__PURE__*/react.createElement("sp-body", {
+    }, "Sources: Not configured")), /*#__PURE__*/react.createElement("div", {
+      className: "status-item"
+    }, /*#__PURE__*/react.createElement("span", {
+      className: "traffic-light"
+    }, "\uD83D\uDD34"), /*#__PURE__*/react.createElement("sp-body", {
       size: "s"
-    }, "Load sizes to see configuration requirements"));
+    }, "Sizes: None loaded")), /*#__PURE__*/react.createElement("div", {
+      className: "status-item"
+    }, /*#__PURE__*/react.createElement("span", {
+      className: "traffic-light"
+    }, "\uD83D\uDFE1"), /*#__PURE__*/react.createElement("sp-body", {
+      size: "s"
+    }, "Layers: Auto-detect ready"))));
   }
   return /*#__PURE__*/react.createElement("div", {
     className: `config-status ${status.isComplete ? 'config-status-complete' : 'config-status-incomplete'}`
   }, /*#__PURE__*/react.createElement("div", {
-    className: "config-status-main"
+    className: "config-status-compact"
   }, /*#__PURE__*/react.createElement("div", {
-    className: "config-status-sources"
-  }, status.isComplete ? /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("span", {
-    className: "status-icon status-icon-success"
-  }, "\u2713"), /*#__PURE__*/react.createElement("sp-body", {
-    size: "s"
-  }, status.configured.length, " of ", status.total, " sources configured")) : /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("span", {
-    className: "status-icon status-icon-warning"
-  }, "!"), /*#__PURE__*/react.createElement("sp-body", {
-    size: "s"
-  }, status.configured.length, " of ", status.total, " sources configured", status.missing.length > 0 && /*#__PURE__*/react.createElement("span", {
-    className: "missing-sources"
-  }, "\u2014 need ", status.missing.map(s => s.label.split(' ')[0]).join(', '))))), /*#__PURE__*/react.createElement("div", {
-    className: "config-status-badges"
+    className: "status-item"
   }, /*#__PURE__*/react.createElement("span", {
-    className: "config-badge",
-    title: "Layout options"
-  }, optionsSummary), /*#__PURE__*/react.createElement("span", {
-    className: "config-badge",
-    title: "Print settings"
-  }, printSummary))));
+    className: "traffic-light"
+  }, sourcesLight), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, "Sources: ", status.isComplete ? 'Ready' : `${status.configured.length}/${status.total}`, status.missing.length > 0 && /*#__PURE__*/react.createElement("span", {
+    className: "missing-hint"
+  }, ' ', "(need ", status.missing.map(s => s.label.split(' ')[0]).join(', '), ")"))), /*#__PURE__*/react.createElement("div", {
+    className: "status-item"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "traffic-light"
+  }, sizesLight), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, "Sizes: ", sizes.length, " loaded")), /*#__PURE__*/react.createElement("div", {
+    className: "status-item"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "traffic-light"
+  }, layersLight), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, "Layers: ", status.totalLayersAssigned > 0 ? `${status.totalLayersAssigned} assigned` : 'Auto-detected'))));
 };
 /* harmony default export */ const components_ConfigurationStatus = (ConfigurationStatus);
 ;// ./src/components/artboard-generator/components/SettingsPanel.jsx
@@ -40860,6 +41482,116 @@ const SettingsPanel = ({
   }))));
 };
 /* harmony default export */ const components_SettingsPanel = (SettingsPanel);
+;// ./src/components/artboard-generator/components/QuickGeneratePanel.jsx
+
+
+
+/**
+ * Quick Generate Panel - Smart mode for when configuration is auto-detected
+ * Shows a simplified checklist view with prominent generate button
+ */
+const QuickGeneratePanel = ({
+  sourceConfig,
+  sizes,
+  onGenerate,
+  onCustomize,
+  generating,
+  generatableSizesCount,
+  canGenerate
+}) => {
+  // Calculate what was detected
+  const detectionStatus = (0,react.useMemo)(() => {
+    if (!sizes || sizes.length === 0) return null;
+    const neededOrientations = new Set();
+    sizes.forEach(size => {
+      const ratio = size.width / size.height;
+      if (ratio < ASPECT_RATIO_THRESHOLDS.PORTRAIT_MAX) {
+        neededOrientations.add('portrait');
+      } else if (ratio > ASPECT_RATIO_THRESHOLDS.SQUARE_MAX) {
+        neededOrientations.add('landscape');
+      } else {
+        neededOrientations.add('square');
+      }
+    });
+    const configuredSources = [];
+    const missingSources = [];
+    SOURCE_TYPES.forEach(source => {
+      if (neededOrientations.has(source.id)) {
+        if (sourceConfig[source.id]?.artboard) {
+          configuredSources.push({
+            ...source,
+            artboardName: sourceConfig[source.id].artboard
+          });
+        } else {
+          missingSources.push(source);
+        }
+      }
+    });
+    const totalLayersDetected = SOURCE_TYPES.reduce((count, source) => {
+      if (!sourceConfig[source.id]?.artboard) return count;
+      const layers = sourceConfig[source.id]?.layers || {};
+      return count + Object.values(layers).filter(v => v !== null && v !== '').length;
+    }, 0);
+    return {
+      configured: configuredSources,
+      missing: missingSources,
+      allConfigured: missingSources.length === 0 && configuredSources.length > 0,
+      totalLayersDetected
+    };
+  }, [sourceConfig, sizes]);
+  if (!detectionStatus || !detectionStatus.allConfigured) {
+    return null; // Don't show quick mode if not fully configured
+  }
+  return /*#__PURE__*/react.createElement("div", {
+    className: "quick-generate-panel"
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "quick-header"
+  }, /*#__PURE__*/react.createElement("sp-icon", {
+    name: "ui:CheckmarkCircle",
+    size: "m",
+    class: "quick-icon-success"
+  }), /*#__PURE__*/react.createElement("sp-label", {
+    size: "l"
+  }, "\uD83D\uDE80 Ready to Generate")), /*#__PURE__*/react.createElement("div", {
+    className: "quick-checklist"
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "checklist-item checklist-item-complete"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "checklist-check"
+  }, "\u2713"), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, /*#__PURE__*/react.createElement("strong", null, detectionStatus.configured.length, " source artboard", detectionStatus.configured.length !== 1 ? 's' : '', " detected"), /*#__PURE__*/react.createElement("div", {
+    className: "checklist-details"
+  }, detectionStatus.configured.map((source, index) => /*#__PURE__*/react.createElement("span", {
+    key: source.id,
+    className: "source-detail"
+  }, source.icon, " ", source.artboardName, index < detectionStatus.configured.length - 1 && ', '))))), /*#__PURE__*/react.createElement("div", {
+    className: "checklist-item checklist-item-complete"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "checklist-check"
+  }, "\u2713"), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, /*#__PURE__*/react.createElement("strong", null, sizes.length, " size", sizes.length !== 1 ? 's' : '', " loaded from task"))), /*#__PURE__*/react.createElement("div", {
+    className: "checklist-item checklist-item-complete"
+  }, /*#__PURE__*/react.createElement("span", {
+    className: "checklist-check"
+  }, "\u2713"), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, /*#__PURE__*/react.createElement("strong", null, detectionStatus.totalLayersDetected > 0 ? `${detectionStatus.totalLayersDetected} layer role${detectionStatus.totalLayersDetected !== 1 ? 's' : ''} auto-assigned` : 'Layer roles ready (will use defaults)')))), /*#__PURE__*/react.createElement("div", {
+    className: "quick-actions"
+  }, /*#__PURE__*/react.createElement("sp-button", {
+    variant: "cta",
+    size: "l",
+    onClick: onGenerate,
+    disabled: !canGenerate
+  }, generating ? 'Generating...' : `Generate All Artboards (${generatableSizesCount})`), /*#__PURE__*/react.createElement("sp-button", {
+    variant: "secondary",
+    size: "m",
+    onClick: onCustomize,
+    quiet: true
+  }, "Customize Settings \u25BC")));
+};
+/* harmony default export */ const components_QuickGeneratePanel = (QuickGeneratePanel);
 ;// ./src/components/artboard-generator/hooks/usePhotoshopDocument.js
 
 
@@ -43757,7 +44489,7 @@ const useArtboardGenerator = ({
   }, []);
 
   /**
-   * Validate configuration before generation
+   * Validate configuration before generation with detailed, actionable errors
    */
   const validateConfig = (0,react.useCallback)(() => {
     const errors = [];
@@ -43765,25 +44497,46 @@ const useArtboardGenerator = ({
     // Check if at least one source is configured
     const hasSource = ['landscape', 'portrait', 'square'].some(type => sourceConfig[type]?.artboard);
     if (!hasSource) {
-      errors.push('At least one source artboard must be configured');
+      errors.push('⚠️ No source artboards configured. Select at least one source artboard to begin.');
+      return errors; // Return early if no sources at all
     }
 
     // Check if any sizes can be generated with current config
     if (hasSource && sizes.length > 0) {
-      const neededOrientations = new Set();
+      const orientationDetails = {
+        landscape: {
+          count: 0,
+          examples: []
+        },
+        portrait: {
+          count: 0,
+          examples: []
+        },
+        square: {
+          count: 0,
+          examples: []
+        }
+      };
+
+      // Collect orientation needs with examples
       sizes.forEach(size => {
         const ratio = size.width / size.height;
-        if (ratio < 0.85) neededOrientations.add('portrait');else if (ratio > 1.15) neededOrientations.add('landscape');else neededOrientations.add('square');
-      });
-      const missingOrientations = [];
-      neededOrientations.forEach(orientation => {
-        if (!sourceConfig[orientation]?.artboard) {
-          missingOrientations.push(orientation);
+        let orientation;
+        if (ratio < 0.85) orientation = 'portrait';else if (ratio > 1.15) orientation = 'landscape';else orientation = 'square';
+        orientationDetails[orientation].count++;
+        if (orientationDetails[orientation].examples.length < 3) {
+          orientationDetails[orientation].examples.push(size.name);
         }
       });
-      if (missingOrientations.length > 0) {
-        errors.push(`Missing source for: ${missingOrientations.join(', ')}`);
-      }
+
+      // Check for missing sources with detailed info
+      Object.entries(orientationDetails).forEach(([orientation, details]) => {
+        if (details.count > 0 && !sourceConfig[orientation]?.artboard) {
+          const icon = orientation === 'landscape' ? '▭' : orientation === 'portrait' ? '▯' : '□';
+          const exampleText = details.examples.length > 0 ? ` (e.g., ${details.examples.join(', ')}${details.count > details.examples.length ? '...' : ''})` : '';
+          errors.push(`${icon} Missing ${orientation} source needed for ${details.count} size${details.count !== 1 ? 's' : ''}${exampleText}`);
+        }
+      });
     }
     return errors;
   }, [sourceConfig, sizes]);
@@ -43867,7 +44620,10 @@ const useArtboardGenerator = ({
    */
   const generateSingle = (0,react.useCallback)(async size => {
     if (!canGenerateSize(size)) {
-      setGenerationError(`Cannot generate ${size.name}: no source artboard configured for this orientation`);
+      const aspectRatio = size.width / size.height;
+      let orientation;
+      if (aspectRatio < 0.85) orientation = 'portrait ▯';else if (aspectRatio > 1.15) orientation = 'landscape ▭';else orientation = 'square □';
+      setGenerationError(`Cannot generate "${size.name}" (${size.width}×${size.height}): Missing ${orientation} source artboard. ` + `Please select a ${orientation.split(' ')[0]} source in the configuration panel.`);
       return;
     }
     setGenerating(true);
@@ -43981,6 +44737,7 @@ const useArtboardGenerator = ({
 
 
 
+
 /**
  * Main artboard generator tab component
  * Simplified UI with settings in collapsible panel and generate button in sizes section
@@ -44032,6 +44789,12 @@ const ArtboardGeneratorTab = ({
   // Track the last task ID we auto-loaded for
   const lastAutoLoadedTaskId = (0,react.useRef)(null);
 
+  // Track whether to show quick mode or customized mode
+  const [showQuickMode, setShowQuickMode] = (0,react.useState)(true);
+
+  // Track if generation just completed (for undo reminder)
+  const [showUndoReminder, setShowUndoReminder] = (0,react.useState)(false);
+
   // Auto-load sizes from task when task is linked
   (0,react.useEffect)(() => {
     // Only auto-load if:
@@ -44051,11 +44814,37 @@ const ArtboardGeneratorTab = ({
       lastAutoLoadedTaskId.current = null;
     }
   }, [taskId]);
+
+  // Show undo reminder when generation completes
+  const prevGenerating = (0,react.useRef)(generating);
+  (0,react.useEffect)(() => {
+    // If was generating and now stopped (completed or errored)
+    if (prevGenerating.current && !generating && !generationError) {
+      setShowUndoReminder(true);
+      // Hide reminder after 10 seconds
+      const timer = setTimeout(() => {
+        setShowUndoReminder(false);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+    prevGenerating.current = generating;
+  }, [generating, generationError]);
+
+  // Fail-fast validation checks for document state
+  const documentErrors = [];
+  if (!docLoading) {
+    if (artboards.length === 0) {
+      documentErrors.push('No artboards in document - create source artboards first');
+    }
+    if (layers.length === 0) {
+      documentErrors.push('No layers detected in document');
+    }
+  }
   const validationErrors = validateConfig();
 
   // Count how many sizes can actually be generated
   const generatableSizesCount = sizes.filter(size => canGenerateSize(size)).length;
-  const canGenerate = validationErrors.length === 0 && !generating && !docLoading && generatableSizesCount > 0;
+  const canGenerate = documentErrors.length === 0 && validationErrors.length === 0 && !generating && !docLoading && generatableSizesCount > 0;
 
   // Debug logging
   console.log('[ArtboardGeneratorTab] Button state debug:', {
@@ -44182,15 +44971,40 @@ const ArtboardGeneratorTab = ({
     indeterminate: true,
     size: "s",
     label: "Loading document..."
-  }), !docLoading && artboards.length === 0 && /*#__PURE__*/react.createElement("sp-body", {
+  }), !docLoading && artboards.length === 0 && /*#__PURE__*/react.createElement("div", {
+    className: "empty-state-inline"
+  }, /*#__PURE__*/react.createElement("sp-body", {
     size: "s",
     class: "warning-text"
-  }, "No artboards found. Create source artboards first.")), /*#__PURE__*/react.createElement(components_ConfigurationStatus, {
+  }, "\u26A0\uFE0F No artboards found in document"), /*#__PURE__*/react.createElement("sp-body", {
+    size: "xs",
+    class: "hint-text"
+  }, "Create at least one artboard in Photoshop to use as a source template")), documentErrors.length > 0 && /*#__PURE__*/react.createElement("div", {
+    className: "document-errors"
+  }, documentErrors.map((error, index) => /*#__PURE__*/react.createElement("div", {
+    key: index,
+    className: "error-item"
+  }, /*#__PURE__*/react.createElement("sp-icon", {
+    name: "ui:AlertMedium",
+    size: "s",
+    class: "error-icon"
+  }), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s",
+    class: "error-text"
+  }, error))))), showQuickMode && validationErrors.length === 0 && sizes.length > 0 && /*#__PURE__*/react.createElement(components_QuickGeneratePanel, {
+    sourceConfig: sourceConfig,
+    sizes: sizes,
+    onGenerate: handleGenerate,
+    onCustomize: () => setShowQuickMode(false),
+    generating: generating,
+    generatableSizesCount: generatableSizesCount,
+    canGenerate: canGenerate
+  }), (!showQuickMode || validationErrors.length > 0 || sizes.length === 0) && /*#__PURE__*/react.createElement(components_ConfigurationStatus, {
     sourceConfig: sourceConfig,
     sizes: sizes,
     options: options,
     printSettings: printSettings
-  }), /*#__PURE__*/react.createElement(components_SourceConfigPanel, {
+  }), !showQuickMode && /*#__PURE__*/react.createElement(components_SourceConfigPanel, {
     artboards: artboards,
     layers: layers,
     sourceConfig: sourceConfig,
@@ -44231,16 +45045,32 @@ const ArtboardGeneratorTab = ({
     class: "error-text"
   }, sizesError), sizes.length === 0 && !sizesLoading && /*#__PURE__*/react.createElement("div", {
     className: "sizes-empty-state"
-  }, /*#__PURE__*/react.createElement("sp-body", {
+  }, /*#__PURE__*/react.createElement("div", {
+    className: "empty-state-icon"
+  }, "\uD83D\uDCD0"), /*#__PURE__*/react.createElement("sp-label", {
+    size: "m"
+  }, "Get Started"), taskId ? /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("sp-body", {
     size: "s"
-  }, "No sizes loaded yet."), taskId ? /*#__PURE__*/react.createElement("sp-button", {
+  }, "Load artboard sizes from your ClickUp task to begin"), /*#__PURE__*/react.createElement("sp-button", {
     ref: loadSizesButtonRef,
     variant: "primary",
-    size: "m"
-  }, sizesLoading ? 'Loading...' : 'Load Sizes from Task') : /*#__PURE__*/react.createElement("sp-body", {
+    size: "l"
+  }, sizesLoading ? 'Loading...' : 'Load Sizes from Task'), /*#__PURE__*/react.createElement("sp-body", {
     size: "xs",
-    class: "warning-text"
-  }, "Open a file linked to a task to load sizes.")), sizesLoading && sizes.length === 0 && /*#__PURE__*/react.createElement("div", {
+    class: "hint-text"
+  }, "Sizes will be automatically cached for 15 minutes")) : /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, "To use the artboard generator:"), /*#__PURE__*/react.createElement("div", {
+    className: "empty-state-steps"
+  }, /*#__PURE__*/react.createElement("sp-body", {
+    size: "xs"
+  }, "1. Open a Photoshop file linked to a ClickUp task"), /*#__PURE__*/react.createElement("sp-body", {
+    size: "xs"
+  }, "2. Load sizes from the task"), /*#__PURE__*/react.createElement("sp-body", {
+    size: "xs"
+  }, "3. Select source artboards (or let auto-detect)"), /*#__PURE__*/react.createElement("sp-body", {
+    size: "xs"
+  }, "4. Click Generate")))), sizesLoading && sizes.length === 0 && /*#__PURE__*/react.createElement("div", {
     className: "sizes-loading-state"
   }, /*#__PURE__*/react.createElement("sp-progress-bar", {
     indeterminate: true,
@@ -44252,7 +45082,7 @@ const ArtboardGeneratorTab = ({
     onGenerateSingle: generateSingle,
     sourceConfig: sourceConfig,
     disabled: generating || docLoading
-  }), sizes.length > 0 && /*#__PURE__*/react.createElement("div", {
+  }), sizes.length > 0 && !showQuickMode && /*#__PURE__*/react.createElement("div", {
     className: "generation-section-inline"
   }, generating && /*#__PURE__*/react.createElement("div", {
     className: "generation-progress"
@@ -44273,7 +45103,27 @@ const ArtboardGeneratorTab = ({
   }, "\u2022 ", error))), /*#__PURE__*/react.createElement("sp-button", {
     ref: generateButtonRef,
     variant: "cta"
-  }, generating ? 'Generating...' : `Generate All (${generatableSizesCount})`))), /*#__PURE__*/react.createElement(components_SettingsPanel, {
+  }, generating ? 'Generating...' : `Generate All (${generatableSizesCount})`)), sizes.length > 0 && showQuickMode && generating && /*#__PURE__*/react.createElement("div", {
+    className: "generation-progress"
+  }, /*#__PURE__*/react.createElement("sp-body", {
+    size: "s"
+  }, "Generating: ", progress.name, " (", progress.current, "/", progress.total, ")"), /*#__PURE__*/react.createElement("sp-progress-bar", {
+    value: progress.current / progress.total * 100,
+    size: "s"
+  })), showUndoReminder && /*#__PURE__*/react.createElement("div", {
+    className: "undo-reminder"
+  }, /*#__PURE__*/react.createElement("sp-icon", {
+    name: "ui:Undo",
+    size: "s",
+    class: "undo-icon"
+  }), /*#__PURE__*/react.createElement("sp-body", {
+    size: "s",
+    class: "success-text"
+  }, "\u2713 Generation complete! Use ", /*#__PURE__*/react.createElement("strong", null, "Cmd+Z"), " (Mac) or ", /*#__PURE__*/react.createElement("strong", null, "Ctrl+Z"), " (Win) to undo all changes if needed."), /*#__PURE__*/react.createElement("sp-action-button", {
+    size: "xs",
+    quiet: true,
+    onClick: () => setShowUndoReminder(false)
+  }, "\u2715"))), /*#__PURE__*/react.createElement(components_SettingsPanel, {
     options: options,
     onOptionsChange: setOptions,
     printSettings: printSettings,
@@ -44598,6 +45448,7 @@ const PrintSettingsPanel = ({
  */
 
 // Components
+
 
 
 

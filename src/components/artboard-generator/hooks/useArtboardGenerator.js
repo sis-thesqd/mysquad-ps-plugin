@@ -294,7 +294,7 @@ export const useArtboardGenerator = ({ taskId } = {}) => {
   }, []);
 
   /**
-   * Validate configuration before generation
+   * Validate configuration before generation with detailed, actionable errors
    */
   const validateConfig = useCallback(() => {
     const errors = [];
@@ -304,29 +304,44 @@ export const useArtboardGenerator = ({ taskId } = {}) => {
       (type) => sourceConfig[type]?.artboard
     );
     if (!hasSource) {
-      errors.push('At least one source artboard must be configured');
+      errors.push('⚠️ No source artboards configured. Select at least one source artboard to begin.');
+      return errors; // Return early if no sources at all
     }
 
     // Check if any sizes can be generated with current config
     if (hasSource && sizes.length > 0) {
-      const neededOrientations = new Set();
+      const orientationDetails = {
+        landscape: { count: 0, examples: [] },
+        portrait: { count: 0, examples: [] },
+        square: { count: 0, examples: [] },
+      };
+
+      // Collect orientation needs with examples
       sizes.forEach(size => {
         const ratio = size.width / size.height;
-        if (ratio < 0.85) neededOrientations.add('portrait');
-        else if (ratio > 1.15) neededOrientations.add('landscape');
-        else neededOrientations.add('square');
-      });
+        let orientation;
+        if (ratio < 0.85) orientation = 'portrait';
+        else if (ratio > 1.15) orientation = 'landscape';
+        else orientation = 'square';
 
-      const missingOrientations = [];
-      neededOrientations.forEach(orientation => {
-        if (!sourceConfig[orientation]?.artboard) {
-          missingOrientations.push(orientation);
+        orientationDetails[orientation].count++;
+        if (orientationDetails[orientation].examples.length < 3) {
+          orientationDetails[orientation].examples.push(size.name);
         }
       });
 
-      if (missingOrientations.length > 0) {
-        errors.push(`Missing source for: ${missingOrientations.join(', ')}`);
-      }
+      // Check for missing sources with detailed info
+      Object.entries(orientationDetails).forEach(([orientation, details]) => {
+        if (details.count > 0 && !sourceConfig[orientation]?.artboard) {
+          const icon = orientation === 'landscape' ? '▭' : orientation === 'portrait' ? '▯' : '□';
+          const exampleText = details.examples.length > 0
+            ? ` (e.g., ${details.examples.join(', ')}${details.count > details.examples.length ? '...' : ''})`
+            : '';
+          errors.push(
+            `${icon} Missing ${orientation} source needed for ${details.count} size${details.count !== 1 ? 's' : ''}${exampleText}`
+          );
+        }
+      });
     }
 
     return errors;
@@ -414,7 +429,16 @@ export const useArtboardGenerator = ({ taskId } = {}) => {
    */
   const generateSingle = useCallback(async (size) => {
     if (!canGenerateSize(size)) {
-      setGenerationError(`Cannot generate ${size.name}: no source artboard configured for this orientation`);
+      const aspectRatio = size.width / size.height;
+      let orientation;
+      if (aspectRatio < 0.85) orientation = 'portrait ▯';
+      else if (aspectRatio > 1.15) orientation = 'landscape ▭';
+      else orientation = 'square □';
+
+      setGenerationError(
+        `Cannot generate "${size.name}" (${size.width}×${size.height}): Missing ${orientation} source artboard. ` +
+        `Please select a ${orientation.split(' ')[0]} source in the configuration panel.`
+      );
       return;
     }
 
